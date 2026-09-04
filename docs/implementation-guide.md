@@ -66,7 +66,8 @@ Browser
 5. Keycloak login theme in the repo, copied to `C:\Users\Lenovo\Documents\keycloak-26.7.2\themes\herdcommand`.
 6. Spring Boot JWT resource server + `GET /api/v1/me` (needs API running + Bearer token).
 7. **US-AC-001 configuration foundation** (Flyway, JPA audit fields, admin permissions, standard `ApiError`, `Accept-Language` ar/en). File-by-file notes: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md).
-8. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+8. **US-AC-002 breed management API** (Flyway V2 `animal_breed`, list/create/update/status, no DELETE, no React screens). File-by-file notes: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md).
+9. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
@@ -324,5 +325,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | API JWT + method security | `apps/api/src/main/java/com/herdcommand/api/config/SecurityConfig.java` |
 | API me | `apps/api/src/main/java/com/herdcommand/api/api/me/MeController.java` |
 | API configuration foundation | `docs/us-ac-001-configuration-foundation.md` |
+| API breed management | `docs/us-ac-002-breed-management-api.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

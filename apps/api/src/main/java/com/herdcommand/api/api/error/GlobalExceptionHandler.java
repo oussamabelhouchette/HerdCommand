@@ -61,7 +61,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiError> handleApi(ApiException ex, HttpServletRequest request) {
-        return respond(ex.getStatus(), ex.getCode(), ex.getMessageKey(), request, List.of());
+        return respond(ex.getStatus(), ex.getCode(), ex.getMessageKey(), request, ex.getFieldErrors());
+    }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleConflict(
+            org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest request) {
+        String detail = String.valueOf(ex.getMostSpecificCause().getMessage()).toLowerCase(Locale.ROOT);
+        if (detail.contains("animal_breed") && detail.contains("code")) {
+            return respond(HttpStatus.CONFLICT, ErrorCodes.BREED_CODE_ALREADY_EXISTS, "error.breed.codeExists", request, List.of(
+                    new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
+        }
+        return respond(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, "error.conflict", request, List.of());
     }
 
     @ExceptionHandler(AuthenticationException.class)
