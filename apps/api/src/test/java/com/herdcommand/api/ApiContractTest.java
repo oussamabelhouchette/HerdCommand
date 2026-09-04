@@ -1,31 +1,30 @@
 package com.herdcommand.api;
 
 import com.herdcommand.api.api.error.ApiError;
+import com.herdcommand.api.api.error.ErrorCodes;
+import com.herdcommand.api.support.TestJwtConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(ApiContractTest.TestJwtConfig.class)
+@Import(TestJwtConfig.class)
 class ApiContractTest {
 
     @Autowired
@@ -42,9 +41,11 @@ class ApiContractTest {
     void meRequiresAuthenticationWithJsonEnvelope() throws Exception {
         mockMvc.perform(get("/api/v1/me").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value("unauthorized"))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.UNAUTHORIZED))
                 .andExpect(jsonPath("$.message").exists())
-                .andExpect(jsonPath("$.correlationId").exists())
+                .andExpect(jsonPath("$.path").value("/api/v1/me"))
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.fieldErrors").isArray())
                 .andExpect(header().exists("X-Correlation-Id"));
     }
 
@@ -63,24 +64,9 @@ class ApiContractTest {
 
     @Test
     void apiErrorShapeIsStable() {
-        ApiError error = ApiError.of("validation_error", "Request validation failed", "cid", "/api/v1/example");
-        org.assertj.core.api.Assertions.assertThat(error.code()).isEqualTo("validation_error");
+        ApiError error = ApiError.of("VALIDATION_ERROR", "The request contains invalid fields.", "/api/v1/example");
+        org.assertj.core.api.Assertions.assertThat(error.code()).isEqualTo("VALIDATION_ERROR");
         org.assertj.core.api.Assertions.assertThat(error.path()).isEqualTo("/api/v1/example");
-        org.assertj.core.api.Assertions.assertThat(error.errors()).isEmpty();
-    }
-
-    @TestConfiguration
-    static class TestJwtConfig {
-        @Bean
-        @Primary
-        JwtDecoder jwtDecoder() {
-            return token -> Jwt.withTokenValue(token)
-                    .header("alg", "none")
-                    .subject("user-1")
-                    .issuedAt(Instant.now())
-                    .expiresAt(Instant.now().plusSeconds(60))
-                    .claim("preferred_username", "farmer")
-                    .build();
-        }
+        org.assertj.core.api.Assertions.assertThat(error.fieldErrors()).isEmpty();
     }
 }

@@ -4,9 +4,31 @@ server:
 spring:
   application:
     name: herdcommand-api
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/herdcommand}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:admin}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
   jackson:
     property-naming-strategy: LOWER_CAMEL_CASE
     default-property-inclusion: NON_NULL
+    serialization:
+      write-dates-as-timestamps: false
   security:
     oauth2:
       resourceserver:
