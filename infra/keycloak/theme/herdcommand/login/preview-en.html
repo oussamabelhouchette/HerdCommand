@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HerdCommand — Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/css/login.css" />
+</head>
+<body>
+  <main class="login-page">
+    <section class="hero" aria-label="HerdCommand">
+      <img class="hero-bg" alt="" src="./resources/img/login-visual.png" />
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <div class="badge">
+          <span>Integrated smart system</span>
+          <img alt="" src="./resources/img/badge-icon.svg" />
+        </div>
+        <p class="hero-title">Smart herd management,<br />sustainable productivity</p>
+        <p class="hero-description">Track your herd's movement, health status, and feeding schedules from one secure cloud platform designed to the highest standards of accuracy.</p>
+      </div>
+    </section>
+
+    <section class="auth-side">
+      <div class="top-row">
+        <a class="language-pill is-en" href="./preview.html" aria-label="Change language">
+          <span class="en">EN</span>
+          <span class="divider"><img alt="" src="./resources/img/lang-divider.svg" /></span>
+          <span class="ar">العربية</span>
+          <img class="globe" alt="" src="./resources/img/globe.svg" />
+        </a>
+        <div class="top-spacer"></div>
+      </div>
+
+      <form class="login-card" onsubmit="event.preventDefault()">
+        <div class="card-heading">
+          <div class="brand-mark">
+            <img alt="" src="./resources/img/brand-mark.svg" />
+          </div>
+          <h1 class="card-title">Sign in</h1>
+          <p class="card-subtitle">Enter your details to manage your herd with intelligence</p>
+        </div>
+
+        <div class="fields">
+          <label class="field-group">
+            <span class="field-label">Email or mobile number</span>
+            <span class="input-shell">
+              <input id="identity" type="text" inputmode="email" autocomplete="username" placeholder="example@farm.com" />
+              <img class="input-icon-right" alt="" src="./resources/img/icon-mail.svg" />
+            </span>
+          </label>
+
+          <div class="field-group">
+            <div class="password-label-row">
+              <a class="forgot" href="#">Forgot password?</a>
+              <span class="label">Password</span>
+            </div>
+            <label class="input-shell">
+              <img id="passwordToggle" class="input-icon-left" alt="" src="./resources/img/icon-eye.svg" />
+              <input id="password" type="password" autocomplete="current-password" value="123456789012" />
+              <img class="input-icon-right" alt="" src="./resources/img/icon-lock.svg" />
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="submit-btn" type="submit">Sign in</button>
+          <div class="signup-line">
+            <span class="question">Don't have an account?</span>
+            <a class="link" href="#">Create a new account</a>
+          </div>
+        </div>
+      </form>
+
+      <p class="copyright">© 2026 HerdCommand agricultural and technical solutions. All rights reserved.</p>
+    </section>
+  </main>
+  <script>
+    const toggle = document.getElementById('passwordToggle');
+    const password = document.getElementById('password');
+    toggle.addEventListener('click', () => {
+      password.type = password.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

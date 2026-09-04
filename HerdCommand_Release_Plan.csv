@@ -1,0 +1,20 @@
+﻿Release,Release Name,Suggested Sprint,Suggested Start,Suggested End,Release Outcome,User Story Count
+R0,Foundation,Sprint 01,2026-08-31,2026-09-11,"Design system, bilingual/RTL foundation, engineering baseline and Keycloak authentication.",16
+R0,Foundation,Sprint 02,2026-09-14,2026-09-25,,
+R1,Core MVP,Sprint 03,2026-09-28,2026-10-09,"Onboarding, farm setup, dashboard, animal registry, groups, tasks and mobile shell.",38
+R1,Core MVP,Sprint 04,2026-10-12,2026-10-23,,
+R1,Core MVP,Sprint 05,2026-10-26,2026-11-06,,
+R1,Core MVP,Sprint 06,2026-11-09,2026-11-20,,
+R2,Animal Lifecycle & Health,Sprint 07,2026-11-23,2026-12-04,"Identification, movement, breeding, pregnancy, lambing, pedigree, health, vaccination and weight basics.",30
+R2,Animal Lifecycle & Health,Sprint 08,2026-12-07,2026-12-18,,
+R2,Animal Lifecycle & Health,Sprint 09,2026-12-21,2027-01-01,,
+R2,Animal Lifecycle & Health,Sprint 10,2027-01-04,2027-01-15,,
+R3,Field Operations & Offline,Sprint 11,2027-01-18,2027-01-29,"Feeding, ration planning, inventory, notifications and reliable offline/mobile synchronization.",20
+R3,Field Operations & Offline,Sprint 12,2027-02-01,2027-02-12,,
+R3,Field Operations & Offline,Sprint 13,2027-02-15,2027-02-26,,
+R3,Field Operations & Offline,Sprint 14,2027-03-01,2027-03-12,,
+R4,Business & Governance,Sprint 15,2027-03-15,2027-03-26,"Finance, reports, exports, suppliers, administration and audit visibility.",16
+R4,Business & Governance,Sprint 16,2027-03-29,2027-04-09,,
+R4,Business & Governance,Sprint 17,2027-04-12,2027-04-23,,
+R5,Production Hardening,Sprint 18,2027-04-26,2027-05-07,"Security hardening, observability, backup/recovery, performance and go-live readiness.",10
+R5,Production Hardening,Sprint 19,2027-05-10,2027-05-21,,

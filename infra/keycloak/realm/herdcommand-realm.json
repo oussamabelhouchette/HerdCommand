@@ -1,0 +1,102 @@
+{
+  "realm": "herdcommand",
+  "displayName": "HerdCommand",
+  "enabled": true,
+  "loginTheme": "herdcommand",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["ar", "en"],
+  "defaultLocale": "ar",
+  "resetPasswordAllowed": true,
+  "forgotPasswordAllowed": true,
+  "rememberMe": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "accessTokenLifespan": 300,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      { "name": "owner", "description": "Farm owner" },
+      { "name": "manager", "description": "Farm manager" },
+      { "name": "veterinarian", "description": "Veterinarian" },
+      { "name": "worker", "description": "Farm worker" },
+      { "name": "accountant", "description": "Accountant" },
+      { "name": "administrator", "description": "Administrator" }
+    ]
+  },
+  "users": [
+    {
+      "username": "farmer",
+      "enabled": true,
+      "email": "farmer@herdcommand.local",
+      "emailVerified": true,
+      "firstName": "Fatima",
+      "lastName": "Salem",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Farm123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["manager"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "herdcommand",
+      "name": "HerdCommand Web",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "web-dev-secret",
+      "bearerOnly": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/*##http://127.0.0.1:3000/*"
+      },
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://127.0.0.1:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": ["address", "phone", "offline_access"]
+    },
+    {
+      "clientId": "herdcommand-mobile",
+      "name": "HerdCommand Mobile",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "herdcommand://auth",
+        "herdcommand://*",
+        "exp://127.0.0.1:*",
+        "exp://localhost:*",
+        "http://localhost:*"
+      ],
+      "webOrigins": ["*"]
+    }
+  ]
+}

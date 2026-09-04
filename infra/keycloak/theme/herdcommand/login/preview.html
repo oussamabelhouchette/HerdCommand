@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HerdCommand — تسجيل الدخول</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/css/login.css" />
+</head>
+<body>
+  <main class="login-page">
+    <section class="hero" aria-label="HerdCommand">
+      <img class="hero-bg" alt="" src="./resources/img/login-visual.png" />
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <div class="badge">
+          <span>نظام ذكي متكامل</span>
+          <img alt="" src="./resources/img/badge-icon.svg" />
+        </div>
+        <p class="hero-title">إدارة ذكية لقطيعك،<br />زيادة مستدامة لإنتاجيتك</p>
+        <p class="hero-description">تابع تحركات قطيعك، حالته الصحية، وجداول التغذية من منصة سحابية واحدة آمنة ومصممة بأعلى معايير الدقة.</p>
+      </div>
+    </section>
+
+    <section class="auth-side">
+      <div class="top-row">
+        <a class="language-pill" href="./preview-en.html" aria-label="تغيير اللغة">
+          <span class="en">EN</span>
+          <span class="divider"><img alt="" src="./resources/img/lang-divider.svg" /></span>
+          <span class="ar">العربية</span>
+          <img class="globe" alt="" src="./resources/img/globe.svg" />
+        </a>
+        <div class="top-spacer"></div>
+      </div>
+
+      <form class="login-card" onsubmit="event.preventDefault()">
+        <div class="card-heading">
+          <div class="brand-mark">
+            <img alt="" src="./resources/img/brand-mark.svg" />
+          </div>
+          <h1 class="card-title">تسجيل الدخول</h1>
+          <p class="card-subtitle">أدخل بياناتك لإدارة قطيعك بذكاء</p>
+        </div>
+
+        <div class="fields">
+          <label class="field-group">
+            <span class="field-label">البريد الإلكتروني أو رقم الجوال</span>
+            <span class="input-shell">
+              <input id="identity" type="text" inputmode="email" autocomplete="username" placeholder="example@farm.com" />
+              <img class="input-icon-right" alt="" src="./resources/img/icon-mail.svg" />
+            </span>
+          </label>
+
+          <div class="field-group">
+            <div class="password-label-row">
+              <a class="forgot" href="#">نسيت كلمة المرور؟</a>
+              <span class="label">كلمة المرور</span>
+            </div>
+            <label class="input-shell">
+              <img id="passwordToggle" class="input-icon-left" alt="" src="./resources/img/icon-eye.svg" />
+              <input id="password" type="password" autocomplete="current-password" value="123456789012" />
+              <img class="input-icon-right" alt="" src="./resources/img/icon-lock.svg" />
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="submit-btn" type="submit">تسجيل الدخول</button>
+          <div class="signup-line">
+            <span class="question">ليس لديك حساب؟</span>
+            <a class="link" href="#">إنشاء حساب جديد</a>
+          </div>
+        </div>
+      </form>
+
+      <p class="copyright">© 2026 هيرد كوماند للحلول الزراعية والتقنية. جميع الحقوق محفوظة.</p>
+    </section>
+  </main>
+  <script>
+    const toggle = document.getElementById('passwordToggle');
+    const password = document.getElementById('password');
+    toggle.addEventListener('click', () => {
+      password.type = password.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

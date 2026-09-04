@@ -1,0 +1,21 @@
+# Postgres only. Keycloak already runs on the host at http://localhost:9090
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-herdcommand}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-herdcommand}
+      POSTGRES_DB: ${POSTGRES_DB:-herdcommand}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-herdcommand} -d ${POSTGRES_DB:-herdcommand}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
