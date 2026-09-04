@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HerdCommand — تسجيل الدخول</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f1eb;
+      --green: #1b4332;
+      --gold: #c9a84c;
+      --text: #2d3436;
+      --muted: #636e72;
+      --border: #e2dcd5;
+      --hero-copy: #dfe6e9;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; min-height: 100%; }
+    body {
+      font-family: "Rubik", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button, input { font: inherit; }
+    button { border: 0; }
+    a { color: inherit; text-decoration: none; }
+
+    .login-page {
+      width: 100vw;
+      height: 100vh;
+      min-width: 1000px;
+      min-height: 720px;
+      display: flex;
+      flex-direction: row;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* Figma node 3:42 */
+    .hero {
+      position: relative;
+      width: 600px;
+      height: 100%;
+      flex: 0 0 600px;
+      padding: 64px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .hero-bg,
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-bg {
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .hero-overlay {
+      background: linear-gradient(120.36763698414855deg, rgba(27,67,50,.902) 25%, rgba(0,0,0,.502) 75%);
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .badge {
+      height: 27px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--gold);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: normal;
+      white-space: nowrap;
+      direction: rtl;
+    }
+
+    .badge img { width: 12px; height: 12px; display: block; }
+
+    .hero-title {
+      width: 100%;
+      margin: 0;
+      color: #fff;
+      font-size: 36px;
+      line-height: 48px;
+      font-weight: 700;
+      text-align: right;
+      direction: rtl;
+    }
+
+    .hero-description {
+      width: 100%;
+      margin: 0;
+      color: var(--hero-copy);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+      text-align: right;
+      direction: rtl;
+    }
+
+    /* Figma node 3:7 */
+    .auth-side {
+      height: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+      padding: 40px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      background: var(--bg);
+    }
+
+    .top-row {
+      width: 600px;
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      direction: ltr;
+      flex: 0 0 auto;
+    }
+
+    .language-pill {
+      width: 111px;
+      height: 27px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      white-space: nowrap;
+      direction: ltr;
+      cursor: pointer;
+    }
+
+    .language-pill .en {
+      color: var(--text);
+      font-size: 13px;
+      line-height: normal;
+      font-weight: 500;
+    }
+
+    .language-pill .divider {
+      width: 0;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .language-pill .divider img {
+      width: 12px;
+      height: 1px;
+      transform: rotate(90deg);
+      display: block;
+      max-width: none;
+    }
+
+    .language-pill .ar {
+      color: var(--green);
+      font-size: 13px;
+      line-height: normal;
+      font-weight: 600;
+      direction: rtl;
+    }
+
+    .language-pill .globe { width: 14px; height: 14px; display: block; }
+
+    .top-spacer { width: 10px; height: 10px; }
+
+    /* Figma node 3:15 */
+    .login-card {
+      width: 480px;
+      height: 525px;
+      flex: 0 0 525px;
+      padding: 48px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 4px 8px rgba(45,52,54,.06);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 32px;
+      direction: rtl;
+    }
+
+    .card-heading {
+      width: 384px;
+      height: 125px;
+      flex: 0 0 125px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 56px;
+    }
+
+    .brand-mark img { width: 32px; height: 32px; display: block; }
+
+    .card-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 24px;
+      line-height: normal;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .card-subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: normal;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .fields {
+      width: 384px;
+      height: 156px;
+      flex: 0 0 156px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .field-group {
+      width: 100%;
+      height: 69px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      width: 100%;
+      height: 15px;
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: normal;
+      font-weight: 600;
+      text-align: right;
+      direction: rtl;
+    }
+
+    .password-label-row {
+      width: 100%;
+      height: 15px;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      line-height: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+
+    .password-label-row .label {
+      color: var(--text);
+      font-weight: 600;
+      direction: rtl;
+    }
+
+    .password-label-row .forgot {
+      color: var(--gold);
+      font-weight: 500;
+      direction: rtl;
+      cursor: pointer;
+    }
+
+    .input-shell {
+      width: 100%;
+      height: 46px;
+      flex: 0 0 46px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(245,241,235,.25);
+      overflow: hidden;
+    }
+
+    .input-shell input {
+      width: 100%;
+      min-width: 0;
+      height: 17px;
+      padding: 0 30px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 400;
+      text-align: right;
+    }
+
+    .input-shell input::placeholder { color: var(--muted); opacity: 1; }
+
+    .input-icon-right,
+    .input-icon-left {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: block;
+      z-index: 2;
+    }
+
+    .input-icon-right { right: 14px; width: 18px; height: 18px; }
+    .input-icon-left { left: 14px; width: 16px; height: 16px; cursor: pointer; }
+
+    .actions {
+      width: 384px;
+      height: 84px;
+      flex: 0 0 84px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .submit-btn {
+      width: 384px;
+      height: 51px;
+      flex: 0 0 51px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--green);
+      color: #fff;
+      font-size: 16px;
+      line-height: normal;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .signup-line {
+      width: 384px;
+      height: 17px;
+      display: flex;
+      gap: 4px;
+      align-items: flex-start;
+      justify-content: center;
+      direction: rtl;
+      font-size: 14px;
+      line-height: normal;
+      white-space: nowrap;
+    }
+
+    .signup-line .question { color: var(--muted); font-weight: 400; }
+    .signup-line .link { color: var(--green); font-weight: 600; cursor: pointer; }
+
+    .copyright {
+      width: 600px;
+      height: 14px;
+      margin: 0;
+      flex: 0 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: normal;
+      font-weight: 400;
+      text-align: center;
+      direction: rtl;
+    }
+
+    @media (max-width: 1180px) {
+      .login-page { min-width: 0; overflow: auto; }
+      .hero { width: 42vw; flex-basis: 42vw; min-width: 420px; }
+      .auth-side { padding-left: 40px; padding-right: 40px; }
+    }
+
+    @media (max-width: 860px) {
+      .login-page { height: auto; min-height: 100vh; flex-direction: column; overflow: visible; }
+      .hero { width: 100%; min-width: 0; height: 390px; flex-basis: 390px; padding: 36px; }
+      .auth-side { width: 100%; min-height: 720px; padding: 28px 24px; }
+      .top-row, .copyright { width: min(600px, 100%); }
+      .login-card { width: min(480px, 100%); height: auto; min-height: 525px; }
+      .card-heading, .fields, .actions, .submit-btn, .signup-line { width: 100%; }
+      .hero-title { font-size: 30px; line-height: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-page" data-node-id="3:6">
+    <section class="hero" data-node-id="3:42" aria-label="HerdCommand">
+      <img
+        class="hero-bg"
+        alt=""
+        src="https://www.figma.com/api/mcp/asset/ee8589b2-5d8a-4f09-b81c-6ae6de6aaeb6.png"
+      />
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <div class="hero-copy" data-node-id="3:43">
+        <div class="badge" data-node-id="3:44">
+          <span data-node-id="3:45">نظام ذكي متكامل</span>
+          <img data-node-id="3:568" alt="" src="https://www.figma.com/api/mcp/asset/8323ccd4-3a97-4bff-ad91-a7a868669f6a.svg" />
+        </div>
+
+        <h1 class="hero-title" data-node-id="3:47">
+          إدارة ذكية لقطيعك،<br />
+          زيادة مستدامة لإنتاجيتك
+        </h1>
+
+        <p class="hero-description" data-node-id="3:48">
+          تابع تحركات قطيعك، حالته الصحية، وجداول التغذية من منصة سحابية واحدة آمنة ومصممة بأعلى معايير الدقة.
+        </p>
+      </div>
+    </section>
+
+    <section class="auth-side" data-node-id="3:7">
+      <div class="top-row" data-node-id="3:8">
+        <button class="language-pill" type="button" data-node-id="3:9" aria-label="تغيير اللغة">
+          <span class="en" data-node-id="3:10">EN</span>
+          <span class="divider" data-node-id="3:11">
+            <img alt="" src="https://www.figma.com/api/mcp/asset/1bc6a072-1761-4beb-8fb6-a1dbff9476a8.svg" />
+          </span>
+          <span class="ar" data-node-id="3:12">العربية</span>
+          <img class="globe" data-node-id="3:499" alt="" src="https://www.figma.com/api/mcp/asset/9ae9d776-7adc-4c61-b69c-551f9a14a021.svg" />
+        </button>
+        <div class="top-spacer" data-node-id="3:14"></div>
+      </div>
+
+      <form class="login-card" data-node-id="3:15" onsubmit="event.preventDefault()">
+        <div class="card-heading" data-node-id="3:16">
+          <div class="brand-mark" data-node-id="3:17">
+            <img data-node-id="3:574" alt="" src="https://www.figma.com/api/mcp/asset/149f1585-b145-4447-9d4c-d388b5859c53.svg" />
+          </div>
+          <h2 class="card-title" data-node-id="3:19">تسجيل الدخول</h2>
+          <p class="card-subtitle" data-node-id="3:20">أدخل بياناتك لإدارة قطيعك بذكاء</p>
+        </div>
+
+        <div class="fields" data-node-id="3:21">
+          <label class="field-group" data-node-id="3:22">
+            <span class="field-label" data-node-id="3:23">البريد الإلكتروني أو رقم الجوال</span>
+            <span class="input-shell" data-node-id="3:24">
+              <input id="identity" type="text" inputmode="email" autocomplete="username" placeholder="example@farm.com" aria-label="البريد الإلكتروني أو رقم الجوال" />
+              <img class="input-icon-right" data-node-id="3:463" alt="" src="https://www.figma.com/api/mcp/asset/24175e16-816d-4615-8bc2-f1c0d88c4574.svg" />
+            </span>
+          </label>
+
+          <div class="field-group" data-node-id="3:27">
+            <div class="password-label-row" data-node-id="3:28">
+              <a class="forgot" href="#" data-node-id="3:29">نسيت كلمة المرور؟</a>
+              <span class="label" data-node-id="3:30">كلمة المرور</span>
+            </div>
+            <label class="input-shell" data-node-id="3:31">
+              <img id="passwordToggle" class="input-icon-left" data-node-id="3:457" alt="" src="https://www.figma.com/api/mcp/asset/11b190c7-0932-4d72-96fa-59e13339cf07.svg" />
+              <input id="password" type="password" autocomplete="current-password" value="123456789012" aria-label="كلمة المرور" />
+              <img class="input-icon-right" data-node-id="3:565" alt="" src="https://www.figma.com/api/mcp/asset/c677f461-2385-47b1-9dc3-c21aee0a37bd.svg" />
+            </label>
+          </div>
+        </div>
+
+        <div class="actions" data-node-id="3:35">
+          <button class="submit-btn" type="submit" data-node-id="3:36">
+            <span data-node-id="3:37">تسجيل الدخول</span>
+          </button>
+          <div class="signup-line" data-node-id="3:38">
+            <span class="question" data-node-id="3:40">ليس لديك حساب؟</span>
+            <a class="link" href="#" data-node-id="3:39">إنشاء حساب جديد</a>
+          </div>
+        </div>
+      </form>
+
+      <p class="copyright" data-node-id="3:41">© 2026 هيرد كوماند للحلول الزراعية والتقنية. جميع الحقوق محفوظة.</p>
+    </section>
+  </main>
+
+  <script>
+    const toggle = document.getElementById('passwordToggle');
+    const password = document.getElementById('password');
+    toggle.addEventListener('click', () => {
+      password.type = password.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

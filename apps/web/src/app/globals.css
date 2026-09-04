@@ -1,0 +1,133 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--hc-color-bg);
+  color: var(--hc-color-text);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+html[lang='ar'] body {
+  font-family: var(--font-arabic), var(--hc-font-arabic);
+}
+
+html[lang='en'] body {
+  font-family: var(--font-latin), var(--hc-font-latin);
+}
+
+:focus-visible {
+  outline: 2px solid var(--hc-color-focus);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--hc-color-brand);
+}
+
+.hc-shell {
+  max-width: var(--hc-content-max);
+  margin: 0 auto;
+  padding: var(--hc-space-6);
+}
+
+.hc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hc-space-4);
+  padding-block: var(--hc-space-4);
+  margin-bottom: var(--hc-space-6);
+  border-bottom: var(--hc-border-width) solid var(--hc-color-border);
+}
+
+.hc-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.hc-brand strong {
+  color: var(--hc-color-brand-strong);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.hc-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hc-space-2);
+}
+
+.hc-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--hc-space-4);
+}
+
+.hc-span-12 {
+  grid-column: span 12;
+}
+
+.hc-span-6 {
+  grid-column: span 12;
+}
+
+.hc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hc-space-4);
+}
+
+.hc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hc-space-3);
+  align-items: center;
+}
+
+.hc-muted {
+  color: var(--hc-color-text-muted);
+}
+
+.hc-alert {
+  display: flex;
+  gap: var(--hc-space-3);
+  align-items: flex-start;
+  padding: var(--hc-space-3) var(--hc-space-4);
+  border-radius: var(--hc-radius-md);
+  border: var(--hc-border-width) solid var(--hc-color-border);
+  background: var(--hc-color-surface);
+}
+
+.hc-alert[data-tone='error'] {
+  border-color: var(--hc-color-error);
+}
+
+@media (min-width: 768px) {
+  .hc-span-6 {
+    grid-column: span 6;
+  }
+}
+
+.hc-login {
+  max-width: 480px;
+  margin: var(--hc-space-8) auto 0;
+}
+
+.hc-login form {
+  margin-top: var(--hc-space-5);
+}
+
+.hc-login p {
+  margin: 0 0 var(--hc-space-3);
+}
