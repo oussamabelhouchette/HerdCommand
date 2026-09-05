@@ -511,6 +511,141 @@
   }
 }
 
+.form {
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: var(--hc-border-width) solid var(--hc-color-border);
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 8px 11px;
+  outline: none;
+  font: inherit;
+  background: #fff;
+  color: var(--hc-color-text);
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--hc-color-brand);
+}
+
+.field input:disabled,
+.field input:read-only {
+  opacity: 0.8;
+  background: var(--hc-color-sand-50);
+}
+
+.field input[aria-invalid='true'],
+.field select[aria-invalid='true'] {
+  border-color: var(--hc-color-danger);
+}
+
+.help {
+  font-size: 11px;
+  color: var(--hc-color-text-muted);
+}
+
+.fieldError,
+.formError {
+  font-size: 12px;
+  color: var(--hc-color-danger);
+}
+
+.formError {
+  margin: 12px 0 0;
+}
+
+.modalFoot {
+  padding: 13px 20px;
+  border-top: var(--hc-border-width) solid var(--hc-color-border);
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+}
+
+.wizard {
+  width: min(720px, 100%);
+  max-height: min(92vh, 900px);
+  overflow: auto;
+}
+
+.wizardSteps {
+  list-style: none;
+  margin: 0;
+  padding: 12px 20px 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.wizardSteps li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--hc-color-text-muted);
+}
+
+.wizardSteps li span {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--hc-color-sand-100);
+  flex-shrink: 0;
+}
+
+.wizardSteps li[data-active='true'] {
+  color: var(--hc-color-brand);
+}
+
+.wizardSteps li[data-active='true'] span,
+.wizardSteps li[data-done='true'] span {
+  background: var(--hc-color-brand);
+  color: var(--hc-color-brand-contrast);
+}
+
+.toast {
+  position: fixed;
+  inset-inline-end: 25px;
+  bottom: 25px;
+  background: var(--hc-color-brand);
+  color: var(--hc-color-brand-contrast);
+  border-radius: 11px;
+  padding: 12px 17px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 60;
+}
+
+tr[data-created='true'] td {
+  background: color-mix(in srgb, var(--hc-color-brand-soft) 70%, #fff);
+}
+
 @media (max-width: 650px) {
   .header {
     flex-direction: column;

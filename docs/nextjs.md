@@ -146,7 +146,8 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 |---|---|
 | `src/components/AppHeader.tsx` | Top bar: brand, Home (portal or admin), Design system, Account, language, Sign in/out. Uses `auth()`. |
 | `src/components/admin/AdminShell.tsx` | Dark admin sidebar. System settings and Farms are real links when the user has those roles. |
-| `src/components/admin/FarmSettings.tsx` | All-farms table, summary cards, URL filters, details dialog. |
+| `src/components/admin/FarmSettings.tsx` | All-farms table, summary cards, URL filters, details dialog, create wizard. |
+| `src/components/admin/FarmCreateWizard.tsx` | Four-step farm creation modal. |
 | `src/components/admin/AnimalSettings.tsx` | Animal-settings chrome: stats and Breeds / Statuses / Groups tabs. |
 | `src/components/admin/BreedManagement.tsx` | Breed table, filters, create/edit modal, activate/deactivate. |
 | `src/components/admin/StatusManagement.tsx` | Status table, color picker, live preview, edit / activate (no create or delete). |

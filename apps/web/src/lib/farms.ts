@@ -196,3 +196,109 @@ export function farmListHref(query: FarmListQuery): string {
   const qs = new URLSearchParams(farmListSearchParams(query)).toString();
   return qs ? `/admin/farm-settings?${qs}` : '/admin/farm-settings';
 }
+
+export const GOVERNORATE_CODES = [
+  'TN-11',
+  'TN-12',
+  'TN-13',
+  'TN-14',
+  'TN-21',
+  'TN-22',
+  'TN-23',
+  'TN-31',
+  'TN-32',
+  'TN-33',
+  'TN-34',
+  'TN-41',
+  'TN-42',
+  'TN-43',
+  'TN-51',
+  'TN-52',
+  'TN-53',
+  'TN-61',
+  'TN-71',
+  'TN-72',
+  'TN-73',
+  'TN-81',
+  'TN-82',
+  'TN-83',
+] as const;
+
+export const FARM_LANGUAGES = ['ar', 'en'] as const;
+export const DEFAULT_FARM_TIMEZONE = 'Africa/Tunis';
+export const DEFAULT_FARM_CURRENCY = 'TND';
+export const DEFAULT_FARM_LANGUAGE = 'ar';
+export const CREATE_INITIAL_STATUS = 'SETUP';
+
+export const PLAN_CAPS = {
+  TRIAL: { maxActiveAnimals: 50, maxTeamMembers: 3 },
+  ESSENTIAL: { maxActiveAnimals: 300, maxTeamMembers: 10 },
+  PROFESSIONAL: { maxActiveAnimals: 2000, maxTeamMembers: 50 },
+} as const;
+
+export type CreatePlatformFarmInput = {
+  nameAr: string;
+  nameEn?: string;
+  nameFr: string;
+  governorateCode: string;
+  address?: string;
+  timezone?: string;
+  defaultLanguage: string;
+  currencyCode?: string;
+  initialStatus?: string;
+  owner: {
+    email: string;
+    displayName: string;
+    phoneNumber?: string;
+  };
+  subscription: {
+    planCode: string;
+    maxActiveAnimals?: number;
+    maxTeamMembers?: number;
+    trialEndsAt?: string;
+  };
+  enabledFeatureCodes: string[];
+};
+
+export type PlatformFarmCreated = {
+  id: string;
+  code: string;
+  status: string;
+  ownerMembershipStatus: string;
+  invitationEmailSent: boolean;
+  enabledFeatureCodes: string[];
+};
+
+export function newIdempotencyKey() {
+  return crypto.randomUUID();
+}
+
+export function createPlatformFarm(
+  accessToken: string,
+  locale: string,
+  body: CreatePlatformFarmInput,
+  idempotencyKey: string,
+) {
+  return apiFetch<PlatformFarmCreated>(BASE, {
+    accessToken,
+    locale,
+    method: 'POST',
+    body,
+    headers: { 'Idempotency-Key': idempotencyKey },
+  });
+}
+
+export function wizardStepForField(field: string): 1 | 2 | 3 | 4 {
+  if (field.startsWith('owner')) {
+    return 2;
+  }
+  if (field.startsWith('subscription') || field === 'enabledFeatureCodes') {
+    return 3;
+  }
+  return 1;
+}
+
+export function wizardStepForErrors(errors: Record<string, string>): 1 | 2 | 3 | 4 {
+  const steps = Object.keys(errors).map(wizardStepForField);
+  return steps.length === 0 ? 4 : (Math.min(...steps) as 1 | 2 | 3 | 4);
+}

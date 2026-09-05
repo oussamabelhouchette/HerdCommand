@@ -79,11 +79,12 @@ Browser
 18. **PA-005 atomic farm creation API** (`POST /api/v1/platform/farms`, idempotency key, one DB transaction, Keycloak compensation). File-by-file notes: [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md).
 19. **PA-006 farm list and details API** (`GET /api/v1/platform/farms`, `/{id}`, `/summary`, server-side search/filter/page). File-by-file notes: [us-pa-006-farm-list-and-details-api.md](./us-pa-006-farm-list-and-details-api.md).
 20. **PA-007 React all-farms administration page** (`/admin/farm-settings` table, summary cards, URL filters, details dialog). File-by-file notes: [us-pa-007-react-all-farms-administration-page.md](./us-pa-007-react-all-farms-administration-page.md).
-21. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+21. **PA-008 React farm creation wizard** (four-step modal, Keycloak owner lookup, catalog features, idempotent `POST /platform/farms`). File-by-file notes: [us-pa-008-react-farm-creation-wizard.md](./us-pa-008-react-farm-creation-wizard.md).
+22. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm wizard (PA-008+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm edit/suspend (PA-009+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 

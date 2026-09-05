@@ -15,6 +15,10 @@ test('farm list client calls list, summary, and details APIs', () => {
   assert.match(client, /function listPlatformFarms/);
   assert.match(client, /function getPlatformFarmSummary/);
   assert.match(client, /function getPlatformFarm/);
+  assert.match(client, /function createPlatformFarm/);
+  assert.match(client, /Idempotency-Key/);
+  assert.match(client, /function newIdempotencyKey/);
+  assert.match(client, /function wizardStepForField/);
   assert.match(client, /SEARCH_DEBOUNCE_MS = 400/);
   assert.match(client, /function farmListQueryFromSearchParams/);
   assert.match(client, /function farmListSearchParams/);
@@ -42,7 +46,8 @@ test('farm table uses API rows, URL filters, and keeps write actions disabled', 
   assert.match(ui, /farmListHref/);
   assert.match(ui, /getPlatformFarm\(/);
   assert.match(ui, /t\('openDetails'\)/);
-  assert.match(ui, /wizardLater/);
+  assert.match(ui, /FarmCreateWizard/);
+  assert.match(ui, /setWizardOpen\(true\)/);
   assert.match(ui, /editLater/);
   assert.match(ui, /suspendLater/);
   assert.match(ui, /skeleton/);

@@ -22,9 +22,11 @@ import {
   type FarmSort,
   type FarmStatus,
   type FarmSummary,
+  type PlatformFarmCreated,
   type PlatformFarmDetails,
   type PlatformFarmListItem,
 } from '@/lib/farms';
+import { FarmCreateWizard } from './FarmCreateWizard';
 import {
   BanIcon,
   CheckIcon,
@@ -97,6 +99,9 @@ export function FarmSettings({
   const [details, setDetails] = useState<PlatformFarmDetails | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState('');
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [createdId, setCreatedId] = useState<string | null>(null);
+  const [toast, setToast] = useState('');
   const skipFirstFetch = useRef(true);
 
   const filters = useMemo<FarmListQuery>(
@@ -139,6 +144,14 @@ export function FarmSettings({
     void loadDetails(detailsId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailsId, token, locale]);
+
+  useEffect(() => {
+    if (!toast) {
+      return;
+    }
+    const id = window.setTimeout(() => setToast(''), 2800);
+    return () => window.clearTimeout(id);
+  }, [toast]);
 
   async function reload(query = filters) {
     if (!token) {
@@ -227,8 +240,8 @@ export function FarmSettings({
           <button
             type="button"
             className={`${styles.btn} ${styles.btnPrimary}`}
-            disabled
-            title={t('wizardLater')}
+            onClick={() => setWizardOpen(true)}
+            disabled={!apiReady}
           >
             <PlusIcon />
             {t('addFarm')}
@@ -393,7 +406,12 @@ export function FarmSettings({
                   </tr>
                 ) : (
                   data.items.map((farm) => (
-                    <tr key={farm.id} data-farm-id={farm.id} data-farm-code={farm.code}>
+                    <tr
+                      key={farm.id}
+                      data-farm-id={farm.id}
+                      data-farm-code={farm.code}
+                      data-created={farm.id === createdId || undefined}
+                    >
                       <td>
                         <strong>{farm.name}</strong>
                         <span className={styles.code}>{farm.code}</span>
@@ -649,6 +667,26 @@ export function FarmSettings({
               ) : null}
             </div>
           </div>
+        </div>
+      ) : null}
+
+      <FarmCreateWizard
+        open={wizardOpen}
+        features={features}
+        onClose={() => setWizardOpen(false)}
+        onCreated={(created: PlatformFarmCreated) => {
+          setWizardOpen(false);
+          setCreatedId(created.id);
+          setDetailsId(created.id);
+          setToast(t('wizard.created', { code: created.code }));
+          void reload();
+        }}
+      />
+
+      {toast ? (
+        <div className={styles.toast} role="status">
+          <CheckIcon />
+          {toast}
         </div>
       ) : null}
     </>

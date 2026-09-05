@@ -37,6 +37,7 @@ export async function apiFetch<T>(
     method?: string;
     body?: unknown;
     query?: Query;
+    headers?: Record<string, string>;
   } = {},
 ): Promise<T> {
   const url = new URL(path.startsWith('http') ? path : `${apiBaseUrl()}${path}`);
@@ -49,7 +50,7 @@ export async function apiFetch<T>(
     }
   }
 
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = { ...options.headers };
   if (options.accessToken) {
     headers.Authorization = `Bearer ${options.accessToken}`;
   }
