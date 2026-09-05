@@ -2,9 +2,9 @@
 
 This document explains **every file added or changed** for the animal-breed administration story: what it does, why it exists, and how to test it.
 
-There are **no React administration screens** in this story. There is **no DELETE**. Inactive breeds stay in the database and remain visible; later animal-assignment code must refuse to attach an inactive breed.
+There are **no React administration screens** in this story (those are US-AC-003). There is **no DELETE**. Inactive breeds stay in the database and remain visible; later animal-assignment code must refuse to attach an inactive breed.
 
-Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md) (Flyway, audit, permissions, `ApiError`, i18n), [implementation-guide.md](./implementation-guide.md), [authentication.md](./authentication.md).
+Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md) (Flyway, audit, permissions, `ApiError`, i18n), [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md) (React admin screen), [implementation-guide.md](./implementation-guide.md), [authentication.md](./authentication.md).
 
 ---
 
@@ -585,7 +585,7 @@ Expect **405** (path exists for GET/PUT, not DELETE). The row must still be in `
 
 ### 5.3 What you cannot click-test yet
 
-There is **no** breed screen in `apps/web`. Do not look for an admin menu. Use `mvn test` and the curls above.
+The React breed screen is **US-AC-003** (`/admin/animal-settings`). This story is the API only. Use `mvn test` and the curls above to prove the HTTP contract.
 
 `AnimalBreedAssignmentGuard` has no public URL. Use `AnimalBreedAssignmentGuardTest`, or call `requireAssignable` from a future animal service.
 

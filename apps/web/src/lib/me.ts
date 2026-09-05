@@ -1,4 +1,6 @@
+import { cache } from 'react';
 import { apiBaseUrl } from './api';
+import { collectMemberships } from './portals';
 
 export type MeIdentity = {
   subject: string;
@@ -13,7 +15,7 @@ export function isMeIdentity(me: MeLoadResult): me is MeIdentity {
   return me !== null && 'subject' in me;
 }
 
-export async function loadMe(accessToken?: string): Promise<MeLoadResult> {
+export const loadMe = cache(async (accessToken?: string): Promise<MeLoadResult> => {
   if (!accessToken) {
     return null;
   }
@@ -28,4 +30,17 @@ export async function loadMe(accessToken?: string): Promise<MeLoadResult> {
     return { error: true };
   }
   return response.json() as Promise<MeIdentity>;
+});
+
+/** Use token roles when present so pages do not wait on /api/v1/me. */
+export async function membershipsFromSession(session?: {
+  roles?: string[] | null;
+  accessToken?: string;
+} | null): Promise<string[]> {
+  const roles = session?.roles ?? [];
+  if (roles.length > 0 || !session?.accessToken) {
+    return roles;
+  }
+  const me = await loadMe(session.accessToken);
+  return isMeIdentity(me) ? collectMemberships(roles, me.roles) : roles;
 }

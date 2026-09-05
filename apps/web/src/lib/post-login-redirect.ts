@@ -1,5 +1,7 @@
+import { DEFAULT_PORTAL, isAdminPortal, portalHref } from './portals';
+
 const LOCALES = ['ar', 'en'] as const;
-const GENERIC_SEGMENTS = new Set(['login', 'signed-in']);
+const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin']);
 
 function extractPathname(callbackUrl?: string | null): string {
   if (!callbackUrl) {
@@ -77,14 +79,19 @@ export function localeFromCallbackUrl(callbackUrl: string | undefined | null, fa
   return fallback;
 }
 
-export function postLoginHref(isAdmin: boolean, callbackUrl?: string | null): string {
-  if (isAdmin && isGenericPostLoginPath(callbackUrl)) {
-    return '/admin';
+export function postLoginHref(memberships: string[] | undefined | null, callbackUrl?: string | null): string {
+  const portal = portalHref(memberships);
+  if (isGenericPostLoginPath(callbackUrl)) {
+    return portal;
   }
-  if (callbackUrl && !isGenericPostLoginPath(callbackUrl)) {
-    return toAppHref(callbackUrl);
+  const intended = toAppHref(callbackUrl);
+  if (isAdminPortal(intended) && !isAdminPortal(portal)) {
+    return portal;
   }
-  return '/';
+  if ((intended === DEFAULT_PORTAL || intended.startsWith(`${DEFAULT_PORTAL}/`)) && portal !== DEFAULT_PORTAL) {
+    return portal;
+  }
+  return intended;
 }
 
 export function resolveAuthJsRedirect(url: string, baseUrl: string): string {

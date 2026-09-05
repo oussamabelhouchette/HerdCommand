@@ -1,31 +1,35 @@
-import { getTranslations } from 'next-intl/server';
-import { auth } from '@/auth';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { getPathname } from '@/i18n/navigation';
 import { logoutAction } from '@/lib/logout';
-import { Link } from '@/i18n/navigation';
+import { isAuthSessionError } from '@/lib/refresh-access-token';
+import { membershipsFromSession } from '@/lib/me';
+import { isAdminPortal, portalHref } from '@/lib/portals';
+import { getSession } from '@/lib/session';
 import { Button } from './Button';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { isAuthSessionError } from '@/lib/refresh-access-token';
-import { isMeIdentity, loadMe } from '@/lib/me';
-import { isAdminRole } from '@/lib/roles';
 
 export async function AppHeader() {
   const t = await getTranslations();
-  const session = await auth();
-  const me = session?.accessToken ? await loadMe(session.accessToken) : null;
-  const showAdmin = isMeIdentity(me) && isAdminRole(me.roles);
+  const locale = await getLocale();
+  const session = await getSession();
+  const memberships = await membershipsFromSession(session);
+  const homeHref = session?.user ? portalHref(memberships) : '/login';
+  const showAdmin = isAdminPortal(homeHref);
+
+  function href(path: '/' | `/${string}`) {
+    return getPathname({ href: path, locale });
+  }
 
   return (
     <header className="hc-header">
-      <Link href="/" className="hc-brand">
+      <a href={href(homeHref as '/' | `/${string}`)} className="hc-brand">
         <strong>{t('app.name')}</strong>
         <span className="hc-muted">{t('app.tagline')}</span>
-      </Link>
+      </a>
       <nav className="hc-nav" aria-label={t('app.name')}>
-        <Link href="/">{t('nav.home')}</Link>
-        {showAdmin ? <Link href="/admin/animal-settings">{t('nav.animalSettings')}</Link> : null}
-        <Link href="/design-system">{t('nav.designSystem')}</Link>
-        <Link href="/keycloak-login-preview">{t('nav.loginPreview')}</Link>
-        <Link href="/me">{t('nav.account')}</Link>
+        <a href={href(homeHref as '/' | `/${string}`)}>{t('nav.home')}</a>
+        {showAdmin ? <a href={href('/admin/animal-settings')}>{t('nav.animalSettings')}</a> : null}
+        <a href={href('/me')}>{t('nav.account')}</a>
         <LanguageSwitcher />
         {session?.user && !isAuthSessionError(session.error) ? (
           <form action={logoutAction}>
@@ -34,7 +38,7 @@ export async function AppHeader() {
             </Button>
           </form>
         ) : (
-          <Link href="/login">{t('nav.signIn')}</Link>
+          <a href={href('/login')}>{t('nav.signIn')}</a>
         )}
       </nav>
     </header>

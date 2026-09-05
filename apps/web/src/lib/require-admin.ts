@@ -1,4 +1,5 @@
-import { auth } from '@/auth';
+import { cache } from 'react';
+import { getSession } from '@/lib/session';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
 import { isMeIdentity, loadMe, type MeIdentity } from '@/lib/me';
 import { isAdminRole } from '@/lib/roles';
@@ -6,11 +7,22 @@ import { redirect } from '@/i18n/navigation';
 import { redirect as redirectToRoute } from 'next/navigation';
 import type { Session } from 'next-auth';
 
-export async function requireAdmin(locale: string): Promise<
+function identityFromSession(session: Session): MeIdentity {
+  return {
+    subject: session.user?.id ?? session.user?.email ?? 'unknown',
+    username: session.user?.name ?? session.user?.email ?? 'unknown',
+    email: session.user?.email ?? undefined,
+    roles: session.roles ?? [],
+  };
+}
+
+export const requireAdmin = cache(async (
+  locale: string,
+): Promise<
   | { session: Session; me: MeIdentity; allowed: true }
   | { session: Session; me: MeIdentity | null; allowed: false }
-> {
-  const session = await auth();
+> => {
+  const session = await getSession();
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
@@ -20,6 +32,10 @@ export async function requireAdmin(locale: string): Promise<
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
     throw new Error('redirect');
+  }
+
+  if (isAdminRole(session.roles)) {
+    return { session, me: identityFromSession(session), allowed: true };
   }
 
   const me = await loadMe(session.accessToken);
@@ -33,4 +49,4 @@ export async function requireAdmin(locale: string): Promise<
   }
 
   return { session, me, allowed: true };
-}
+});

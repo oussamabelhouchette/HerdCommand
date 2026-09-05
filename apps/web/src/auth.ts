@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import Keycloak from 'next-auth/providers/keycloak';
 import type { Session } from 'next-auth';
 import { refreshKeycloakAccessToken, accessTokenExpiresAtSeconds, accessTokenNeedsRefresh } from '@/lib/refresh-access-token';
-import { realmRolesFromAccessToken } from '@/lib/realm-roles';
+import { membershipsFromAccessToken } from '@/lib/realm-roles';
 import { resolveAuthJsRedirect } from '@/lib/post-login-redirect';
 
 declare module 'next-auth' {
@@ -49,28 +49,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.idToken = account.id_token;
         token.refreshToken = account.refresh_token;
         token.expiresAt = accessTokenExpiresAtSeconds(account);
-        token.roles = realmRolesFromAccessToken(account.access_token);
+        token.roles = membershipsFromAccessToken(account.access_token);
         token.error = undefined;
-        console.info(
-          '[HerdCommand] signed in, access token expires in',
-          Math.max(0, (token.expiresAt ?? 0) - Math.floor(Date.now() / 1000)),
-          'seconds',
-        );
         return token;
       }
 
-      const remaining = token.expiresAt ? token.expiresAt - Math.floor(Date.now() / 1000) : 0;
       const needsRefresh = accessTokenNeedsRefresh(token.expiresAt);
-      console.info('[HerdCommand] jwt check, access token remaining', remaining, 's, refresh=', needsRefresh);
 
       if (!needsRefresh) {
         if (!token.roles?.length && token.accessToken) {
-          token.roles = realmRolesFromAccessToken(token.accessToken);
+          token.roles = membershipsFromAccessToken(token.accessToken);
         }
         return token;
       }
-
-      console.info('[HerdCommand] access token near expiry, calling Keycloak refresh');
 
       if (!token.refreshToken) {
         token.error = 'SessionExpired';
@@ -91,7 +82,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       token.idToken = refreshed.idToken ?? token.idToken;
       token.refreshToken = refreshed.refreshToken;
       token.expiresAt = refreshed.expiresAt;
-      token.roles = realmRolesFromAccessToken(refreshed.accessToken);
+      token.roles = membershipsFromAccessToken(refreshed.accessToken);
       token.error = undefined;
       return token;
     },

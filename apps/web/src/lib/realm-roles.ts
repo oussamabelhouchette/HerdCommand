@@ -22,6 +22,13 @@ export function decodeJwtPayload(token: string | undefined | null): Record<strin
   }
 }
 
+function stringList(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0);
+}
+
 export function realmRolesFromAccessToken(accessToken?: string | null): string[] {
   const payload = decodeJwtPayload(accessToken);
   if (!payload) {
@@ -31,9 +38,17 @@ export function realmRolesFromAccessToken(accessToken?: string | null): string[]
   if (!realmAccess || typeof realmAccess !== 'object' || Array.isArray(realmAccess)) {
     return [];
   }
-  const roles = (realmAccess as RealmAccess).roles;
-  if (!Array.isArray(roles)) {
+  return stringList((realmAccess as RealmAccess).roles);
+}
+
+export function groupsFromAccessToken(accessToken?: string | null): string[] {
+  const payload = decodeJwtPayload(accessToken);
+  if (!payload) {
     return [];
   }
-  return roles.filter((role): role is string => typeof role === 'string' && role.trim().length > 0);
+  return stringList(payload.groups);
+}
+
+export function membershipsFromAccessToken(accessToken?: string | null): string[] {
+  return [...new Set([...realmRolesFromAccessToken(accessToken), ...groupsFromAccessToken(accessToken)])];
 }

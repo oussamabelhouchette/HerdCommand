@@ -15,14 +15,27 @@ function decodeJwtPayload(token) {
   }
 }
 
+function stringList(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item) => typeof item === 'string' && item.trim().length > 0);
+}
+
 function realmRolesFromAccessToken(accessToken) {
   const payload = decodeJwtPayload(accessToken);
   if (!payload) return [];
   const realmAccess = payload.realm_access;
   if (!realmAccess || typeof realmAccess !== 'object' || Array.isArray(realmAccess)) return [];
-  const roles = realmAccess.roles;
-  if (!Array.isArray(roles)) return [];
-  return roles.filter((role) => typeof role === 'string' && role.trim().length > 0);
+  return stringList(realmAccess.roles);
+}
+
+function groupsFromAccessToken(accessToken) {
+  const payload = decodeJwtPayload(accessToken);
+  if (!payload) return [];
+  return stringList(payload.groups);
+}
+
+function membershipsFromAccessToken(accessToken) {
+  return [...new Set([...realmRolesFromAccessToken(accessToken), ...groupsFromAccessToken(accessToken)])];
 }
 
 function fakeAccessToken(payload) {
@@ -40,4 +53,13 @@ test('reads Keycloak realm_access.roles from the access token', () => {
 test('returns empty roles when realm_access is missing', () => {
   const token = fakeAccessToken({ preferred_username: 'worker' });
   assert.deepEqual(realmRolesFromAccessToken(token), []);
+});
+
+test('reads Keycloak groups claim from the access token', () => {
+  const token = fakeAccessToken({
+    groups: ['/administrator', 'farm-workers'],
+    realm_access: { roles: ['offline_access'] },
+  });
+  assert.deepEqual(groupsFromAccessToken(token), ['/administrator', 'farm-workers']);
+  assert.deepEqual(membershipsFromAccessToken(token), ['offline_access', '/administrator', 'farm-workers']);
 });

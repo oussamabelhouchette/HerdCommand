@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { auth } from '@/auth';
+import { getSession } from '@/lib/session';
 import { logoutAction } from '@/lib/logout';
 import { redirect } from '@/i18n/navigation';
 import { redirect as redirectToRoute } from 'next/navigation';
@@ -13,7 +13,7 @@ type Props = { params: Promise<{ locale: string }> };
 export default async function MePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const session = await auth();
+  const session = await getSession();
   const t = await getTranslations();
 
   if (!session?.user) {

@@ -57,7 +57,7 @@ Browser
 What it does:
 
 1. Runs Auth.js `auth()` so the session JWT can refresh and **Set-Cookie** (pages themselves cannot always save cookies).
-2. If the path is `/me` (or `/ar/me`, `/en/me`) and there is no session → redirect to `/login`.
+2. If the path is `/me`, `/admin`, or `/portal` (including `/ar/…` and `/en/…`) and there is no session → redirect to `/login`.
 3. Runs **next-intl**: add locale prefix if needed, set `HERDCOMMAND_LOCALE`.
 
 ### Entry B — `src/app/api/auth/[...nextauth]/route.ts`
@@ -82,11 +82,17 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 
 | URL (Arabic default, no prefix) | File |
 |---|---|
-| `/` | `src/app/[locale]/page.tsx` |
-| `/login` | `src/app/[locale]/login/page.tsx` |
-| `/me` | `src/app/[locale]/me/page.tsx` |
-| `/design-system` | `src/app/[locale]/design-system/page.tsx` |
-| `/en`, `/en/login`, … | Same files, `locale = en` |
+| `/` | `src/app/[locale]/(site)/page.tsx` (signed-in users redirect to their portal) |
+| `/login` | `src/app/[locale]/(site)/login/page.tsx` |
+| `/portal` | `src/app/[locale]/(site)/portal/page.tsx` |
+| `/me` | `src/app/[locale]/(site)/me/page.tsx` |
+| `/design-system` | `src/app/[locale]/(site)/design-system/page.tsx` |
+| `/admin` | `src/app/[locale]/admin/page.tsx` → `/admin/animal-settings` |
+| `/admin/animal-settings` | `src/app/[locale]/admin/animal-settings/page.tsx` |
+| `/signed-in` | `src/app/[locale]/signed-in/page.tsx` (post-login hop) |
+| `/en`, `/en/login`, `/en/admin`, … | Same files, `locale = en` |
+
+Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md).
 
 ---
 
@@ -94,8 +100,8 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 
 | File | Entry? | What it is |
 |---|---|---|
-| `src/app/layout.tsx` | Root layout | Loads token CSS + `globals.css`. Returns `children` only (no `<html>` here so next-intl can set `lang`/`dir`). |
-| `src/app/[locale]/layout.tsx` | Locale layout | Real `<html>` / `<body>`. Fonts, `dir=rtl` for `ar`. Header + `AuthSessionProvider`. |
+| `src/app/layout.tsx` | Root layout | Required `<html>` / `<body>`. Fonts, `lang`/`dir` from `getLocale()` (`rtl` for `ar`). Token CSS + `globals.css`. |
+| `src/app/[locale]/layout.tsx` | Locale layout | next-intl messages + `AuthSessionProvider`. No second `<html>`/`<body>`. |
 | `src/app/globals.css` | — | Page layout, header, login, alerts. Uses `--hc-*` from tokens. |
 
 ---
@@ -123,10 +129,12 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 
 | File | What the user sees | What it calls |
 |---|---|---|
-| `src/app/[locale]/page.tsx` | Home after login. Name + Sign out. If no session → `/login`. If session error → federated-logout. | `auth()`, `logoutAction` |
-| `src/app/[locale]/login/page.tsx` | “Continue to Keycloak” card. No password fields. | `auth()`, `SignInButton` |
-| `src/app/[locale]/me/page.tsx` | Account: calls Spring `GET /api/v1/me` with Bearer token. | `auth()`, `fetch` API |
-| `src/app/[locale]/design-system/page.tsx` | Button / Input / Card / Badge samples. | No auth required |
+| `src/app/[locale]/(site)/page.tsx` | Signed-in users redirect to `/admin` or `/portal`. Guests → `/login`. | `auth()`, `postLoginHref` |
+| `src/app/[locale]/(site)/login/page.tsx` | “Continue to Keycloak” card. No password fields. | `auth()`, `SignInButton` |
+| `src/app/[locale]/(site)/portal/page.tsx` | Farm workspace after login for non-admins. | `auth()`, `logoutAction` |
+| `src/app/[locale]/(site)/me/page.tsx` | Account: calls Spring `GET /api/v1/me` with Bearer token. | `auth()`, `fetch` API |
+| `src/app/[locale]/(site)/design-system/page.tsx` | Button / Input / Card / Badge samples. | No auth required |
+| `src/app/[locale]/admin/animal-settings/page.tsx` | Breed administration (US-AC-003). | `requireAdmin`, breed API |
 
 ---
 
@@ -134,7 +142,9 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 
 | File | What it is |
 |---|---|
-| `src/components/AppHeader.tsx` | Top bar: brand, Home, Design system, Account, language, Sign in/out. Uses `auth()`. |
+| `src/components/AppHeader.tsx` | Top bar: brand, Home (portal or admin), Design system, Account, language, Sign in/out. Uses `auth()`. |
+| `src/components/admin/AdminShell.tsx` | Dark admin sidebar. Only System settings is a real link. |
+| `src/components/admin/BreedManagement.tsx` | Breed table, filters, create/edit modal, activate/deactivate. |
 | `src/components/LanguageSwitcher.tsx` | Switches `ar` / `en` via next-intl router (keeps the same page). |
 | `src/components/Button.tsx` + `Button.module.css` | Shared button. |
 | `src/components/Input.tsx` + `Input.module.css` | Shared field (design system). |

@@ -12,6 +12,9 @@ const protectedMatchers = [
   /^\/admin(?:\/|$)/,
   /^\/ar\/admin(?:\/|$)/,
   /^\/en\/admin(?:\/|$)/,
+  /^\/portal(?:\/|$)/,
+  /^\/ar\/portal(?:\/|$)/,
+  /^\/en\/portal(?:\/|$)/,
 ];
 
 export default auth((request) => {
@@ -22,7 +25,9 @@ export default auth((request) => {
     login.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(login);
   }
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  response.headers.set('x-pathname', pathname);
+  return response;
 });
 
 export const config = {

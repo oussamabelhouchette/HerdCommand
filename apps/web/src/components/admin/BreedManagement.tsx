@@ -82,6 +82,17 @@ export function BreedManagement({ initialPage, initialActiveCount, initialError 
   }, [search]);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
+    void listBreeds(token, locale, { active: true, size: 1 })
+      .then((result) => setActiveCount(result.total))
+      .catch(() => {
+        /* keep the server-provided count */
+      });
+  }, [token, locale]);
+
+  useEffect(() => {
     if (!toast) {
       return;
     }

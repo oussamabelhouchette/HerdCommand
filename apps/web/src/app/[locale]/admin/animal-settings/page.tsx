@@ -22,12 +22,8 @@ export default async function AnimalSettingsPage({ params }: Props) {
 
   try {
     const token = gate.session.accessToken;
-    const [page, activePage] = await Promise.all([
-      listBreeds(token, locale, { sort: 'displayOrder,asc' }),
-      listBreeds(token, locale, { active: true, size: 1 }),
-    ]);
-    initialPage = page;
-    initialActiveCount = activePage.total;
+    initialPage = await listBreeds(token, locale, { sort: 'displayOrder,asc' });
+    initialActiveCount = initialPage.items.filter((breed) => breed.active).length;
   } catch (error) {
     initialError = error instanceof ApiRequestError ? error.message : t('loadError');
   }

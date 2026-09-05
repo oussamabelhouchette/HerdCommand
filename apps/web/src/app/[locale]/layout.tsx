@@ -1,23 +1,7 @@
-import { IBM_Plex_Sans_Arabic, Inter } from 'next/font/google';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { routing } from '@/i18n/routing';
-import { AuthSessionProvider } from '@/components/AuthSessionProvider';
-
-const arabic = IBM_Plex_Sans_Arabic({
-  subsets: ['arabic'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-arabic',
-  display: 'swap',
-});
-
-const latin = Inter({
-  subsets: ['latin'],
-  variable: '--font-latin',
-  display: 'swap',
-});
 
 type Props = {
   children: ReactNode;
@@ -34,16 +18,5 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
   setRequestLocale(locale);
-  const messages = await getMessages();
-  const dir = locale === 'ar' ? 'rtl' : 'ltr';
-
-  return (
-    <html lang={locale} dir={dir} className={`${arabic.variable} ${latin.variable}`}>
-      <body suppressHydrationWarning>
-        <NextIntlClientProvider messages={messages}>
-          <AuthSessionProvider>{children}</AuthSessionProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

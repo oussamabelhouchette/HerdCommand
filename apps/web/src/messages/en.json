@@ -11,7 +11,12 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "language": "Language",
-    "animalSettings": "Animal settings"
+    "animalSettings": "Animal settings",
+    "portal": "Farm portal"
+  },
+  "portal": {
+    "title": "Farm portal",
+    "body": "This is the farm workspace. More field tools will land here."
   },
   "admin": {
     "dashboard": "Dashboard",
@@ -23,7 +28,7 @@
     "roleAdmin": "System administrator",
     "forbidden": "This page is available to system administrators only.",
     "forbiddenHint": "Ask an owner or administrator if you need to manage breeds.",
-    "backHome": "Back to home"
+    "backHome": "Back to farm portal"
   },
   "animalSettings": {
     "title": "Animal settings",

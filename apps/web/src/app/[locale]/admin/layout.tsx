@@ -1,7 +1,9 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getPathname } from '@/i18n/navigation';
 import { requireAdmin } from '@/lib/require-admin';
 import { AdminShell } from '@/components/admin/AdminShell';
+import { AuthSessionProvider } from '@/components/AuthSessionProvider';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -22,12 +24,28 @@ export default async function AdminLayout({ children, params }: Props) {
           <h1>{t('forbidden')}</h1>
           <p className="hc-muted">{t('forbiddenHint')}</p>
           <p>
-            <Link href="/">{t('backHome')}</Link>
+            <a href={getPathname({ href: '/portal', locale })}>{t('backHome')}</a>
           </p>
         </section>
       </div>
     );
   }
 
-  return <AdminShell me={gate.me}>{children}</AdminShell>;
+  const messages = await getMessages();
+
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={{
+        animalSettings: messages.animalSettings,
+        admin: messages.admin,
+        nav: messages.nav,
+        app: messages.app,
+      }}
+    >
+      <AuthSessionProvider>
+        <AdminShell me={gate.me}>{children}</AdminShell>
+      </AuthSessionProvider>
+    </NextIntlClientProvider>
+  );
 }

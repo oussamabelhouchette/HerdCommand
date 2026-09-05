@@ -4,31 +4,63 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-function loadTs(relative) {
+function loadCombined() {
   const fs = require('node:fs');
   const path = require('node:path');
-  const source = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), relative), 'utf8');
-  const stripped = source
-    .replace(/export /g, '')
-    .replace(/: [^=,)\n]+/g, '')
-    .replace(/ as const/g, '')
-    .replace(/as \(typeof LOCALES\)\[number\]/g, '');
+  const dir = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
+  const strip = (source) =>
+    source
+      .replace(/import [^;]+;/g, '')
+      .replace(/export /g, '')
+      .replace(/: [^=,)\n]+/g, '')
+      .replace(/ as const/g, '')
+      .replace(/as \(typeof LOCALES\)\[number\]/g, '');
+  const portals = strip(fs.readFileSync(path.join(dir, 'portals.ts'), 'utf8'));
+  const redirect = strip(fs.readFileSync(path.join(dir, 'post-login-redirect.ts'), 'utf8'));
   const moduleExports = {};
-  const fn = new Function('exports', `${stripped}\nexports.isGenericPostLoginPath = isGenericPostLoginPath;\nexports.toAppHref = toAppHref;\nexports.postLoginHref = postLoginHref;\nexports.resolveAuthJsRedirect = resolveAuthJsRedirect;\nexports.localeFromCallbackUrl = localeFromCallbackUrl;`);
+  const fn = new Function(
+    'exports',
+    `${portals}\n${redirect}\nexports.portalHref = portalHref;\nexports.postLoginHref = postLoginHref;\nexports.isGenericPostLoginPath = isGenericPostLoginPath;\nexports.toAppHref = toAppHref;`,
+  );
   fn(moduleExports);
   return moduleExports;
 }
 
 let helpers;
 try {
-  helpers = loadTs('post-login-redirect.ts');
+  helpers = loadCombined();
 } catch (error) {
   helpers = null;
   console.warn('Could not eval TS helper, using inline copy', error);
 }
 
+const PORTAL_BY_MEMBERSHIP = {
+  administrator: '/admin/animal-settings',
+  administrators: '/admin/animal-settings',
+  owner: '/admin/animal-settings',
+};
+const DEFAULT_PORTAL = '/portal';
+
+function normalizeMembership(name) {
+  const parts = name.trim().toLowerCase().replace(/^\/+/, '').split('/').filter(Boolean);
+  return parts[parts.length - 1] ?? '';
+}
+
+function portalHref(memberships) {
+  if (!memberships?.length) return DEFAULT_PORTAL;
+  for (const raw of memberships) {
+    const path = PORTAL_BY_MEMBERSHIP[normalizeMembership(raw)];
+    if (path) return path;
+  }
+  return DEFAULT_PORTAL;
+}
+
+function isAdminPortal(path) {
+  return path === '/admin' || path.startsWith('/admin/');
+}
+
 const LOCALES = ['ar', 'en'];
-const GENERIC_SEGMENTS = new Set(['login', 'signed-in']);
+const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin']);
 
 function extractPathname(callbackUrl) {
   if (!callbackUrl) return '';
@@ -72,34 +104,45 @@ function toAppHref(callbackUrl) {
   return pathname.startsWith('/') ? pathname : `/${pathname}`;
 }
 
-function postLoginHref(isAdmin, callbackUrl) {
-  if (isAdmin && isGenericPostLoginPath(callbackUrl)) return '/admin';
-  if (callbackUrl && !isGenericPostLoginPath(callbackUrl)) return toAppHref(callbackUrl);
-  return '/';
+function postLoginHref(memberships, callbackUrl) {
+  const portal = portalHref(memberships);
+  if (isGenericPostLoginPath(callbackUrl)) return portal;
+  const intended = toAppHref(callbackUrl);
+  if (isAdminPortal(intended) && portal !== '/admin') return portal;
+  if ((intended === DEFAULT_PORTAL || intended.startsWith(`${DEFAULT_PORTAL}/`)) && portal !== DEFAULT_PORTAL) {
+    return portal;
+  }
+  return intended;
 }
 
-const impl = helpers ?? { isGenericPostLoginPath, toAppHref, postLoginHref };
+const impl = helpers ?? { portalHref, postLoginHref, isGenericPostLoginPath, toAppHref };
 
-test('generic login and home paths send admins to /admin', () => {
-  assert.equal(impl.postLoginHref(true, undefined), '/admin');
-  assert.equal(impl.postLoginHref(true, '/'), '/admin');
-  assert.equal(impl.postLoginHref(true, '/login'), '/admin');
-  assert.equal(impl.postLoginHref(true, '/en'), '/admin');
-  assert.equal(impl.postLoginHref(true, '/en/login'), '/admin');
-  assert.equal(impl.postLoginHref(true, '/signed-in'), '/admin');
+test('administrator group or role lands on /admin/animal-settings', () => {
+  assert.equal(impl.postLoginHref(['administrator']), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['/administrator']), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['owner']), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/login'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/signed-in'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/portal'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/admin'), '/admin/animal-settings');
 });
 
-test('specific callbacks are honored for admins', () => {
-  assert.equal(impl.postLoginHref(true, '/admin/animal-settings'), '/admin/animal-settings');
-  assert.equal(impl.postLoginHref(true, '/en/admin/animal-settings'), '/admin/animal-settings');
-  assert.equal(impl.postLoginHref(true, '/me'), '/me');
-  assert.equal(impl.postLoginHref(true, '/en/me'), '/me');
+test('everyone else lands on /portal', () => {
+  assert.equal(impl.postLoginHref([]), '/portal');
+  assert.equal(impl.postLoginHref(['manager']), '/portal');
+  assert.equal(impl.postLoginHref(['worker'], '/'), '/portal');
+  assert.equal(impl.postLoginHref(['worker'], '/login'), '/portal');
 });
 
-test('non-admins keep home or their callback', () => {
-  assert.equal(impl.postLoginHref(false, undefined), '/');
-  assert.equal(impl.postLoginHref(false, '/'), '/');
-  assert.equal(impl.postLoginHref(false, '/me'), '/me');
-  assert.equal(impl.postLoginHref(false, '/en/me'), '/me');
-  assert.equal(impl.postLoginHref(false, '/admin'), '/admin');
+test('specific callbacks are honored when they stay in the same portal', () => {
+  assert.equal(impl.postLoginHref(['administrator'], '/admin/animal-settings'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/en/admin/animal-settings'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['manager'], '/me'), '/me');
+  assert.equal(impl.postLoginHref(['administrator'], '/me'), '/me');
+});
+
+test('users cannot be sent to the other portal via callback', () => {
+  assert.equal(impl.postLoginHref(['manager'], '/admin'), '/portal');
+  assert.equal(impl.postLoginHref(['administrator'], '/portal'), '/admin/animal-settings');
 });
