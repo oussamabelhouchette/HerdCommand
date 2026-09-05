@@ -18,6 +18,9 @@ public final class ErrorCodes {
     public static final String FARM_OWNER_REQUIRED = "FARM_OWNER_REQUIRED";
     public static final String FARM_VERSION_CONFLICT = "FARM_VERSION_CONFLICT";
     public static final String OWNER_ALREADY_ASSIGNED = "OWNER_ALREADY_ASSIGNED";
+    public static final String FEATURE_NOT_FOUND = "FEATURE_NOT_FOUND";
+    public static final String FEATURE_NOT_AVAILABLE = "FEATURE_NOT_AVAILABLE";
+    public static final String FEATURE_ASSIGNMENT_INVALID = "FEATURE_ASSIGNMENT_INVALID";
 
     private ErrorCodes() {}
 }

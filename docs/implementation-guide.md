@@ -74,7 +74,8 @@ Browser
 13. **US-AC-007 farm group administration UI** (Groups tab, create/edit/deactivate, first seeded farm). File-by-file notes: [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md).
 14. **PA-001 platform-admin security foundation** (`PLATFORM_ADMIN` JWT mapping, `/api/v1/platform/**`, `/admin/farm-settings` landing, farm owners get 403). File-by-file notes: [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md).
 15. **PA-002 farm and membership database foundation** (Flyway V6 tenant columns, `farm_membership`, `farm_subscription`, generated `FARM-TN-####` codes, owner-required activation, optimistic lock). File-by-file notes: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md).
-16. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+16. **PA-003 dynamic feature catalog** (Flyway V7 `feature_catalog` + `farm_feature`, `ANIMAL_MANAGEMENT`, `GET /api/v1/platform/features`, coming-soon not enableable). File-by-file notes: [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md).
+17. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
@@ -340,5 +341,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Farm group administration UI | `docs/us-ac-007-farm-group-administration-ui.md` |
 | Platform-admin security + farm landing | `docs/us-pa-001-platform-admin-security-foundation.md` |
 | Farm + membership database foundation | `docs/us-pa-002-farm-and-membership-database-foundation.md` |
+| Dynamic feature catalog | `docs/us-pa-003-dynamic-feature-catalog.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

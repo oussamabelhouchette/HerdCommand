@@ -46,11 +46,12 @@
     "statPendingValue": "—",
     "apiReady": "Platform APIs are available for this account.",
     "loadError": "Could not verify platform-admin access.",
-    "note": "This is the foundation page. The farm list and creation wizard arrive in later stories. No farm records are shown here.",
-    "soonTitle": "Coming soon",
-    "soonList": "All-farms list and search",
-    "soonCreate": "Farm creation wizard",
-    "soonEdit": "Edit, suspend, and reactivate"
+    "note": "This is the foundation page. The farm list and creation wizard arrive in later stories. Features below come from the catalog API, not hardcoded cards.",
+    "featuresTitle": "Released features",
+    "featuresHint": "Selections are stored by feature code. Coming-soon modules cannot be enabled.",
+    "featuresEmpty": "No features were returned from the catalog.",
+    "featureAvailable": "Available",
+    "featureComingSoon": "Coming soon"
   },
   "animalSettings": {
     "title": "Animal settings",

@@ -1,15 +1,19 @@
 import { getTranslations } from 'next-intl/server';
 import { CheckIcon, ClockIcon, FarmIcon, LayersIcon, PlusIcon } from './AdminIcons';
+import type { CatalogFeature } from '@/lib/features';
+import { selectedFeatureCodes } from '@/lib/features';
 import styles from './FarmSettings.module.css';
 
 type Props = {
   apiReady: boolean;
   loadError?: string;
+  features: CatalogFeature[];
 };
 
-export async function FarmSettings({ apiReady, loadError }: Props) {
+export async function FarmSettings({ apiReady, loadError, features }: Props) {
   const t = await getTranslations('farmSettings');
   const pending = t('statPendingValue');
+  const selectedCodes = selectedFeatureCodes(features);
 
   return (
     <>
@@ -72,20 +76,44 @@ export async function FarmSettings({ apiReady, loadError }: Props) {
           <p className={styles.status}>{t('apiReady')}</p>
         ) : null}
         <p className={styles.note}>{t('note')}</p>
-        <ul className={styles.soon}>
-          <li>
-            <span className={styles.soonTitle}>{t('soonTitle')}</span>
-            {t('soonList')}
-          </li>
-          <li>
-            <span className={styles.soonTitle}>{t('soonTitle')}</span>
-            {t('soonCreate')}
-          </li>
-          <li>
-            <span className={styles.soonTitle}>{t('soonTitle')}</span>
-            {t('soonEdit')}
-          </li>
-        </ul>
+        <h2 className={styles.featuresTitle}>{t('featuresTitle')}</h2>
+        <p className={styles.featuresHint}>{t('featuresHint')}</p>
+        {features.length === 0 && !loadError ? (
+          <p className={styles.note}>{t('featuresEmpty')}</p>
+        ) : (
+          <ul className={styles.features} data-selected-codes={selectedCodes.join(',')}>
+            {features.map((feature) => {
+              const disabled = !feature.enableable;
+              return (
+                <li
+                  key={feature.id}
+                  className={disabled ? styles.featureDisabled : undefined}
+                  data-feature-id={feature.id}
+                  data-feature-code={feature.code}
+                  data-enableable={String(feature.enableable)}
+                  aria-disabled={disabled}
+                >
+                  <label className={styles.featureRow}>
+                    <input
+                      type="checkbox"
+                      checked={feature.enableable}
+                      disabled={disabled}
+                      readOnly
+                      value={feature.code}
+                    />
+                    <span>
+                      <strong>{feature.name}</strong>
+                      {feature.description ? <em>{feature.description}</em> : null}
+                    </span>
+                    <span className={styles.featureStatus}>
+                      {disabled ? t('featureComingSoon') : t('featureAvailable')}
+                    </span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </>
   );

@@ -75,4 +75,37 @@ class FlywayMigrationTest {
                 String.class);
         assertThat(harriStatus).isEqualTo("ACTIVE");
     }
+
+    @Test
+    void featureCatalogMigrationIsApplied() {
+        Integer version = jdbcTemplate.queryForObject(
+                "SELECT MAX(installed_rank) FROM flyway_schema_history",
+                Integer.class);
+        assertThat(version).isGreaterThanOrEqualTo(7);
+
+        Integer catalogs = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE lower(table_name) = 'feature_catalog'
+                """,
+                Integer.class);
+        assertThat(catalogs).isEqualTo(1);
+
+        Integer assignments = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE lower(table_name) = 'farm_feature'
+                """,
+                Integer.class);
+        assertThat(assignments).isEqualTo(1);
+
+        Integer farmFlags = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE lower(table_name) = 'farm'
+                  AND lower(column_name) IN ('animal_management_enabled', 'animalmanagementenabled')
+                """,
+                Integer.class);
+        assertThat(farmFlags).isZero();
+    }
 }
