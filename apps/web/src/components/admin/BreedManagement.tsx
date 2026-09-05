@@ -33,6 +33,8 @@ type Props = {
   initialPage: BreedPage;
   initialActiveCount: number;
   initialError?: string;
+  hideChrome?: boolean;
+  onStatsChange?: (stats: { activeCount: number; total: number }) => void;
 };
 
 type FormState = {
@@ -51,7 +53,13 @@ const emptyForm: FormState = {
   displayOrder: '0',
 };
 
-export function BreedManagement({ initialPage, initialActiveCount, initialError }: Props) {
+export function BreedManagement({
+  initialPage,
+  initialActiveCount,
+  initialError,
+  hideChrome = false,
+  onStatsChange,
+}: Props) {
   const t = useTranslations('animalSettings');
   const locale = useLocale();
   const { data: session } = useSession();
@@ -91,6 +99,10 @@ export function BreedManagement({ initialPage, initialActiveCount, initialError 
         /* keep the server-provided count */
       });
   }, [token, locale]);
+
+  useEffect(() => {
+    onStatsChange?.({ activeCount, total: data.total });
+  }, [activeCount, data.total, onStatsChange]);
 
   useEffect(() => {
     if (!toast) {
@@ -234,68 +246,74 @@ export function BreedManagement({ initialPage, initialActiveCount, initialError 
 
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles.title}>
-          <h1>{t('title')}</h1>
-          <p>{t('subtitle')}</p>
-        </div>
-        <div className={styles.headerActions}>
-          <button type="button" className={styles.btn} disabled>
-            <ClockIcon />
-            {t('changelog')}
-          </button>
-          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={openCreate}>
-            <PlusIcon />
-            <span>{t('addBreed')}</span>
-          </button>
-        </div>
-      </header>
+      {hideChrome ? null : (
+        <>
+          <header className={styles.header}>
+            <div className={styles.title}>
+              <h1>{t('title')}</h1>
+              <p>{t('subtitle')}</p>
+            </div>
+            <div className={styles.headerActions}>
+              <button type="button" className={styles.btn} disabled>
+                <ClockIcon />
+                {t('changelog')}
+              </button>
+              <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={openCreate}>
+                <PlusIcon />
+                <span>{t('addBreed')}</span>
+              </button>
+            </div>
+          </header>
 
-      <section className={styles.stats}>
-        <div className={styles.stat}>
-          <div className={styles.statIcon}>
-            <DnaIcon />
-          </div>
-          <div>
-            <strong>{activeCount}</strong>
-            <span>{t('statActiveBreeds')}</span>
-          </div>
-        </div>
-        <div className={styles.stat}>
-          <div className={styles.statIcon}>
-            <TagsIcon />
-          </div>
-          <div>
-            <strong>0</strong>
-            <span>{t('statStatuses')}</span>
-          </div>
-        </div>
-        <div className={styles.stat}>
-          <div className={styles.statIcon}>
-            <LayersIcon />
-          </div>
-          <div>
-            <strong>0</strong>
-            <span>{t('statGroups')}</span>
-          </div>
-        </div>
-      </section>
+          <section className={styles.stats}>
+            <div className={styles.stat}>
+              <div className={styles.statIcon}>
+                <DnaIcon />
+              </div>
+              <div>
+                <strong>{activeCount}</strong>
+                <span>{t('statActiveBreeds')}</span>
+              </div>
+            </div>
+            <div className={styles.stat}>
+              <div className={styles.statIcon}>
+                <TagsIcon />
+              </div>
+              <div>
+                <strong>0</strong>
+                <span>{t('statStatuses')}</span>
+              </div>
+            </div>
+            <div className={styles.stat}>
+              <div className={styles.statIcon}>
+                <LayersIcon />
+              </div>
+              <div>
+                <strong>0</strong>
+                <span>{t('statGroups')}</span>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
-      <section className={styles.panel}>
-        <div className={styles.tabs}>
-          <button type="button" className={`${styles.tab} ${styles.tabActive}`}>
-            {t('tabBreeds')}
-            <span className={styles.count}>{data.total}</span>
-          </button>
-          <button type="button" className={styles.tab} disabled title={t('tabSoon')}>
-            {t('tabStatuses')}
-            <span className={styles.count}>0</span>
-          </button>
-          <button type="button" className={styles.tab} disabled title={t('tabSoon')}>
-            {t('tabGroups')}
-            <span className={styles.count}>0</span>
-          </button>
-        </div>
+      <section className={hideChrome ? styles.embedded : styles.panel}>
+        {hideChrome ? null : (
+          <div className={styles.tabs}>
+            <button type="button" className={`${styles.tab} ${styles.tabActive}`}>
+              {t('tabBreeds')}
+              <span className={styles.count}>{data.total}</span>
+            </button>
+            <button type="button" className={styles.tab} disabled title={t('tabSoon')}>
+              {t('tabStatuses')}
+              <span className={styles.count}>0</span>
+            </button>
+            <button type="button" className={styles.tab} disabled title={t('tabSoon')}>
+              {t('tabGroups')}
+              <span className={styles.count}>0</span>
+            </button>
+          </div>
+        )}
         <div className={styles.toolbar}>
           <div className={styles.search}>
             <SearchIcon />

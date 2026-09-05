@@ -4,7 +4,7 @@ This document explains **every file added or changed** for the animal-status con
 
 There are **no React administration screens** in this story (those are US-AC-005). There is **no POST** and **no DELETE**. The catalog is the four seeded lifecycle statuses. Administrators change presentation (labels, color token, order, filter visibility, active flag), not technical codes.
 
-Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md), [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md), [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md), [implementation-guide.md](./implementation-guide.md).
+Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md), [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md), [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md), [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md) (React Status tab), [implementation-guide.md](./implementation-guide.md).
 
 ---
 
@@ -22,7 +22,7 @@ Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-found
 | Permissions | `ANIMAL_CONFIG_VIEW` for reads; `STATUS_CONFIG_MANAGE` for PUT/PATCH. |
 | Cache | Active definitions cached; evicted after every write. Admin list is not cached. |
 | Assignment | `AnimalStatusAssignmentGuard` throws 409 `STATUS_INACTIVE` if a later story assigns an inactive status. |
-| UI | None. |
+| UI | None in this story. The Status tab is [US-AC-005](./us-ac-005-status-administration-ui.md). |
 
 ### API
 
@@ -271,7 +271,7 @@ OpenAPI: `http://localhost:8080/swagger-ui.html` — tag **Animal statuses**.
 
 ### 4.3 What you cannot click-test yet
 
-There is **no** Status tab in `apps/web`. Use `mvn test` and the curls above. The assignment guard has no public URL.
+The Status tab is [US-AC-005](./us-ac-005-status-administration-ui.md). Use `mvn test` and the curls above for the API. The assignment guard has no public URL.
 
 ---
 

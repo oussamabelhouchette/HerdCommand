@@ -1,0 +1,96 @@
+.codeCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lock {
+  display: inline-flex;
+  color: var(--hc-color-text-muted);
+  font-size: 13px;
+}
+
+.badge {
+  display: inline-flex;
+  min-width: 62px;
+  height: 24px;
+  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.success {
+  background: #dcf2e4;
+  color: #2e7d32;
+}
+
+.purple {
+  background: #f1e8fb;
+  color: #7a47a7;
+}
+
+.danger {
+  background: #fde8e6;
+  color: #c2413b;
+}
+
+.warning {
+  background: #fff0d5;
+  color: #b7791f;
+}
+
+.neutral {
+  background: #eeeae4;
+  color: #64706a;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swatch {
+  border: var(--hc-border-width) solid transparent;
+  border-radius: 10px;
+  min-height: 34px;
+  padding: 0 11px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.swatchSelected {
+  outline: 2px solid var(--hc-color-brand);
+  outline-offset: 1px;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.check input {
+  width: auto;
+  min-height: auto;
+}
+
+@media (max-width: 900px) {
+  .badge {
+    max-width: 100%;
+  }
+}

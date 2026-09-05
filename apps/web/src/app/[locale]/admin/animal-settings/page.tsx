@@ -1,8 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ApiRequestError } from '@/lib/api';
 import { emptyBreedPage, listBreeds } from '@/lib/breeds';
+import { emptyStatusPage, listStatuses } from '@/lib/statuses';
 import { requireAdmin } from '@/lib/require-admin';
-import { BreedManagement } from '@/components/admin/BreedManagement';
+import { AnimalSettings } from '@/components/admin/AnimalSettings';
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,23 +17,37 @@ export default async function AnimalSettingsPage({ params }: Props) {
     return null;
   }
 
-  let initialPage = emptyBreedPage();
-  let initialActiveCount = 0;
-  let initialError: string | undefined;
+  const token = gate.session.accessToken;
+  let initialBreedPage = emptyBreedPage();
+  let initialActiveBreedCount = 0;
+  let initialBreedError: string | undefined;
+  let initialStatusPage = emptyStatusPage();
+  let initialStatusError: string | undefined;
 
   try {
-    const token = gate.session.accessToken;
-    initialPage = await listBreeds(token, locale, { sort: 'displayOrder,asc' });
-    initialActiveCount = initialPage.items.filter((breed) => breed.active).length;
+    const [page, active] = await Promise.all([
+      listBreeds(token, locale, { sort: 'displayOrder,asc' }),
+      listBreeds(token, locale, { active: true, size: 1 }),
+    ]);
+    initialBreedPage = page;
+    initialActiveBreedCount = active.total;
   } catch (error) {
-    initialError = error instanceof ApiRequestError ? error.message : t('loadError');
+    initialBreedError = error instanceof ApiRequestError ? error.message : t('loadError');
+  }
+
+  try {
+    initialStatusPage = await listStatuses(token, locale, { sort: 'displayOrder,asc' });
+  } catch (error) {
+    initialStatusError = error instanceof ApiRequestError ? error.message : t('statusLoadError');
   }
 
   return (
-    <BreedManagement
-      initialPage={initialPage}
-      initialActiveCount={initialActiveCount}
-      initialError={initialError}
+    <AnimalSettings
+      initialBreedPage={initialBreedPage}
+      initialActiveBreedCount={initialActiveBreedCount}
+      initialBreedError={initialBreedError}
+      initialStatusPage={initialStatusPage}
+      initialStatusError={initialStatusError}
     />
   );
 }

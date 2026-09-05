@@ -111,6 +111,10 @@
   overflow: hidden;
 }
 
+.embedded {
+  min-width: 0;
+}
+
 .tabs {
   display: flex;
   align-items: center;
@@ -124,15 +128,19 @@
   border: 0;
   background: transparent;
   color: var(--hc-color-text-muted);
-  cursor: default;
+  cursor: pointer;
   position: relative;
   font: inherit;
   font-weight: 700;
 }
 
+.tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .tabActive {
   color: var(--hc-color-brand);
-  cursor: default;
 }
 
 .tabActive::after {

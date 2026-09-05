@@ -92,7 +92,7 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 | `/signed-in` | `src/app/[locale]/signed-in/page.tsx` (post-login hop) |
 | `/en`, `/en/login`, `/en/admin`, … | Same files, `locale = en` |
 
-Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md).
+Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md). Status tab: [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md).
 
 ---
 
@@ -134,7 +134,7 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 | `src/app/[locale]/(site)/portal/page.tsx` | Farm workspace after login for non-admins. | `auth()`, `logoutAction` |
 | `src/app/[locale]/(site)/me/page.tsx` | Account: calls Spring `GET /api/v1/me` with Bearer token. | `auth()`, `fetch` API |
 | `src/app/[locale]/(site)/design-system/page.tsx` | Button / Input / Card / Badge samples. | No auth required |
-| `src/app/[locale]/admin/animal-settings/page.tsx` | Breed administration (US-AC-003). | `requireAdmin`, breed API |
+| `src/app/[locale]/admin/animal-settings/page.tsx` | Breed + status administration (US-AC-003 / US-AC-005). | `requireAdmin`, breed + status APIs |
 
 ---
 
@@ -144,7 +144,9 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 |---|---|
 | `src/components/AppHeader.tsx` | Top bar: brand, Home (portal or admin), Design system, Account, language, Sign in/out. Uses `auth()`. |
 | `src/components/admin/AdminShell.tsx` | Dark admin sidebar. Only System settings is a real link. |
+| `src/components/admin/AnimalSettings.tsx` | Animal-settings chrome: stats and Breeds / Statuses / Groups tabs. |
 | `src/components/admin/BreedManagement.tsx` | Breed table, filters, create/edit modal, activate/deactivate. |
+| `src/components/admin/StatusManagement.tsx` | Status table, color picker, live preview, edit / activate (no create or delete). |
 | `src/components/LanguageSwitcher.tsx` | Switches `ar` / `en` via next-intl router (keeps the same page). |
 | `src/components/Button.tsx` + `Button.module.css` | Shared button. |
 | `src/components/Input.tsx` + `Input.module.css` | Shared field (design system). |

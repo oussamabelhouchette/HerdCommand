@@ -4,7 +4,7 @@ This document explains **every file added or changed** for the animal-breed admi
 
 The **API** is already US-AC-002. This story is the React screen that calls that API. There is still **no DELETE**. Statuses and farm groups stay placeholders.
 
-Related: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md), [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md), [nextjs.md](./nextjs.md), [authentication.md](./authentication.md), [implementation-guide.md](./implementation-guide.md).
+Related: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md), [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md), [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md) (Statuses tab), [nextjs.md](./nextjs.md), [authentication.md](./authentication.md), [implementation-guide.md](./implementation-guide.md).
 
 ---
 
@@ -18,7 +18,7 @@ Related: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md
 | Data | Browser calls `/api/v1/admin/animal-breeds` with the session Bearer token and `Accept-Language`. |
 | Create / edit | Modal. Code is typed uppercase; disabled when editing (immutable). |
 | Soft status | Deactivate asks for confirm; activate is one click. No delete button. |
-| Placeholders | Statuses tab, Groups tab, changelog button, and the two extra stat cards. Counts stay `0`. |
+| Placeholders | Groups tab, changelog button, and the farm-groups stat. Statuses became [US-AC-005](./us-ac-005-status-administration-ui.md). |
 | After login | `administrator` / `owner` → `/admin`. Everyone else → `/portal`. |
 | API / Flyway | Unchanged. No new backend files. |
 
@@ -184,7 +184,7 @@ This layout is **outside** `[locale]/(site)/`, so admin pages do not get the mar
 | Activate | Immediate `PATCH { "active": true }` |
 | Pagination | Shown when `total > size` (size 20) |
 | Changelog | Disabled button |
-| Statuses / Groups tabs | Disabled, title “Coming soon” |
+| Statuses / Groups tabs | Statuses is [US-AC-005](./us-ac-005-status-administration-ui.md). Groups stays “Coming soon”. |
 | Toast | ~2.2 s after save / activate / deactivate |
 | 401 | `window.location` → `/api/auth/federated-logout` |
 | 409 `BREED_CODE_ALREADY_EXISTS` | Message + `fieldErrors.code` under the code field |
@@ -471,7 +471,6 @@ Use a Keycloak user with realm role **`administrator`** or **`owner`**. A user w
 ### 5.3 What you cannot click-test yet
 
 - Changelog
-- Statuses tab
 - Groups tab
 - Species as a configurable catalog (still the four-value enum)
 - A `manager` using this UI (by design)
@@ -486,6 +485,6 @@ Use a Keycloak user with realm role **`administrator`** or **`owner`**. A user w
 - [x] Table talks to US-AC-002 (`GET`/`POST`/`PUT`/`PATCH` only)
 - [x] Create + edit modal; code immutable on edit; duplicate code shown from `ApiError`
 - [x] Deactivate confirm; activate; no DELETE
-- [x] Statuses / groups / changelog are visible placeholders only
+- [x] Groups / changelog are visible placeholders only (Statuses is US-AC-005)
 - [x] Arabic and English copy for the shell and the breed form
 - [x] Unit tests for admin-role membership and post-login portal choice
