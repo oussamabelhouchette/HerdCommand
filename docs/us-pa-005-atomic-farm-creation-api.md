@@ -11,7 +11,7 @@ Related: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm
 | Concern | Decision |
 |---|---|
 | HTTP | `POST /api/v1/platform/farms` with `Idempotency-Key`. `PLATFORM_ADMIN` only. Returns `201` + `Location`. |
-| List path | `GET /api/v1/platform/farms` stays the PA-001 empty probe. |
+| List path | `GET /api/v1/platform/farms` is implemented in PA-006. |
 | Atomic DB write | One transaction: farm (`SETUP`), `FARM_OWNER` membership, subscription, `farm_feature` rows. |
 | Keycloak | Resolve/provision **after** validation and **before** the DB write. A DB transaction cannot roll Keycloak back. |
 | Compensation | If this operation **created** a Keycloak user and the DB write fails, delete that user. If delete fails, keep `farm_onboarding_compensation` for retry. Existing users are never deleted. |

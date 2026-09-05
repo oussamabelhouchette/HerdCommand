@@ -8,7 +8,7 @@ const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'platf
 
 test('platform client only calls /api/v1/platform paths', () => {
   assert.match(source, /\/api\/v1\/platform/);
-  assert.match(source, /\/api\/v1\/platform\/farms/);
+  assert.doesNotMatch(source, /probePlatformFarms/);
   assert.doesNotMatch(source, /keycloak/i);
   assert.doesNotMatch(source, /admin-cli/);
 });

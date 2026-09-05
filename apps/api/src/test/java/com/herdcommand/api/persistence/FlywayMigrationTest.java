@@ -132,4 +132,20 @@ class FlywayMigrationTest {
                 Integer.class);
         assertThat(compensations).isEqualTo(1);
     }
+
+    @Test
+    void farmMembershipDisplayNameMigrationIsApplied() {
+        Integer version = jdbcTemplate.queryForObject(
+                "SELECT MAX(installed_rank) FROM flyway_schema_history",
+                Integer.class);
+        assertThat(version).isGreaterThanOrEqualTo(9);
+
+        Integer displayName = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE lower(table_name) = 'farm_membership' AND lower(column_name) = 'display_name'
+                """,
+                Integer.class);
+        assertThat(displayName).isEqualTo(1);
+    }
 }

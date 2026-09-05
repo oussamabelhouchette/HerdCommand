@@ -15,5 +15,7 @@
 | [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md) | PA-003: feature catalog, farm_feature, GET /platform/features, no farm Boolean flags |
 | [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md) | PA-004: owner email lookup, Keycloak service account, invitation abstraction |
 | [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md) | PA-005: atomic POST /platform/farms, idempotency, Keycloak compensation |
+| [us-pa-006-farm-list-and-details-api.md](./us-pa-006-farm-list-and-details-api.md) | PA-006: search/page all farms, details, summary counts |
+| [us-pa-007-react-all-farms-administration-page.md](./us-pa-007-react-all-farms-administration-page.md) | PA-007: all-farms table, filters, URL state, details |
 | [nextjs.md](./nextjs.md) | Next.js app: entry points and every file |
 | [authentication.md](./authentication.md) | Login/logout OIDC details, Keycloak client fields, example URLs |

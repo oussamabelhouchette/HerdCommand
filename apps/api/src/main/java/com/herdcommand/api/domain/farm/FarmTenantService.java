@@ -123,7 +123,8 @@ public class FarmTenantService {
                 email,
                 now,
                 currentAuditor(),
-                status == null ? FarmMembershipStatus.ACTIVE : status);
+                status == null ? FarmMembershipStatus.ACTIVE : status,
+                command.displayName());
         return membershipRepository.saveAndFlush(membership);
     }
 

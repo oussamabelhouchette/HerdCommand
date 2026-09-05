@@ -80,7 +80,8 @@ class PlatformAdminSecurityTest {
                         .with(JwtAuth.withPermissions(Permission.PLATFORM_ADMIN.name()))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessible").value(true))
-                .andExpect(jsonPath("$.farms").isEmpty());
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.total").isNumber())
+                .andExpect(jsonPath("$.farms").doesNotExist());
     }
 }

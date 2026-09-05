@@ -32,6 +32,9 @@ public class FarmMembership extends AuditedEntity {
     @Column(name = "invited_email", nullable = false, length = 320)
     private String invitedEmail;
 
+    @Column(name = "display_name", length = 150)
+    private String displayName;
+
     @Column(name = "invited_at")
     private Instant invitedAt;
 
@@ -50,10 +53,22 @@ public class FarmMembership extends AuditedEntity {
             Instant invitedAt,
             String invitedBy,
             FarmMembershipStatus status) {
+        this(farmId, keycloakUserId, invitedEmail, invitedAt, invitedBy, status, null);
+    }
+
+    public FarmMembership(
+            UUID farmId,
+            String keycloakUserId,
+            String invitedEmail,
+            Instant invitedAt,
+            String invitedBy,
+            FarmMembershipStatus status,
+            String displayName) {
         this.farmId = farmId;
         this.keycloakUserId = keycloakUserId;
         this.roleCode = FarmMembershipRole.FARM_OWNER;
         this.invitedEmail = normalizeEmail(invitedEmail);
+        this.displayName = trimToNull(displayName);
         this.invitedAt = invitedAt;
         this.invitedBy = invitedBy;
         applyStatus(status, Instant.now());
@@ -61,6 +76,14 @@ public class FarmMembership extends AuditedEntity {
 
     public static String normalizeEmail(String email) {
         return email == null ? null : email.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static String trimToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.length() > 150 ? trimmed.substring(0, 150) : trimmed;
     }
 
     public UUID getFarmId() {
@@ -88,6 +111,10 @@ public class FarmMembership extends AuditedEntity {
 
     public String getInvitedEmail() {
         return invitedEmail;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public Instant getInvitedAt() {

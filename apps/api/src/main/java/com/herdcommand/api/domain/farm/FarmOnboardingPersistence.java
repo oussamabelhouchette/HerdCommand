@@ -39,7 +39,8 @@ public class FarmOnboardingPersistence {
                 validated.subscription().maxTeamMembers(),
                 validated.subscription().trialEndsAt());
         farmTenantService.assignOwner(
-                new AssignFarmOwnerCommand(farm.getId(), owner.keycloakUserId(), owner.email()),
+                new AssignFarmOwnerCommand(
+                        farm.getId(), owner.keycloakUserId(), owner.email(), owner.displayName()),
                 owner.membershipStatus());
         List<String> enabled = farmFeatureService.enableByCodes(farm.getId(), validated.enabledFeatureCodes());
 

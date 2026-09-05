@@ -77,11 +77,13 @@ Browser
 16. **PA-003 dynamic feature catalog** (Flyway V7 `feature_catalog` + `farm_feature`, `ANIMAL_MANAGEMENT`, `GET /api/v1/platform/features`, coming-soon not enableable). File-by-file notes: [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md).
 17. **PA-004 Keycloak owner lookup and invitation** (`POST /api/v1/platform/identity/lookup`, service-account admin client, invite abstraction, debounced owner field). File-by-file notes: [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md).
 18. **PA-005 atomic farm creation API** (`POST /api/v1/platform/farms`, idempotency key, one DB transaction, Keycloak compensation). File-by-file notes: [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md).
-19. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+19. **PA-006 farm list and details API** (`GET /api/v1/platform/farms`, `/{id}`, `/summary`, server-side search/filter/page). File-by-file notes: [us-pa-006-farm-list-and-details-api.md](./us-pa-006-farm-list-and-details-api.md).
+20. **PA-007 React all-farms administration page** (`/admin/farm-settings` table, summary cards, URL filters, details dialog). File-by-file notes: [us-pa-007-react-all-farms-administration-page.md](./us-pa-007-react-all-farms-administration-page.md).
+21. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm list/wizard (PA-006+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm wizard (PA-008+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -346,5 +348,7 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Dynamic feature catalog | `docs/us-pa-003-dynamic-feature-catalog.md` |
 | Keycloak owner lookup + invitation | `docs/us-pa-004-keycloak-owner-lookup-and-invitation.md` |
 | Atomic farm creation API | `docs/us-pa-005-atomic-farm-creation-api.md` |
+| Farm list and details API | `docs/us-pa-006-farm-list-and-details-api.md` |
+| All-farms administration UI | `docs/us-pa-007-react-all-farms-administration-page.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

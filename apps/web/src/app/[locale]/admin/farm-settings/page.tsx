@@ -3,7 +3,7 @@ import { getPathname } from '@/i18n/navigation';
 import { ApiRequestError } from '@/lib/api';
 import { requirePlatformAdmin } from '@/lib/require-platform-admin';
 import { emptyFeatureCatalog, listFeatures } from '@/lib/features';
-import { loadPlatformFoundation, probePlatformFarms } from '@/lib/platform';
+import { loadPlatformFoundation } from '@/lib/platform';
 import { FarmSettings } from '@/components/admin/FarmSettings';
 
 type Props = { params: Promise<{ locale: string }> };
@@ -32,12 +32,11 @@ export default async function FarmSettingsPage({ params }: Props) {
   let features = emptyFeatureCatalog();
 
   try {
-    const [foundation, farms, catalog] = await Promise.all([
+    const [foundation, catalog] = await Promise.all([
       loadPlatformFoundation(token, locale),
-      probePlatformFarms(token, locale),
       listFeatures(token, locale, true),
     ]);
-    apiReady = foundation.permissions.includes('PLATFORM_ADMIN') && farms.accessible && farms.farms.length === 0;
+    apiReady = foundation.permissions.includes('PLATFORM_ADMIN');
     features = catalog;
   } catch (error) {
     loadError = error instanceof ApiRequestError ? error.message : t('farmSettings.loadError');
