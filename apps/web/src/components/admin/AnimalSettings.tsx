@@ -3,34 +3,43 @@
 import { useCallback, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { BreedPage } from '@/lib/breeds';
+import type { GroupPage } from '@/lib/groups';
 import type { StatusPage } from '@/lib/statuses';
 import { BreedManagement } from './BreedManagement';
+import { GroupManagement } from './GroupManagement';
 import { StatusManagement } from './StatusManagement';
 import { ClockIcon, DnaIcon, LayersIcon, TagsIcon } from './AdminIcons';
 import styles from './BreedManagement.module.css';
 
-type Tab = 'breeds' | 'statuses';
+type Tab = 'breeds' | 'statuses' | 'groups';
 
 type Props = {
+  farmId?: string;
   initialBreedPage: BreedPage;
   initialActiveBreedCount: number;
   initialBreedError?: string;
   initialStatusPage: StatusPage;
   initialStatusError?: string;
+  initialGroupPage: GroupPage;
+  initialGroupError?: string;
 };
 
 export function AnimalSettings({
+  farmId,
   initialBreedPage,
   initialActiveBreedCount,
   initialBreedError,
   initialStatusPage,
   initialStatusError,
+  initialGroupPage,
+  initialGroupError,
 }: Props) {
   const t = useTranslations('animalSettings');
   const [tab, setTab] = useState<Tab>('breeds');
   const [activeBreedCount, setActiveBreedCount] = useState(initialActiveBreedCount);
   const [breedTotal, setBreedTotal] = useState(initialBreedPage.total);
   const [statusTotal, setStatusTotal] = useState(initialStatusPage.total);
+  const [groupTotal, setGroupTotal] = useState(initialGroupPage.total);
 
   const onBreedStats = useCallback((stats: { activeCount: number; total: number }) => {
     setActiveBreedCount(stats.activeCount);
@@ -39,6 +48,10 @@ export function AnimalSettings({
 
   const onStatusStats = useCallback((stats: { total: number }) => {
     setStatusTotal(stats.total);
+  }, []);
+
+  const onGroupStats = useCallback((stats: { total: number }) => {
+    setGroupTotal(stats.total);
   }, []);
 
   return (
@@ -80,7 +93,7 @@ export function AnimalSettings({
             <LayersIcon />
           </div>
           <div>
-            <strong>0</strong>
+            <strong>{groupTotal}</strong>
             <span>{t('statGroups')}</span>
           </div>
         </div>
@@ -104,9 +117,13 @@ export function AnimalSettings({
             {t('tabStatuses')}
             <span className={styles.count}>{statusTotal}</span>
           </button>
-          <button type="button" className={styles.tab} disabled title={t('tabSoon')}>
+          <button
+            type="button"
+            className={`${styles.tab} ${tab === 'groups' ? styles.tabActive : ''}`}
+            onClick={() => setTab('groups')}
+          >
             {t('tabGroups')}
-            <span className={styles.count}>0</span>
+            <span className={styles.count}>{groupTotal}</span>
           </button>
         </div>
         <div hidden={tab !== 'breeds'}>
@@ -123,6 +140,14 @@ export function AnimalSettings({
             initialPage={initialStatusPage}
             initialError={initialStatusError}
             onStatsChange={onStatusStats}
+          />
+        </div>
+        <div hidden={tab !== 'groups'}>
+          <GroupManagement
+            farmId={farmId}
+            initialPage={initialGroupPage}
+            initialError={initialGroupError}
+            onStatsChange={onGroupStats}
           />
         </div>
       </section>

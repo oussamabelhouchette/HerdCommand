@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ApiRequestError } from '@/lib/api';
 import { emptyBreedPage, listBreeds } from '@/lib/breeds';
+import { emptyGroupPage, listFarms, listGroups } from '@/lib/groups';
 import { emptyStatusPage, listStatuses } from '@/lib/statuses';
 import { requireAdmin } from '@/lib/require-admin';
 import { AnimalSettings } from '@/components/admin/AnimalSettings';
@@ -23,6 +24,9 @@ export default async function AnimalSettingsPage({ params }: Props) {
   let initialBreedError: string | undefined;
   let initialStatusPage = emptyStatusPage();
   let initialStatusError: string | undefined;
+  let farmId: string | undefined;
+  let initialGroupPage = emptyGroupPage();
+  let initialGroupError: string | undefined;
 
   try {
     const [page, active] = await Promise.all([
@@ -41,13 +45,28 @@ export default async function AnimalSettingsPage({ params }: Props) {
     initialStatusError = error instanceof ApiRequestError ? error.message : t('statusLoadError');
   }
 
+  try {
+    const farms = await listFarms(token, locale);
+    farmId = farms[0]?.id;
+    if (farmId) {
+      initialGroupPage = await listGroups(token, locale, farmId);
+    } else {
+      initialGroupError = t('farmLoadError');
+    }
+  } catch (error) {
+    initialGroupError = error instanceof ApiRequestError ? error.message : t('groupLoadError');
+  }
+
   return (
     <AnimalSettings
+      farmId={farmId}
       initialBreedPage={initialBreedPage}
       initialActiveBreedCount={initialActiveBreedCount}
       initialBreedError={initialBreedError}
       initialStatusPage={initialStatusPage}
       initialStatusError={initialStatusError}
+      initialGroupPage={initialGroupPage}
+      initialGroupError={initialGroupError}
     />
   );
 }

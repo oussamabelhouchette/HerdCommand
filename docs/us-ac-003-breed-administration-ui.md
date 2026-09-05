@@ -18,7 +18,7 @@ Related: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md
 | Data | Browser calls `/api/v1/admin/animal-breeds` with the session Bearer token and `Accept-Language`. |
 | Create / edit | Modal. Code is typed uppercase; disabled when editing (immutable). |
 | Soft status | Deactivate asks for confirm; activate is one click. No delete button. |
-| Placeholders | Groups tab, changelog button, and the farm-groups stat. Statuses became [US-AC-005](./us-ac-005-status-administration-ui.md). |
+| Placeholders | Changelog button. Statuses became [US-AC-005](./us-ac-005-status-administration-ui.md). Groups became [US-AC-007](./us-ac-007-farm-group-administration-ui.md). |
 | After login | `administrator` / `owner` → `/admin`. Everyone else → `/portal`. |
 | API / Flyway | Unchanged. No new backend files. |
 

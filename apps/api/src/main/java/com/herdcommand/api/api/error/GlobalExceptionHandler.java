@@ -72,6 +72,10 @@ public class GlobalExceptionHandler {
             return respond(HttpStatus.CONFLICT, ErrorCodes.BREED_CODE_ALREADY_EXISTS, "error.breed.codeExists", request, List.of(
                     new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
         }
+        if (detail.contains("animal_group") && (detail.contains("code") || detail.contains("ux_animal_group_farm_code"))) {
+            return respond(HttpStatus.CONFLICT, ErrorCodes.GROUP_CODE_ALREADY_EXISTS, "error.group.codeExists", request, List.of(
+                    new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
+        }
         return respond(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, "error.conflict", request, List.of());
     }
 

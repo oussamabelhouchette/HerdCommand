@@ -8,5 +8,7 @@
 | [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md) | US-AC-003: breed admin screen, who can open `/admin`, how to click-test |
 | [us-ac-004-status-configuration-api.md](./us-ac-004-status-configuration-api.md) | US-AC-004: status API, seed, color tokens, how to test with mvn and curl |
 | [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md) | US-AC-005: Status tab, color picker, live preview, how to click-test |
+| [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md) | US-AC-006: farm + group API, isolation, how to test with mvn and curl |
+| [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md) | US-AC-007: Groups tab, create/edit/deactivate, how to click-test |
 | [nextjs.md](./nextjs.md) | Next.js app: entry points and every file |
 | [authentication.md](./authentication.md) | Login/logout OIDC details, Keycloak client fields, example URLs |
