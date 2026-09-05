@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,12 +20,15 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JsonAuthHandlers jsonAuthHandlers;
+    private final JwtAuthoritiesConverter jwtAuthoritiesConverter;
 
-    public SecurityConfig(JsonAuthHandlers jsonAuthHandlers) {
+    public SecurityConfig(JsonAuthHandlers jsonAuthHandlers, JwtAuthoritiesConverter jwtAuthoritiesConverter) {
         this.jsonAuthHandlers = jsonAuthHandlers;
+        this.jwtAuthoritiesConverter = jwtAuthoritiesConverter;
     }
 
     @Bean
@@ -38,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/api/v1/openapi", "/api/v1/openapi/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").authenticated()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
@@ -51,24 +55,8 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter scopes = new JwtGrantedAuthoritiesConverter();
-        scopes.setAuthorityPrefix("SCOPE_");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            java.util.Collection<org.springframework.security.core.GrantedAuthority> converted = scopes.convert(jwt);
-            java.util.Collection<org.springframework.security.core.GrantedAuthority> authorities =
-                    new java.util.ArrayList<>(converted == null ? java.util.List.of() : converted);
-            Object realmAccess = jwt.getClaim("realm_access");
-            if (realmAccess instanceof java.util.Map<?, ?> map) {
-                Object roles = map.get("roles");
-                if (roles instanceof java.util.List<?> list) {
-                    list.stream()
-                            .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
-                            .forEach(authorities::add);
-                }
-            }
-            return authorities;
-        });
+        converter.setJwtGrantedAuthoritiesConverter(jwtAuthoritiesConverter);
         return converter;
     }
 

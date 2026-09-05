@@ -5,7 +5,17 @@ import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
-const protectedMatchers = [/^\/me(?:\/|$)/, /^\/ar\/me(?:\/|$)/, /^\/en\/me(?:\/|$)/];
+const protectedMatchers = [
+  /^\/me(?:\/|$)/,
+  /^\/ar\/me(?:\/|$)/,
+  /^\/en\/me(?:\/|$)/,
+  /^\/admin(?:\/|$)/,
+  /^\/ar\/admin(?:\/|$)/,
+  /^\/en\/admin(?:\/|$)/,
+  /^\/portal(?:\/|$)/,
+  /^\/ar\/portal(?:\/|$)/,
+  /^\/en\/portal(?:\/|$)/,
+];
 
 export default auth((request) => {
   const { pathname } = request.nextUrl;
@@ -15,7 +25,9 @@ export default auth((request) => {
     login.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(login);
   }
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  response.headers.set('x-pathname', pathname);
+  return response;
 });
 
 export const config = {

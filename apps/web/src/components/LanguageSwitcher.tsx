@@ -1,31 +1,35 @@
-'use client';
-
-import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
+import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
-import { Button } from './Button';
+import styles from './Button.module.css';
 
-export function LanguageSwitcher() {
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const t = useTranslations('nav');
-
-  function switchTo(next: 'ar' | 'en') {
-    router.replace(pathname, { locale: next });
+function appPath(pathname: string): '/' | `/${string}` {
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] === 'en' || segments[0] === 'ar') {
+    const rest = segments.slice(1);
+    return rest.length ? `/${rest.join('/')}` : '/';
   }
+  return (pathname.startsWith('/') ? pathname : `/${pathname}`) as `/${string}`;
+}
+
+export async function LanguageSwitcher() {
+  const locale = await getLocale();
+  const t = await getTranslations('nav');
+  const pathname = (await headers()).get('x-pathname') ?? '/';
+  const href = appPath(pathname);
 
   return (
     <div className="hc-row" role="group" aria-label={t('language')}>
       {routing.locales.map((code) => (
-        <Button
+        <a
           key={code}
-          variant={locale === code ? 'primary' : 'tertiary'}
-          aria-pressed={locale === code}
-          onClick={() => switchTo(code)}
+          href={getPathname({ href, locale: code })}
+          className={`${styles.button} ${locale === code ? styles.primary : styles.tertiary}`}
+          aria-current={locale === code ? 'page' : undefined}
         >
           {code === 'ar' ? 'العربية' : 'English'}
-        </Button>
+        </a>
       ))}
     </div>
   );

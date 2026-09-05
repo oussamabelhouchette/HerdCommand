@@ -1,9 +1,11 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { auth } from '@/auth';
+import { getSession } from '@/lib/session';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
-import { redirect } from '@/i18n/navigation';
+import { getPathname, redirect } from '@/i18n/navigation';
 import { Card } from '@/components/Card';
 import { SignInButton } from '@/components/SignInButton';
+import { membershipsFromSession } from '@/lib/me';
+import { postLoginHref } from '@/lib/post-login-redirect';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -13,13 +15,16 @@ type Props = {
 export default async function LoginPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const session = await auth();
+  const session = await getSession();
   const { callbackUrl } = await searchParams;
-  const target = callbackUrl || '/';
+  const intended = callbackUrl || getPathname({ href: '/', locale });
 
   if (session?.user && !isAuthSessionError(session.error)) {
-    redirect({ href: target, locale });
+    redirect({ href: postLoginHref(await membershipsFromSession(session), callbackUrl), locale });
   }
+
+  const continuePath = getPathname({ href: '/signed-in', locale });
+  const target = `${continuePath}?next=${encodeURIComponent(intended)}`;
 
   const t = await getTranslations();
 

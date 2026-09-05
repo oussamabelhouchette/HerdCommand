@@ -1,49 +1,29 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { auth } from '@/auth';
+import { getSession } from '@/lib/session';
 import { logoutAction } from '@/lib/logout';
 import { redirect } from '@/i18n/navigation';
 import { redirect as redirectToRoute } from 'next/navigation';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
+import { loadMe } from '@/lib/me';
 
 type Props = { params: Promise<{ locale: string }> };
-
-async function loadMe(accessToken?: string) {
-  if (!accessToken) {
-    return null;
-  }
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080';
-  const response = await fetch(`${base}/api/v1/me`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: 'no-store',
-  });
-  if (response.status === 401) {
-    return { unauthorized: true as const };
-  }
-  if (!response.ok) {
-    return { error: true as const };
-  }
-  return response.json() as Promise<{
-    subject: string;
-    username: string;
-    email?: string;
-    roles: string[];
-  }>;
-}
 
 export default async function MePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const session = await auth();
+  const session = await getSession();
   const t = await getTranslations();
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
+    return null;
   }
 
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
+    return null;
   }
 
   const me = await loadMe(session.accessToken);

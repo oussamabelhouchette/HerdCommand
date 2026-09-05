@@ -65,11 +65,18 @@ Browser
 4. Access-token refresh from Keycloak’s `expires_in` (not hardcoded to 1 minute).
 5. Keycloak login theme in the repo, copied to `C:\Users\Lenovo\Documents\keycloak-26.7.2\themes\herdcommand`.
 6. Spring Boot JWT resource server + `GET /api/v1/me` (needs API running + Bearer token).
-7. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+7. **US-AC-001 configuration foundation** (Flyway, JPA audit fields, admin permissions, standard `ApiError`, `Accept-Language` ar/en). File-by-file notes: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md).
+8. **US-AC-002 breed management API** (Flyway V2 `animal_breed`, list/create/update/status, no DELETE, no React screens). File-by-file notes: [us-ac-002-breed-management-api.md](./us-ac-002-breed-management-api.md).
+9. **US-AC-003 breed administration UI** (`/admin/animal-settings`, owner/administrator only, farm users land on `/portal`). File-by-file notes: [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md).
+10. **US-AC-004 status configuration API** (Flyway V3 `animal_status_definition`, seed ACTIVE/PREGNANT/SICK/ISOLATED, no POST/DELETE, no React screens). File-by-file notes: [us-ac-004-status-configuration-api.md](./us-ac-004-status-configuration-api.md).
+11. **US-AC-005 status administration UI** (Statuses tab on `/admin/animal-settings`, color-token picker, live badge preview, no create/delete). File-by-file notes: [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md).
+12. **US-AC-006 farm group API** (Flyway V4 `farm` + `animal_group`, seed HARRI, no animals/assignment). File-by-file notes: [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md).
+13. **US-AC-007 farm group administration UI** (Groups tab, create/edit/deactivate, first seeded farm). File-by-file notes: [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md).
+14. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Farms, animals, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm membership, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -320,7 +327,14 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Sign in button | `apps/web/src/components/SignInButton.tsx` |
 | Middleware | `apps/web/src/middleware.ts` |
 | Env example | `apps/web/.env.example` |
-| API JWT | `apps/api/src/main/java/com/herdcommand/api/config/SecurityConfig.java` |
+| API JWT + method security | `apps/api/src/main/java/com/herdcommand/api/config/SecurityConfig.java` |
 | API me | `apps/api/src/main/java/com/herdcommand/api/api/me/MeController.java` |
+| API configuration foundation | `docs/us-ac-001-configuration-foundation.md` |
+| API breed management | `docs/us-ac-002-breed-management-api.md` |
+| Breed administration UI | `docs/us-ac-003-breed-administration-ui.md` |
+| API status configuration | `docs/us-ac-004-status-configuration-api.md` |
+| Status administration UI | `docs/us-ac-005-status-administration-ui.md` |
+| API farm groups | `docs/us-ac-006-farm-group-api.md` |
+| Farm group administration UI | `docs/us-ac-007-farm-group-administration-ui.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |
