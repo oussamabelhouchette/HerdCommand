@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import com.herdcommand.api.security.JwtRoleExtractor;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,18 +22,7 @@ public class MeController {
     public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
         String username = firstNonBlank(jwt.getClaimAsString("preferred_username"), jwt.getSubject());
         String email = jwt.getClaimAsString("email");
-        return new MeResponse(jwt.getSubject(), username, email, extractRoles(jwt));
-    }
-
-    private List<String> extractRoles(Jwt jwt) {
-        Object realmAccess = jwt.getClaim("realm_access");
-        if (realmAccess instanceof Map<?, ?> map) {
-            Object roles = map.get("roles");
-            if (roles instanceof List<?> list) {
-                return list.stream().map(String::valueOf).toList();
-            }
-        }
-        return List.of();
+        return new MeResponse(jwt.getSubject(), username, email, JwtRoleExtractor.realmAndClientRoles(jwt));
     }
 
     private String firstNonBlank(String primary, String fallback) {

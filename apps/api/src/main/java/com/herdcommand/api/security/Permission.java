@@ -5,5 +5,6 @@ public enum Permission {
     BREED_MANAGE,
     STATUS_CONFIG_MANAGE,
     GROUP_VIEW,
-    GROUP_MANAGE
+    GROUP_MANAGE,
+    PLATFORM_ADMIN
 }

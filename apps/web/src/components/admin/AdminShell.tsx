@@ -8,6 +8,7 @@ import {
   BellIcon,
   BrandMarkIcon,
   ChartIcon,
+  FarmIcon,
   FolderIcon,
   GridIcon,
   SlidersIcon,
@@ -19,11 +20,21 @@ import type { ReactNode } from 'react';
 type Props = {
   children: ReactNode;
   me: MeIdentity;
+  showAnimalSettings?: boolean;
+  showFarmSettings?: boolean;
+  activeHref?: string;
 };
 
-export async function AdminShell({ children, me }: Props) {
+export async function AdminShell({
+  children,
+  me,
+  showAnimalSettings = true,
+  showFarmSettings = false,
+  activeHref = '',
+}: Props) {
   const t = await getTranslations();
   const initial = (me.username || me.email || '?').trim().charAt(0).toUpperCase();
+  const platform = showFarmSettings && !showAnimalSettings;
 
   return (
     <div className={styles.shell}>
@@ -39,6 +50,15 @@ export async function AdminShell({ children, me }: Props) {
             <GridIcon />
             {t('admin.dashboard')}
           </span>
+          {showFarmSettings ? (
+            <Link
+              href="/admin/farm-settings"
+              className={`${styles.navLink} ${activeHref.includes('farm-settings') ? styles.navLinkActive : ''}`}
+            >
+              <FarmIcon />
+              {t('admin.farms')}
+            </Link>
+          ) : null}
           <span className={styles.navItem}>
             <AnimalIcon />
             {t('admin.animals')}
@@ -55,17 +75,22 @@ export async function AdminShell({ children, me }: Props) {
             <ChartIcon />
             {t('admin.reports')}
           </span>
-          <Link href="/admin/animal-settings" className={`${styles.navLink} ${styles.navLinkActive}`}>
-            <SlidersIcon />
-            {t('admin.settings')}
-          </Link>
+          {showAnimalSettings ? (
+            <Link
+              href="/admin/animal-settings"
+              className={`${styles.navLink} ${activeHref.includes('animal-settings') ? styles.navLinkActive : ''}`}
+            >
+              <SlidersIcon />
+              {t('admin.settings')}
+            </Link>
+          ) : null}
         </nav>
         <div className={styles.sideFooter}>
           <div className={styles.account}>
             <span className={styles.avatar}>{initial}</span>
             <div>
               <div className={styles.accountName}>{me.username || me.email}</div>
-              <div className={styles.role}>{t('admin.roleAdmin')}</div>
+              <div className={styles.role}>{platform ? t('admin.rolePlatform') : t('admin.roleAdmin')}</div>
             </div>
             <BellIcon className={styles.bell} />
           </div>

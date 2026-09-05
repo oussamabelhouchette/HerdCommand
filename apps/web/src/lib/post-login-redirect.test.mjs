@@ -35,6 +35,7 @@ try {
 }
 
 const PORTAL_BY_MEMBERSHIP = {
+  platform_admin: '/admin/farm-settings',
   administrator: '/admin/animal-settings',
   administrators: '/admin/animal-settings',
   owner: '/admin/animal-settings',
@@ -49,7 +50,7 @@ function normalizeMembership(name) {
 function portalHref(memberships) {
   if (!memberships?.length) return DEFAULT_PORTAL;
   for (const raw of memberships) {
-    const path = PORTAL_BY_MEMBERSHIP[normalizeMembership(raw)];
+    const path = PORTAL_BY_MEMBERSHIP[normalizeMembership(raw).replace(/-/g, '_')];
     if (path) return path;
   }
   return DEFAULT_PORTAL;
@@ -128,6 +129,12 @@ test('administrator group or role lands on /admin/animal-settings', () => {
   assert.equal(impl.postLoginHref(['administrator'], '/admin'), '/admin/animal-settings');
 });
 
+test('platform_admin lands on farm-settings', () => {
+  assert.equal(impl.postLoginHref(['PLATFORM_ADMIN']), '/admin/farm-settings');
+  assert.equal(impl.postLoginHref(['platform_admin'], '/'), '/admin/farm-settings');
+  assert.equal(impl.postLoginHref(['platform-admin'], '/admin'), '/admin/farm-settings');
+});
+
 test('everyone else lands on /portal', () => {
   assert.equal(impl.postLoginHref([]), '/portal');
   assert.equal(impl.postLoginHref(['manager']), '/portal');
@@ -144,5 +151,6 @@ test('specific callbacks are honored when they stay in the same portal', () => {
 
 test('users cannot be sent to the other portal via callback', () => {
   assert.equal(impl.postLoginHref(['manager'], '/admin'), '/portal');
+  assert.equal(impl.postLoginHref(['manager'], '/admin/farm-settings'), '/portal');
   assert.equal(impl.postLoginHref(['administrator'], '/portal'), '/admin/animal-settings');
 });

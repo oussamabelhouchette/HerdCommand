@@ -3,7 +3,8 @@ import { getPathname } from '@/i18n/navigation';
 import { logoutAction } from '@/lib/logout';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
 import { membershipsFromSession } from '@/lib/me';
-import { isAdminPortal, portalHref } from '@/lib/portals';
+import { portalHref } from '@/lib/portals';
+import { isAdminRole, isPlatformAdminRole } from '@/lib/roles';
 import { getSession } from '@/lib/session';
 import { Button } from './Button';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -14,7 +15,8 @@ export async function AppHeader() {
   const session = await getSession();
   const memberships = await membershipsFromSession(session);
   const homeHref = session?.user ? portalHref(memberships) : '/login';
-  const showAdmin = isAdminPortal(homeHref);
+  const showAnimalSettings = isAdminRole(memberships);
+  const showFarmSettings = isPlatformAdminRole(memberships);
 
   function href(path: '/' | `/${string}`) {
     return getPathname({ href: path, locale });
@@ -28,7 +30,8 @@ export async function AppHeader() {
       </a>
       <nav className="hc-nav" aria-label={t('app.name')}>
         <a href={href(homeHref as '/' | `/${string}`)}>{t('nav.home')}</a>
-        {showAdmin ? <a href={href('/admin/animal-settings')}>{t('nav.animalSettings')}</a> : null}
+        {showAnimalSettings ? <a href={href('/admin/animal-settings')}>{t('nav.animalSettings')}</a> : null}
+        {showFarmSettings ? <a href={href('/admin/farm-settings')}>{t('nav.farmSettings')}</a> : null}
         <a href={href('/me')}>{t('nav.account')}</a>
         <LanguageSwitcher />
         {session?.user && !isAuthSessionError(session.error) ? (

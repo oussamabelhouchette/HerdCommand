@@ -63,6 +63,17 @@ class ApiContractTest {
     }
 
     @Test
+    void meIncludesPlatformAdminClientRole() throws Exception {
+        mockMvc.perform(get("/api/v1/me").with(jwt().jwt(jwt -> jwt
+                        .subject("admin-1")
+                        .claim("preferred_username", "platform")
+                        .claim("resource_access", Map.of(
+                                "herdcommand", Map.of("roles", List.of("PLATFORM_ADMIN")))))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles[0]").value("PLATFORM_ADMIN"));
+    }
+
+    @Test
     void apiErrorShapeIsStable() {
         ApiError error = ApiError.of("VALIDATION_ERROR", "The request contains invalid fields.", "/api/v1/example");
         org.assertj.core.api.Assertions.assertThat(error.code()).isEqualTo("VALIDATION_ERROR");

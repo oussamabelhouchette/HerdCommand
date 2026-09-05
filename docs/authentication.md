@@ -129,6 +129,16 @@ Create users in realm **herdcommand** (not `master` unless you intend that). Set
 
 Realm name (`herdcommand`) and client id (`herdcommand`) happen to be the same string. They are still two different objects: one is the realm, one is the OIDC client inside that realm.
 
+### 3.5 Platform administrator role (PA-001)
+
+Create a realm role named **`PLATFORM_ADMIN`** (also listed in `infra/keycloak/realm/herdcommand-realm.json`). Assign it only to people who may manage **every** farm.
+
+A farm `owner` / `administrator` / `manager` must **not** have this role. They can still use animal settings; they cannot open `/admin/farm-settings` or call `/api/v1/platform/**`.
+
+If you already imported the realm, add the role by hand in the Keycloak admin console (Realm roles → Create role). Re-importing the JSON is not required for an existing local realm.
+
+The Next.js app never stores Keycloak admin credentials. Role checks read `realm_access.roles` and `resource_access.*.roles` from the user’s access token.
+
 ---
 
 ## 4. Application configuration

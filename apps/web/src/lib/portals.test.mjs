@@ -11,3 +11,8 @@ test('administrator group maps to /admin and the default portal is /portal', () 
   assert.match(source, /DEFAULT_PORTAL = '\/portal'/);
   assert.match(source, /owner:\s*'\/admin\/animal-settings'/);
 });
+
+test('platform_admin maps to farm-settings and not the farm portal', () => {
+  assert.match(source, /platform_admin:\s*'\/admin\/farm-settings'/);
+  assert.doesNotMatch(source, /manager:\s*'\/admin/);
+});

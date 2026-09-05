@@ -30,6 +30,15 @@ export function AnimalIcon(props: IconProps) {
   );
 }
 
+export function FarmIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20V10l8-6 8 6v10" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M10 20v-6h4v6" stroke="currentColor" strokeWidth="1.8" />
+    </Icon>
+  );
+}
+
 export function FolderIcon(props: IconProps) {
   return (
     <Icon {...props}>

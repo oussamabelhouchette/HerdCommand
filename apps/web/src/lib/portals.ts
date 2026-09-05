@@ -4,6 +4,7 @@
  * Names are matched case-insensitively; a leading slash is ignored (/administrator).
  */
 export const PORTAL_BY_MEMBERSHIP: Record<string, string> = {
+  platform_admin: '/admin/farm-settings',
   administrator: '/admin/animal-settings',
   administrators: '/admin/animal-settings',
   owner: '/admin/animal-settings',
@@ -21,7 +22,7 @@ export function portalHref(memberships: string[] | undefined | null): string {
     return DEFAULT_PORTAL;
   }
   for (const raw of memberships) {
-    const key = normalizeMembership(raw);
+    const key = normalizeMembership(raw).replace(/-/g, '_');
     const path = PORTAL_BY_MEMBERSHIP[key];
     if (path) {
       return path;

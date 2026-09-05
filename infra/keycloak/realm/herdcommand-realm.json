@@ -21,7 +21,8 @@
       { "name": "veterinarian", "description": "Veterinarian" },
       { "name": "worker", "description": "Farm worker" },
       { "name": "accountant", "description": "Accountant" },
-      { "name": "administrator", "description": "Administrator" }
+      { "name": "administrator", "description": "Administrator" },
+      { "name": "PLATFORM_ADMIN", "description": "Platform administrator — manage all farms" }
     ]
   },
   "users": [

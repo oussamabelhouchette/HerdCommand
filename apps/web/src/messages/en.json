@@ -12,6 +12,7 @@
     "signOut": "Sign out",
     "language": "Language",
     "animalSettings": "Animal settings",
+    "farmSettings": "Farm management",
     "portal": "Farm portal"
   },
   "portal": {
@@ -25,10 +26,31 @@
     "tasks": "Daily tasks",
     "reports": "Reports and statistics",
     "settings": "System settings",
+    "farms": "Farms",
     "roleAdmin": "System administrator",
+    "rolePlatform": "Platform administrator",
     "forbidden": "This page is available to system administrators only.",
     "forbiddenHint": "Ask an owner or administrator if you need to manage breeds.",
+    "platformForbidden": "This page is available to platform administrators only.",
+    "platformForbiddenHint": "Managing every farm needs the Keycloak PLATFORM_ADMIN role. A farm owner cannot see other farms.",
     "backHome": "Back to farm portal"
+  },
+  "farmSettings": {
+    "title": "Farm management",
+    "subtitle": "Create farms, assign an owner, and control which features are available",
+    "addFarm": "Add a new farm",
+    "statFarms": "Total farms",
+    "statActive": "Active farms",
+    "statAnimals": "Registered animals",
+    "statPending": "Waiting for activation",
+    "statPendingValue": "—",
+    "apiReady": "Platform APIs are available for this account.",
+    "loadError": "Could not verify platform-admin access.",
+    "note": "This is the foundation page. The farm list and creation wizard arrive in later stories. No farm records are shown here.",
+    "soonTitle": "Coming soon",
+    "soonList": "All-farms list and search",
+    "soonCreate": "Farm creation wizard",
+    "soonEdit": "Edit, suspend, and reactivate"
   },
   "animalSettings": {
     "title": "Animal settings",

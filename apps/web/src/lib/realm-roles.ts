@@ -49,6 +49,31 @@ export function groupsFromAccessToken(accessToken?: string | null): string[] {
   return stringList(payload.groups);
 }
 
+export function clientRolesFromAccessToken(accessToken?: string | null): string[] {
+  const payload = decodeJwtPayload(accessToken);
+  if (!payload) {
+    return [];
+  }
+  const resourceAccess = payload.resource_access;
+  if (!resourceAccess || typeof resourceAccess !== 'object' || Array.isArray(resourceAccess)) {
+    return [];
+  }
+  const roles: string[] = [];
+  for (const client of Object.values(resourceAccess as Record<string, unknown>)) {
+    if (!client || typeof client !== 'object' || Array.isArray(client)) {
+      continue;
+    }
+    roles.push(...stringList((client as { roles?: unknown }).roles));
+  }
+  return roles;
+}
+
 export function membershipsFromAccessToken(accessToken?: string | null): string[] {
-  return [...new Set([...realmRolesFromAccessToken(accessToken), ...groupsFromAccessToken(accessToken)])];
+  return [
+    ...new Set([
+      ...realmRolesFromAccessToken(accessToken),
+      ...groupsFromAccessToken(accessToken),
+      ...clientRolesFromAccessToken(accessToken),
+    ]),
+  ];
 }

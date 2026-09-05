@@ -72,11 +72,12 @@ Browser
 11. **US-AC-005 status administration UI** (Statuses tab on `/admin/animal-settings`, color-token picker, live badge preview, no create/delete). File-by-file notes: [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md).
 12. **US-AC-006 farm group API** (Flyway V4 `farm` + `animal_group`, seed HARRI, no animals/assignment). File-by-file notes: [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md).
 13. **US-AC-007 farm group administration UI** (Groups tab, create/edit/deactivate, first seeded farm). File-by-file notes: [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md).
-14. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+14. **PA-001 platform-admin security foundation** (`PLATFORM_ADMIN` JWT mapping, `/api/v1/platform/**`, `/admin/farm-settings` landing, farm owners get 403). File-by-file notes: [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md).
+15. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm membership, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm membership (PA-002+), farm list/wizard, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -336,5 +337,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Status administration UI | `docs/us-ac-005-status-administration-ui.md` |
 | API farm groups | `docs/us-ac-006-farm-group-api.md` |
 | Farm group administration UI | `docs/us-ac-007-farm-group-administration-ui.md` |
+| Platform-admin security + farm landing | `docs/us-pa-001-platform-admin-security-foundation.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |
