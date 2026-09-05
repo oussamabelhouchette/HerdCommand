@@ -36,6 +36,8 @@ export async function AppHeader() {
         <LanguageSwitcher />
         {session?.user && !isAuthSessionError(session.error) ? (
           <form action={logoutAction}>
+            {session.idToken ? <input type="hidden" name="idToken" value={session.idToken} /> : null}
+            <input type="hidden" name="locale" value={locale} />
             <Button type="submit" variant="secondary">
               {t('nav.signOut')}
             </Button>

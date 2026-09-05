@@ -241,7 +241,6 @@ export function FarmSettings({
             type="button"
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={() => setWizardOpen(true)}
-            disabled={!apiReady}
           >
             <PlusIcon />
             {t('addFarm')}
@@ -390,7 +389,7 @@ export function FarmSettings({
               <tbody>
                 {loading ? (
                   Array.from({ length: 5 }, (_, index) => (
-                    <tr key={`skeleton-${index}`} className={styles.skeleton}>
+                    <tr key={`skeleton-${index}`} className={styles.skeleton} data-loading="true">
                       {Array.from({ length: 8 }, (__, cell) => (
                         <td key={cell}>
                           <span className={styles.skeletonBar} />
@@ -408,8 +407,10 @@ export function FarmSettings({
                   data.items.map((farm) => (
                     <tr
                       key={farm.id}
+                      className={farm.id === createdId ? styles.createdRow : undefined}
                       data-farm-id={farm.id}
                       data-farm-code={farm.code}
+                      data-status={farm.status}
                       data-created={farm.id === createdId || undefined}
                     >
                       <td>

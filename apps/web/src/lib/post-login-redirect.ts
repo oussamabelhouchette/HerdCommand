@@ -57,6 +57,14 @@ export function isGenericPostLoginPath(callbackUrl?: string | null): boolean {
   return isGenericSegments(pathSegments(pathname));
 }
 
+export function safeSameOriginPath(callbackUrl?: string | null, fallback = '/'): string {
+  const path = toAppHref(callbackUrl);
+  if (!path.startsWith('/') || path.startsWith('//')) {
+    return fallback;
+  }
+  return path;
+}
+
 export function toAppHref(callbackUrl?: string | null): string {
   const pathname = extractPathname(callbackUrl);
   if (!pathname || pathname === '/') {

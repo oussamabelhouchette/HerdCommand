@@ -642,7 +642,7 @@
   z-index: 60;
 }
 
-tr[data-created='true'] td {
+.createdRow td {
   background: color-mix(in srgb, var(--hc-color-brand-soft) 70%, #fff);
 }
 

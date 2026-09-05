@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
 import { getPathname } from '@/i18n/navigation';
@@ -35,7 +34,6 @@ export default async function AdminLayout({ children, params }: Props) {
 
   const messages = await getMessages();
   const roles = gate.me.roles;
-  const pathname = (await headers()).get('x-pathname') ?? '';
 
   return (
     <NextIntlClientProvider
@@ -48,12 +46,13 @@ export default async function AdminLayout({ children, params }: Props) {
         app: messages.app,
       }}
     >
-      <AuthSessionProvider>
+      <AuthSessionProvider session={gate.session}>
         <AdminShell
           me={gate.me}
+          idToken={gate.session.idToken}
+          locale={locale}
           showAnimalSettings={isAdminRole(roles)}
           showFarmSettings={isPlatformAdminRole(roles)}
-          activeHref={pathname}
         >
           {children}
         </AdminShell>
