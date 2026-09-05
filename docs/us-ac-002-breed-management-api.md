@@ -4,7 +4,7 @@ This document explains **every file added or changed** for the animal-breed admi
 
 There are **no React administration screens** in this story (those are US-AC-003). There is **no DELETE**. Inactive breeds stay in the database and remain visible; later animal-assignment code must refuse to attach an inactive breed.
 
-Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md) (Flyway, audit, permissions, `ApiError`, i18n), [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md) (React admin screen), [implementation-guide.md](./implementation-guide.md), [authentication.md](./authentication.md).
+Related: [us-ac-001-configuration-foundation.md](./us-ac-001-configuration-foundation.md) (Flyway, audit, permissions, `ApiError`, i18n), [us-ac-003-breed-administration-ui.md](./us-ac-003-breed-administration-ui.md) (React admin screen), [us-ac-004-status-configuration-api.md](./us-ac-004-status-configuration-api.md) (status API), [implementation-guide.md](./implementation-guide.md), [authentication.md](./authentication.md).
 
 ---
 
