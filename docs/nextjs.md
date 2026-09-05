@@ -89,7 +89,7 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 | `/design-system` | `src/app/[locale]/(site)/design-system/page.tsx` |
 | `/admin` | `src/app/[locale]/admin/page.tsx` → animal settings, or farm settings if `PLATFORM_ADMIN` only |
 | `/admin/animal-settings` | `src/app/[locale]/admin/animal-settings/page.tsx` |
-| `/admin/farm-settings` | `src/app/[locale]/admin/farm-settings/page.tsx` (PA-001 landing + PA-003 catalog) |
+| `/admin/farm-settings` | `src/app/[locale]/admin/farm-settings/page.tsx` (PA-007 all-farms table) |
 | `/signed-in` | `src/app/[locale]/signed-in/page.tsx` (post-login hop) |
 | `/en`, `/en/login`, `/en/admin`, … | Same files, `locale = en` |
 
@@ -136,7 +136,7 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 | `src/app/[locale]/(site)/me/page.tsx` | Account: calls Spring `GET /api/v1/me` with Bearer token. | `auth()`, `fetch` API |
 | `src/app/[locale]/(site)/design-system/page.tsx` | Button / Input / Card / Badge samples. | No auth required |
 | `src/app/[locale]/admin/animal-settings/page.tsx` | Breed, status, and group administration (US-AC-003 / 005 / 007). | `requireAdmin`, breed + status + farm/group APIs |
-| `src/app/[locale]/admin/farm-settings/page.tsx` | Platform farm-management landing. Feature catalog (PA-003) and owner email lookup (PA-004). No farm list yet. | `requirePlatformAdmin`, `/api/v1/platform`, `/api/v1/platform/features`, `/api/v1/platform/identity/lookup` |
+| `src/app/[locale]/admin/farm-settings/page.tsx` | All-farms administration: summary, search, filters, details. Owner lookup remains below the table. | `requirePlatformAdmin`, `/api/v1/platform/farms`, `/summary`, `/api/v1/platform/features` |
 
 ---
 
@@ -146,7 +146,7 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 |---|---|
 | `src/components/AppHeader.tsx` | Top bar: brand, Home (portal or admin), Design system, Account, language, Sign in/out. Uses `auth()`. |
 | `src/components/admin/AdminShell.tsx` | Dark admin sidebar. System settings and Farms are real links when the user has those roles. |
-| `src/components/admin/FarmSettings.tsx` | Farm-management landing: placeholder stats and coming-soon cards. |
+| `src/components/admin/FarmSettings.tsx` | All-farms table, summary cards, URL filters, details dialog. |
 | `src/components/admin/AnimalSettings.tsx` | Animal-settings chrome: stats and Breeds / Statuses / Groups tabs. |
 | `src/components/admin/BreedManagement.tsx` | Breed table, filters, create/edit modal, activate/deactivate. |
 | `src/components/admin/StatusManagement.tsx` | Status table, color picker, live preview, edit / activate (no create or delete). |

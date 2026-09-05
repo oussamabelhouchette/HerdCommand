@@ -150,6 +150,15 @@ export function CloseIcon(props: IconProps) {
   );
 }
 
+export function EyeIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+    </Icon>
+  );
+}
+
 export function InfoIcon(props: IconProps) {
   return (
     <Icon {...props}>
