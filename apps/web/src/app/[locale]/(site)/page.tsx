@@ -2,6 +2,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
 import { logoutAction } from '@/lib/logout';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
+import { isMeIdentity, loadMe } from '@/lib/me';
+import { isAdminRole } from '@/lib/roles';
 import { redirect } from '@/i18n/navigation';
 import { redirect as redirectToRoute } from 'next/navigation';
 import { Button } from '@/components/Button';
@@ -17,10 +19,21 @@ export default async function HomePage({ params }: Props) {
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
+    return null;
   }
 
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
+    return null;
+  }
+
+  if (isAdminRole(session.roles)) {
+    redirect({ href: '/admin', locale });
+  }
+
+  const me = await loadMe(session.accessToken);
+  if (isMeIdentity(me) && isAdminRole(me.roles)) {
+    redirect({ href: '/admin', locale });
   }
 
   return (

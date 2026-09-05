@@ -5,10 +5,14 @@ import { Link } from '@/i18n/navigation';
 import { Button } from './Button';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
+import { isMeIdentity, loadMe } from '@/lib/me';
+import { isAdminRole } from '@/lib/roles';
 
 export async function AppHeader() {
   const t = await getTranslations();
   const session = await auth();
+  const me = session?.accessToken ? await loadMe(session.accessToken) : null;
+  const showAdmin = isMeIdentity(me) && isAdminRole(me.roles);
 
   return (
     <header className="hc-header">
@@ -18,6 +22,7 @@ export async function AppHeader() {
       </Link>
       <nav className="hc-nav" aria-label={t('app.name')}>
         <Link href="/">{t('nav.home')}</Link>
+        {showAdmin ? <Link href="/admin/animal-settings">{t('nav.animalSettings')}</Link> : null}
         <Link href="/design-system">{t('nav.designSystem')}</Link>
         <Link href="/keycloak-login-preview">{t('nav.loginPreview')}</Link>
         <Link href="/me">{t('nav.account')}</Link>

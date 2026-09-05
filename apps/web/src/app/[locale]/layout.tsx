@@ -4,7 +4,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { routing } from '@/i18n/routing';
-import { AppHeader } from '@/components/AppHeader';
 import { AuthSessionProvider } from '@/components/AuthSessionProvider';
 
 const arabic = IBM_Plex_Sans_Arabic({
@@ -42,12 +41,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} dir={dir} className={`${arabic.variable} ${latin.variable}`}>
       <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
-          <AuthSessionProvider>
-            <div className="hc-shell">
-              <AppHeader />
-              <main>{children}</main>
-            </div>
-          </AuthSessionProvider>
+          <AuthSessionProvider>{children}</AuthSessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

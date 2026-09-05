@@ -1,9 +1,12 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
-import { redirect } from '@/i18n/navigation';
+import { getPathname, redirect } from '@/i18n/navigation';
 import { Card } from '@/components/Card';
 import { SignInButton } from '@/components/SignInButton';
+import { isAdminRole } from '@/lib/roles';
+import { isMeIdentity, loadMe } from '@/lib/me';
+import { postLoginHref } from '@/lib/post-login-redirect';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -15,11 +18,19 @@ export default async function LoginPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const session = await auth();
   const { callbackUrl } = await searchParams;
-  const target = callbackUrl || '/';
+  const intended = callbackUrl || getPathname({ href: '/', locale });
 
   if (session?.user && !isAuthSessionError(session.error)) {
-    redirect({ href: target, locale });
+    let admin = isAdminRole(session.roles);
+    if (!admin && session.accessToken) {
+      const me = await loadMe(session.accessToken);
+      admin = isMeIdentity(me) && isAdminRole(me.roles);
+    }
+    redirect({ href: postLoginHref(admin, callbackUrl), locale });
   }
+
+  const continuePath = getPathname({ href: '/signed-in', locale });
+  const target = `${continuePath}?next=${encodeURIComponent(intended)}`;
 
   const t = await getTranslations();
 

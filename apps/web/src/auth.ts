@@ -2,12 +2,15 @@ import NextAuth from 'next-auth';
 import Keycloak from 'next-auth/providers/keycloak';
 import type { Session } from 'next-auth';
 import { refreshKeycloakAccessToken, accessTokenExpiresAtSeconds, accessTokenNeedsRefresh } from '@/lib/refresh-access-token';
+import { realmRolesFromAccessToken } from '@/lib/realm-roles';
+import { resolveAuthJsRedirect } from '@/lib/post-login-redirect';
 
 declare module 'next-auth' {
   interface Session {
     accessToken?: string;
     idToken?: string;
     error?: string;
+    roles?: string[];
   }
 }
 
@@ -18,6 +21,7 @@ declare module 'next-auth/jwt' {
     refreshToken?: string;
     expiresAt?: number;
     error?: string;
+    roles?: string[];
   }
 }
 
@@ -45,6 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.idToken = account.id_token;
         token.refreshToken = account.refresh_token;
         token.expiresAt = accessTokenExpiresAtSeconds(account);
+        token.roles = realmRolesFromAccessToken(account.access_token);
         token.error = undefined;
         console.info(
           '[HerdCommand] signed in, access token expires in',
@@ -59,6 +64,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       console.info('[HerdCommand] jwt check, access token remaining', remaining, 's, refresh=', needsRefresh);
 
       if (!needsRefresh) {
+        if (!token.roles?.length && token.accessToken) {
+          token.roles = realmRolesFromAccessToken(token.accessToken);
+        }
         return token;
       }
 
@@ -67,6 +75,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!token.refreshToken) {
         token.error = 'SessionExpired';
         token.accessToken = undefined;
+        token.roles = undefined;
         return token;
       }
 
@@ -74,6 +83,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if ('error' in refreshed) {
         token.error = refreshed.error;
         token.accessToken = undefined;
+        token.roles = undefined;
         return token;
       }
 
@@ -81,6 +91,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       token.idToken = refreshed.idToken ?? token.idToken;
       token.refreshToken = refreshed.refreshToken;
       token.expiresAt = refreshed.expiresAt;
+      token.roles = realmRolesFromAccessToken(refreshed.accessToken);
       token.error = undefined;
       return token;
     },
@@ -89,12 +100,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       token,
     }: {
       session: Session;
-      token: { accessToken?: string; idToken?: string; error?: string };
+      token: { accessToken?: string; idToken?: string; error?: string; roles?: string[] };
     }) {
       session.accessToken = token.accessToken;
       session.idToken = token.idToken;
       session.error = token.error;
+      session.roles = token.roles;
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return resolveAuthJsRedirect(url, baseUrl);
     },
   },
 });

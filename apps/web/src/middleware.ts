@@ -5,7 +5,14 @@ import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
-const protectedMatchers = [/^\/me(?:\/|$)/, /^\/ar\/me(?:\/|$)/, /^\/en\/me(?:\/|$)/];
+const protectedMatchers = [
+  /^\/me(?:\/|$)/,
+  /^\/ar\/me(?:\/|$)/,
+  /^\/en\/me(?:\/|$)/,
+  /^\/admin(?:\/|$)/,
+  /^\/ar\/admin(?:\/|$)/,
+  /^\/en\/admin(?:\/|$)/,
+];
 
 export default auth((request) => {
   const { pathname } = request.nextUrl;
