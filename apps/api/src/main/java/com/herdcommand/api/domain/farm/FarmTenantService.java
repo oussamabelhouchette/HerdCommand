@@ -22,10 +22,6 @@ import java.util.UUID;
 @Service
 public class FarmTenantService {
 
-    static final int TRIAL_MAX_ANIMALS = 50;
-    static final int TRIAL_MAX_TEAM = 3;
-    static final int TRIAL_DAYS = 30;
-
     private final FarmRepository farmRepository;
     private final FarmMembershipRepository membershipRepository;
     private final FarmSubscriptionRepository subscriptionRepository;
@@ -44,6 +40,18 @@ public class FarmTenantService {
 
     @Transactional
     public FarmTenantSnapshot createFarm(CreateFarmCommand command) {
+        Farm farm = persistDraftFarm(command);
+        persistSubscription(
+                farm.getId(),
+                FarmPlanCode.TRIAL,
+                FarmPlanLimits.TRIAL_MAX_ANIMALS,
+                FarmPlanLimits.TRIAL_MAX_TEAM,
+                Instant.now().plus(FarmPlanLimits.TRIAL_DAYS, ChronoUnit.DAYS));
+        return FarmTenantSnapshot.from(farm);
+    }
+
+    @Transactional
+    public Farm persistDraftFarm(CreateFarmCommand command) {
         String nameAr = requireName(command.nameAr(), "nameAr");
         String nameEn = requireName(command.nameEn(), "nameEn");
         String nameFr = requireName(command.nameFr(), "nameFr");
@@ -70,18 +78,19 @@ public class FarmTenantService {
             throw new ConflictException(ErrorCodes.FARM_CODE_ALREADY_EXISTS, "error.farm.codeExists");
         }
 
-        Farm farm = farmRepository.saveAndFlush(new Farm(
+        return farmRepository.saveAndFlush(new Farm(
                 code, nameAr, nameEn, nameFr, governorate, address, timezone, language));
+    }
 
-        Instant trialEnds = Instant.now().plus(TRIAL_DAYS, ChronoUnit.DAYS);
-        subscriptionRepository.save(new FarmSubscription(
-                farm.getId(),
-                FarmPlanCode.TRIAL,
-                TRIAL_MAX_ANIMALS,
-                TRIAL_MAX_TEAM,
-                trialEnds));
-
-        return FarmTenantSnapshot.from(farm);
+    @Transactional
+    public FarmSubscription persistSubscription(
+            UUID farmId,
+            FarmPlanCode planCode,
+            int maxActiveAnimals,
+            int maxTeamMembers,
+            Instant trialEndsAt) {
+        return subscriptionRepository.saveAndFlush(new FarmSubscription(
+                farmId, planCode, maxActiveAnimals, maxTeamMembers, trialEndsAt));
     }
 
     @Transactional
@@ -96,6 +105,11 @@ public class FarmTenantService {
 
     @Transactional
     public FarmMembership assignOwner(AssignFarmOwnerCommand command) {
+        return assignOwner(command, FarmMembershipStatus.ACTIVE);
+    }
+
+    @Transactional
+    public FarmMembership assignOwner(AssignFarmOwnerCommand command, FarmMembershipStatus status) {
         Farm farm = requireFarm(command.farmId());
         String userId = requireText(command.keycloakUserId(), "keycloakUserId", 64);
         String email = FarmMembership.normalizeEmail(requireText(command.invitedEmail(), "invitedEmail", 320));
@@ -109,7 +123,7 @@ public class FarmTenantService {
                 email,
                 now,
                 currentAuditor(),
-                FarmMembershipStatus.ACTIVE);
+                status == null ? FarmMembershipStatus.ACTIVE : status);
         return membershipRepository.saveAndFlush(membership);
     }
 

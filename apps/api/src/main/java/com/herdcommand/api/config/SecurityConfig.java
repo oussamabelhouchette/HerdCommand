@@ -67,8 +67,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.stream(allowedOrigins.split(",")).map(String::trim).toList());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Correlation-Id", "Accept-Language"));
-        config.setExposedHeaders(List.of("X-Correlation-Id"));
+        config.setAllowedHeaders(List.of(
+                "Authorization", "Content-Type", "X-Correlation-Id", "Accept-Language", "Idempotency-Key"));
+        config.setExposedHeaders(List.of("X-Correlation-Id", "Location"));
         config.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

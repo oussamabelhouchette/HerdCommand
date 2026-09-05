@@ -42,7 +42,7 @@ public class PlatformAdminController {
     @GetMapping("/farms")
     @Operation(summary = "Confirm platform-admin access to the farms path (list arrives in PA-006)")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Caller may use platform farm APIs"),
+            @ApiResponse(responseCode = "200", description = "Caller may use platform farm APIs; list arrives in PA-006"),
             @ApiResponse(responseCode = "401", description = "Unauthenticated",
                     content = @Content(schema = @Schema(implementation = ApiError.class))),
             @ApiResponse(responseCode = "403", description = "Missing PLATFORM_ADMIN",

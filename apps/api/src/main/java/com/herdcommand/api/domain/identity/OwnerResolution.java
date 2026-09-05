@@ -7,5 +7,6 @@ public record OwnerResolution(
         String email,
         String displayName,
         FarmMembershipStatus membershipStatus,
-        boolean invitationEmailSent
+        boolean invitationEmailSent,
+        boolean identityCreated
 ) {}

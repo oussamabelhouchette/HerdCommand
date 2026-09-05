@@ -25,6 +25,11 @@ public final class ErrorCodes {
     public static final String IDENTITY_DISABLED = "IDENTITY_DISABLED";
     public static final String IDENTITY_AMBIGUOUS = "IDENTITY_AMBIGUOUS";
     public static final String IDENTITY_PROVIDER_UNAVAILABLE = "IDENTITY_PROVIDER_UNAVAILABLE";
+    public static final String PLAN_NOT_FOUND = "PLAN_NOT_FOUND";
+    public static final String PLAN_LIMIT_INVALID = "PLAN_LIMIT_INVALID";
+    public static final String INVALID_FARM_STATUS_TRANSITION = "INVALID_FARM_STATUS_TRANSITION";
+    public static final String IDEMPOTENCY_KEY_REQUIRED = "IDEMPOTENCY_KEY_REQUIRED";
+    public static final String IDEMPOTENCY_CONFLICT = "IDEMPOTENCY_CONFLICT";
 
     private ErrorCodes() {}
 }

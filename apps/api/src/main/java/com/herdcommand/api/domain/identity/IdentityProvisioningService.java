@@ -35,6 +35,7 @@ public class IdentityProvisioningService {
                     lookup.email(),
                     lookup.displayName(),
                     FarmMembershipStatus.ACTIVE,
+                    false,
                     false);
         }
 
@@ -60,7 +61,8 @@ public class IdentityProvisioningService {
                 created.email(),
                 created.displayName(),
                 FarmMembershipStatus.INVITED,
-                emailSent);
+                emailSent,
+                true);
     }
 
     public void resendInvitation(String keycloakUserId) {

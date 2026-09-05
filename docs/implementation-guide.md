@@ -76,11 +76,12 @@ Browser
 15. **PA-002 farm and membership database foundation** (Flyway V6 tenant columns, `farm_membership`, `farm_subscription`, generated `FARM-TN-####` codes, owner-required activation, optimistic lock). File-by-file notes: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md).
 16. **PA-003 dynamic feature catalog** (Flyway V7 `feature_catalog` + `farm_feature`, `ANIMAL_MANAGEMENT`, `GET /api/v1/platform/features`, coming-soon not enableable). File-by-file notes: [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md).
 17. **PA-004 Keycloak owner lookup and invitation** (`POST /api/v1/platform/identity/lookup`, service-account admin client, invite abstraction, debounced owner field). File-by-file notes: [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md).
-18. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+18. **PA-005 atomic farm creation API** (`POST /api/v1/platform/farms`, idempotency key, one DB transaction, Keycloak compensation). File-by-file notes: [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md).
+19. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm create/list/wizard (PA-005+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm list/wizard (PA-006+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -344,5 +345,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Farm + membership database foundation | `docs/us-pa-002-farm-and-membership-database-foundation.md` |
 | Dynamic feature catalog | `docs/us-pa-003-dynamic-feature-catalog.md` |
 | Keycloak owner lookup + invitation | `docs/us-pa-004-keycloak-owner-lookup-and-invitation.md` |
+| Atomic farm creation API | `docs/us-pa-005-atomic-farm-creation-api.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

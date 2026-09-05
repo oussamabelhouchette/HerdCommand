@@ -58,6 +58,23 @@ public class FarmFeatureService {
         return FarmFeatureResponse.from(saved, feature.getCode());
     }
 
+    @Transactional
+    public List<String> enableByCodes(UUID farmId, List<String> featureCodes) {
+        Instant now = Instant.now();
+        String auditor = currentAuditor();
+        return featureCodes.stream()
+                .map(featureCatalogService::requireEnableableByCode)
+                .map(feature -> {
+                    FarmFeature assignment = farmFeatureRepository
+                            .findByFarmIdAndFeatureId(farmId, feature.getId())
+                            .orElseGet(() -> new FarmFeature(farmId, feature.getId()));
+                    assignment.enable(auditor, null, now);
+                    farmFeatureRepository.saveAndFlush(assignment);
+                    return feature.getCode();
+                })
+                .toList();
+    }
+
     private String normalizeConfiguration(String raw) {
         if (raw == null || raw.isBlank()) {
             return null;

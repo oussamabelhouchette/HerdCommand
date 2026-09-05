@@ -101,6 +101,7 @@ class IdentityServicesTest {
         assertThat(resolved.keycloakUserId()).isEqualTo("kc-1");
         assertThat(resolved.membershipStatus()).isEqualTo(FarmMembershipStatus.ACTIVE);
         assertThat(resolved.invitationEmailSent()).isFalse();
+        assertThat(resolved.identityCreated()).isFalse();
         verify(directory, never()).createInvitedUser(any(), any());
         verify(directory, never()).sendExecuteActionsEmail(any());
     }
@@ -115,6 +116,7 @@ class IdentityServicesTest {
 
         assertThat(resolved.membershipStatus()).isEqualTo(FarmMembershipStatus.INVITED);
         assertThat(resolved.invitationEmailSent()).isTrue();
+        assertThat(resolved.identityCreated()).isTrue();
         verify(directory).sendExecuteActionsEmail("kc-new");
     }
 

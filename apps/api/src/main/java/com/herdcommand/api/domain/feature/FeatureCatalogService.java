@@ -39,6 +39,20 @@ public class FeatureCatalogService {
     public FeatureCatalog requireEnableable(UUID featureId) {
         FeatureCatalog feature = featureCatalogRepository.findById(featureId).orElseThrow(
                 () -> new ApiException(ErrorCodes.FEATURE_NOT_FOUND, HttpStatus.NOT_FOUND, "error.feature.notFound"));
+        return requireEnableable(feature);
+    }
+
+    @Transactional(readOnly = true)
+    public FeatureCatalog requireEnableableByCode(String rawCode) {
+        if (rawCode == null || rawCode.isBlank()) {
+            throw new ApiException(ErrorCodes.FEATURE_NOT_FOUND, HttpStatus.NOT_FOUND, "error.feature.notFound");
+        }
+        FeatureCatalog feature = featureCatalogRepository.findByCodeIgnoreCase(rawCode.trim()).orElseThrow(
+                () -> new ApiException(ErrorCodes.FEATURE_NOT_FOUND, HttpStatus.NOT_FOUND, "error.feature.notFound"));
+        return requireEnableable(feature);
+    }
+
+    private static FeatureCatalog requireEnableable(FeatureCatalog feature) {
         if (!feature.isEnableable()) {
             throw new BadRequestException(ErrorCodes.FEATURE_NOT_AVAILABLE, "error.feature.notAvailable");
         }

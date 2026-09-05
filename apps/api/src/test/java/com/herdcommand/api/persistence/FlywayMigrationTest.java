@@ -108,4 +108,28 @@ class FlywayMigrationTest {
                 Integer.class);
         assertThat(farmFlags).isZero();
     }
+
+    @Test
+    void farmOnboardingIdempotencyMigrationIsApplied() {
+        Integer version = jdbcTemplate.queryForObject(
+                "SELECT MAX(installed_rank) FROM flyway_schema_history",
+                Integer.class);
+        assertThat(version).isGreaterThanOrEqualTo(8);
+
+        Integer requests = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE lower(table_name) = 'farm_onboarding_request'
+                """,
+                Integer.class);
+        assertThat(requests).isEqualTo(1);
+
+        Integer compensations = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE lower(table_name) = 'farm_onboarding_compensation'
+                """,
+                Integer.class);
+        assertThat(compensations).isEqualTo(1);
+    }
 }
