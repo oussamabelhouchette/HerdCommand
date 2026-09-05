@@ -51,7 +51,16 @@
     "featuresHint": "Selections are stored by feature code. Coming-soon modules cannot be enabled.",
     "featuresEmpty": "No features were returned from the catalog.",
     "featureAvailable": "Available",
-    "featureComingSoon": "Coming soon"
+    "featureComingSoon": "Coming soon",
+    "ownerTitle": "Farm owner",
+    "ownerHint": "Look up the owner by email. Authentication stays in Keycloak. Ownership is stored here after the farm is created.",
+    "ownerEmail": "Owner email",
+    "ownerPlaceholder": "owner@example.tn",
+    "ownerLoading": "Looking up this email…",
+    "ownerFound": "Found {name}. This account can be assigned when the farm is created.",
+    "ownerInvite": "No Keycloak account yet. An invitation email will be sent after farm creation.",
+    "ownerDisabled": "This Keycloak account is disabled and cannot own a farm.",
+    "ownerError": "Could not reach the identity service."
   },
   "animalSettings": {
     "title": "Animal settings",

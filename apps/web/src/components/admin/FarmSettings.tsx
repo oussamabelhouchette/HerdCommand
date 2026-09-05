@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { CheckIcon, ClockIcon, FarmIcon, LayersIcon, PlusIcon } from './AdminIcons';
+import { OwnerLookup } from './OwnerLookup';
 import type { CatalogFeature } from '@/lib/features';
 import { selectedFeatureCodes } from '@/lib/features';
 import styles from './FarmSettings.module.css';
@@ -76,6 +77,7 @@ export async function FarmSettings({ apiReady, loadError, features }: Props) {
           <p className={styles.status}>{t('apiReady')}</p>
         ) : null}
         <p className={styles.note}>{t('note')}</p>
+        <OwnerLookup />
         <h2 className={styles.featuresTitle}>{t('featuresTitle')}</h2>
         <p className={styles.featuresHint}>{t('featuresHint')}</p>
         {features.length === 0 && !loadError ? (

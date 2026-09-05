@@ -128,6 +128,29 @@
   line-height: 1.6;
 }
 
+.owner {
+  margin: 0 0 22px;
+}
+
+.ownerLabel {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ownerInput {
+  width: min(420px, 100%);
+  height: 41px;
+  padding: 0 12px;
+  border-radius: 11px;
+  border: var(--hc-border-width) solid var(--hc-color-border);
+  font: inherit;
+}
+
+.ownerState {
+  margin: 10px 0 0;
+}
+
 .featuresTitle {
   margin: 0 0 6px;
   font-size: 16px;

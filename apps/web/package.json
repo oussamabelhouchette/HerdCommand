@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 3000",
     "lint": "next lint",
-    "test": "node --test src/lib/locale.test.mjs src/lib/roles.test.mjs src/lib/post-login-redirect.test.mjs src/lib/realm-roles.test.mjs src/lib/portals.test.mjs src/lib/statuses.test.mjs src/lib/groups.test.mjs src/lib/platform.test.mjs src/lib/features.test.mjs"
+    "test": "node --test src/lib/locale.test.mjs src/lib/roles.test.mjs src/lib/post-login-redirect.test.mjs src/lib/realm-roles.test.mjs src/lib/portals.test.mjs src/lib/statuses.test.mjs src/lib/groups.test.mjs src/lib/platform.test.mjs src/lib/features.test.mjs src/lib/identity.test.mjs"
   },
   "dependencies": {
     "@herdcommand/tokens": "workspace:*",

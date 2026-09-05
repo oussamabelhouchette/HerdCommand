@@ -56,3 +56,12 @@ springdoc:
 herdcommand:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
+  keycloak:
+    admin:
+      base-url: ${KEYCLOAK_ADMIN_BASE_URL:http://localhost:9090}
+      realm: ${KEYCLOAK_ADMIN_REALM:herdcommand}
+      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:herdcommand-admin}
+      client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:}
+      login-redirect-uri: ${KEYCLOAK_INVITE_REDIRECT_URI:http://localhost:3000/login}
+      public-client-id: ${KEYCLOAK_INVITE_CLIENT_ID:herdcommand}
+      action-lifespan-seconds: ${KEYCLOAK_INVITE_LIFESPAN_SECONDS:43200}

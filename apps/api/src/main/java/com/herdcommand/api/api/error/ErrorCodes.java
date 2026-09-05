@@ -21,6 +21,10 @@ public final class ErrorCodes {
     public static final String FEATURE_NOT_FOUND = "FEATURE_NOT_FOUND";
     public static final String FEATURE_NOT_AVAILABLE = "FEATURE_NOT_AVAILABLE";
     public static final String FEATURE_ASSIGNMENT_INVALID = "FEATURE_ASSIGNMENT_INVALID";
+    public static final String IDENTITY_NOT_FOUND = "IDENTITY_NOT_FOUND";
+    public static final String IDENTITY_DISABLED = "IDENTITY_DISABLED";
+    public static final String IDENTITY_AMBIGUOUS = "IDENTITY_AMBIGUOUS";
+    public static final String IDENTITY_PROVIDER_UNAVAILABLE = "IDENTITY_PROVIDER_UNAVAILABLE";
 
     private ErrorCodes() {}
 }

@@ -15,3 +15,7 @@ spring:
 logging:
   level:
     org.springframework.security: WARN
+herdcommand:
+  keycloak:
+    admin:
+      client-secret:

@@ -139,6 +139,17 @@ If you already imported the realm, add the role by hand in the Keycloak admin co
 
 The Next.js app never stores Keycloak admin credentials. Role checks read `realm_access.roles` and `resource_access.*.roles` from the user’s access token.
 
+### 3.6 Platform admin service account (PA-004)
+
+The API looks up and invites farm owners through the Keycloak Admin API. React never calls that API.
+
+1. Create confidential client **`herdcommand-admin`** (service account on, standard flow off).
+2. Assign its service account the **realm-management** roles `view-users`, `query-users`, and `manage-users`.
+3. Put the client secret in `.env` as `KEYCLOAK_ADMIN_CLIENT_SECRET`. Do not commit it.
+4. Configure realm SMTP if invitation emails should be delivered.
+
+New realm imports from `infra/keycloak/realm/herdcommand-realm.json` include the client shell. An already-running realm needs the client created once in the admin console.
+
 ---
 
 ## 4. Application configuration

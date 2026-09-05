@@ -75,11 +75,12 @@ Browser
 14. **PA-001 platform-admin security foundation** (`PLATFORM_ADMIN` JWT mapping, `/api/v1/platform/**`, `/admin/farm-settings` landing, farm owners get 403). File-by-file notes: [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md).
 15. **PA-002 farm and membership database foundation** (Flyway V6 tenant columns, `farm_membership`, `farm_subscription`, generated `FARM-TN-####` codes, owner-required activation, optimistic lock). File-by-file notes: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md).
 16. **PA-003 dynamic feature catalog** (Flyway V7 `feature_catalog` + `farm_feature`, `ANIMAL_MANAGEMENT`, `GET /api/v1/platform/features`, coming-soon not enableable). File-by-file notes: [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md).
-17. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+17. **PA-004 Keycloak owner lookup and invitation** (`POST /api/v1/platform/identity/lookup`, service-account admin client, invite abstraction, debounced owner field). File-by-file notes: [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md).
+18. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, Keycloak owner lookup (PA-004), farm create/list/wizard (PA-005+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm create/list/wizard (PA-005+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -342,5 +343,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Platform-admin security + farm landing | `docs/us-pa-001-platform-admin-security-foundation.md` |
 | Farm + membership database foundation | `docs/us-pa-002-farm-and-membership-database-foundation.md` |
 | Dynamic feature catalog | `docs/us-pa-003-dynamic-feature-catalog.md` |
+| Keycloak owner lookup + invitation | `docs/us-pa-004-keycloak-owner-lookup-and-invitation.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

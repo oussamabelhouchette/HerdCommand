@@ -136,7 +136,7 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 | `src/app/[locale]/(site)/me/page.tsx` | Account: calls Spring `GET /api/v1/me` with Bearer token. | `auth()`, `fetch` API |
 | `src/app/[locale]/(site)/design-system/page.tsx` | Button / Input / Card / Badge samples. | No auth required |
 | `src/app/[locale]/admin/animal-settings/page.tsx` | Breed, status, and group administration (US-AC-003 / 005 / 007). | `requireAdmin`, breed + status + farm/group APIs |
-| `src/app/[locale]/admin/farm-settings/page.tsx` | Platform farm-management landing. Feature cards from the catalog API (PA-003). No farm list yet. | `requirePlatformAdmin`, `/api/v1/platform`, `/api/v1/platform/features` |
+| `src/app/[locale]/admin/farm-settings/page.tsx` | Platform farm-management landing. Feature catalog (PA-003) and owner email lookup (PA-004). No farm list yet. | `requirePlatformAdmin`, `/api/v1/platform`, `/api/v1/platform/features`, `/api/v1/platform/identity/lookup` |
 
 ---
 

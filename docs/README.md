@@ -13,5 +13,6 @@
 | [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md) | PA-001: PLATFORM_ADMIN, `/api/v1/platform/**`, farm-management landing, 401/403 |
 | [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md) | PA-002: farm tenant columns, membership, subscription, generated codes, optimistic lock |
 | [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md) | PA-003: feature catalog, farm_feature, GET /platform/features, no farm Boolean flags |
+| [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md) | PA-004: owner email lookup, Keycloak service account, invitation abstraction |
 | [nextjs.md](./nextjs.md) | Next.js app: entry points and every file |
 | [authentication.md](./authentication.md) | Login/logout OIDC details, Keycloak client fields, example URLs |
