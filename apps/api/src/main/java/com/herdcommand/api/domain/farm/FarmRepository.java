@@ -10,5 +10,7 @@ public interface FarmRepository extends JpaRepository<Farm, UUID> {
 
     Optional<Farm> findByCodeIgnoreCase(String code);
 
+    boolean existsByCodeIgnoreCase(String code);
+
     List<Farm> findAllByOrderByNameArAsc();
 }

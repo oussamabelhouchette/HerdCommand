@@ -14,6 +14,10 @@ public final class ErrorCodes {
     public static final String STATUS_REQUIRED = "STATUS_REQUIRED";
     public static final String STATUS_INACTIVE = "STATUS_INACTIVE";
     public static final String GROUP_CODE_ALREADY_EXISTS = "GROUP_CODE_ALREADY_EXISTS";
+    public static final String FARM_CODE_ALREADY_EXISTS = "FARM_CODE_ALREADY_EXISTS";
+    public static final String FARM_OWNER_REQUIRED = "FARM_OWNER_REQUIRED";
+    public static final String FARM_VERSION_CONFLICT = "FARM_VERSION_CONFLICT";
+    public static final String OWNER_ALREADY_ASSIGNED = "OWNER_ALREADY_ASSIGNED";
 
     private ErrorCodes() {}
 }

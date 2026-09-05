@@ -73,11 +73,12 @@ Browser
 12. **US-AC-006 farm group API** (Flyway V4 `farm` + `animal_group`, seed HARRI, no animals/assignment). File-by-file notes: [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md).
 13. **US-AC-007 farm group administration UI** (Groups tab, create/edit/deactivate, first seeded farm). File-by-file notes: [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md).
 14. **PA-001 platform-admin security foundation** (`PLATFORM_ADMIN` JWT mapping, `/api/v1/platform/**`, `/admin/farm-settings` landing, farm owners get 403). File-by-file notes: [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md).
-15. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+15. **PA-002 farm and membership database foundation** (Flyway V6 tenant columns, `farm_membership`, `farm_subscription`, generated `FARM-TN-####` codes, owner-required activation, optimistic lock). File-by-file notes: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md).
+16. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm membership (PA-002+), farm list/wizard, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, Keycloak owner lookup (PA-004), farm create/list/wizard (PA-005+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -338,5 +339,6 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | API farm groups | `docs/us-ac-006-farm-group-api.md` |
 | Farm group administration UI | `docs/us-ac-007-farm-group-administration-ui.md` |
 | Platform-admin security + farm landing | `docs/us-pa-001-platform-admin-security-foundation.md` |
+| Farm + membership database foundation | `docs/us-pa-002-farm-and-membership-database-foundation.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |
