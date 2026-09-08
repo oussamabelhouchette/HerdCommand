@@ -28,8 +28,11 @@ export async function FarmDashboard({ farm }: Props) {
   const planLabel = farm.planCode && ['TRIAL', 'ESSENTIAL', 'PROFESSIONAL'].includes(farm.planCode)
     ? t(`farmSettings.plan.${farm.planCode}`)
     : farm.planCode || t('farm.noPlan');
+  const governorateKey = farm.governorateCode ? `farmSettings.governorate.${farm.governorateCode}` : '';
   const governorate = farm.governorateCode
-    ? t(`farmSettings.governorates.${farm.governorateCode}`)
+    ? t.has(governorateKey)
+      ? t(governorateKey)
+      : farm.governorateCode
     : '—';
 
   return (

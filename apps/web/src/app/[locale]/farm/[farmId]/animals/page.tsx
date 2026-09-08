@@ -1,28 +1,27 @@
 import { setRequestLocale } from 'next-intl/server';
-import { loadOwnerFarms, selectOwnerFarm } from '@/lib/owner-farms';
-import { requireFarmOwner } from '@/lib/require-admin';
-import { FarmAnimals } from '@/components/farm/FarmAnimals';
-import { redirect } from '@/i18n/navigation';
+import { requireCurrentFarm } from '@/lib/farm-portal';
+import { parseAnimalSearchParams } from '@/lib/animals';
+import { OwnerAnimals } from '@/components/farm/OwnerAnimals';
 
-type Props = { params: Promise<{ locale: string; farmId: string }> };
+type Props = {
+  params: Promise<{ locale: string; farmId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
-export default async function FarmAnimalsPage({ params }: Props) {
+export default async function FarmAnimalsPage({ params, searchParams }: Props) {
   const { locale, farmId } = await params;
   setRequestLocale(locale);
-  const gate = await requireFarmOwner(locale);
-
-  if (!gate.allowed || !gate.session.accessToken) {
+  const current = await requireCurrentFarm(locale, farmId);
+  if (!current.ok) {
     return null;
   }
 
-  const { farms } = await loadOwnerFarms(gate.session.accessToken, locale);
-  const farm = selectOwnerFarm(farms, farmId);
-  if (!farm) {
-    redirect({ href: '/farm', locale });
-  }
-  if (farm.id !== farmId) {
-    redirect({ href: `/farm/${farm.id}/animals`, locale });
-  }
-
-  return <FarmAnimals farm={farm} />;
+  return (
+    <OwnerAnimals
+      farm={current.farm}
+      token={current.token}
+      locale={locale}
+      query={parseAnimalSearchParams(await searchParams)}
+    />
+  );
 }

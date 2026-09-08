@@ -1,3 +1,5 @@
+'use client';
+
 import type { SVGProps } from 'react';
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -120,6 +122,31 @@ export function PenIcon(props: IconProps) {
     <Icon {...props}>
       <path d="M4 20h4l11-11-4-4L4 16z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
       <path d="m13 7 4 4" stroke="currentColor" strokeWidth="1.8" />
+    </Icon>
+  );
+}
+
+export function TrashIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 8h14M10 8V6h4v2M9 8l.7 12h4.6L15 8" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    </Icon>
+  );
+}
+
+export function QrIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5z" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" fill="currentColor" />
+    </Icon>
+  );
+}
+
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </Icon>
   );
 }

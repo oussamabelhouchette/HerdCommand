@@ -15,6 +15,8 @@ public interface AnimalStatusDefinitionRepository extends JpaRepository<AnimalSt
 
     List<AnimalStatusDefinition> findByActiveTrueOrderByDisplayOrderAsc();
 
+    List<AnimalStatusDefinition> findByActiveTrueAndVisibleInFilterTrueOrderByDisplayOrderAsc();
+
     @Query("""
             SELECT s FROM AnimalStatusDefinition s
             WHERE (:active IS NULL OR s.active = :active)

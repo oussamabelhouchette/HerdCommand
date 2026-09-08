@@ -6,5 +6,7 @@ public enum Permission {
     STATUS_CONFIG_MANAGE,
     GROUP_VIEW,
     GROUP_MANAGE,
+    ANIMAL_VIEW,
+    ANIMAL_MANAGE,
     PLATFORM_ADMIN
 }

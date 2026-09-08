@@ -22,7 +22,12 @@ public final class RolePermissionMapper {
             "veterinarian", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW, Permission.GROUP_VIEW),
             "worker", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW, Permission.GROUP_VIEW),
             "accountant", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW),
-            "platform_admin", EnumSet.of(Permission.PLATFORM_ADMIN));
+            "platform_admin", EnumSet.of(Permission.PLATFORM_ADMIN),
+            "farm_owner", EnumSet.of(
+                    Permission.ANIMAL_VIEW,
+                    Permission.ANIMAL_MANAGE,
+                    Permission.GROUP_VIEW,
+                    Permission.ANIMAL_CONFIG_VIEW));
 
     private RolePermissionMapper() {}
 
@@ -30,7 +35,9 @@ public final class RolePermissionMapper {
         if (role == null || role.isBlank()) {
             return "";
         }
-        return role.trim().toLowerCase(Locale.ROOT).replace('-', '_');
+        String normalized = role.trim().toLowerCase(Locale.ROOT).replace('-', '_');
+        int slash = normalized.lastIndexOf('/');
+        return slash >= 0 ? normalized.substring(slash + 1) : normalized;
     }
 
     public static Set<Permission> permissionsForRole(String role) {

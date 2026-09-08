@@ -96,6 +96,28 @@ class JwtAuthoritiesConverterTest {
         assertThat(authorities).doesNotContain(Permission.BREED_MANAGE.name());
     }
 
+    @Test
+    void farmOwnerGroupReceivesAnimalPermissions() {
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .subject("owner-1")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(60))
+                .claim("groups", List.of("/farm_owner"))
+                .build();
+
+        List<String> authorities = converter.convert(jwt).stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        assertThat(authorities)
+                .contains(Permission.ANIMAL_VIEW.name())
+                .contains(Permission.ANIMAL_MANAGE.name())
+                .contains(Permission.GROUP_VIEW.name())
+                .doesNotContain(Permission.PLATFORM_ADMIN.name())
+                .doesNotContain(Permission.BREED_MANAGE.name());
+    }
+
     private static Jwt jwtWithRealmRoles(String... roles) {
         return Jwt.withTokenValue("token")
                 .header("alg", "none")

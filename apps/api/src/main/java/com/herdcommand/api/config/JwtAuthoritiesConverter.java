@@ -30,7 +30,7 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
             authorities.addAll(scoped);
         }
 
-        List<String> tokenRoles = JwtRoleExtractor.realmAndClientRoles(jwt);
+        List<String> tokenRoles = JwtRoleExtractor.memberships(jwt);
         tokenRoles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .forEach(authorities::add);

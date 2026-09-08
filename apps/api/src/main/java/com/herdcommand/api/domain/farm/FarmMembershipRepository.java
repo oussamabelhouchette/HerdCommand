@@ -20,6 +20,9 @@ public interface FarmMembershipRepository extends JpaRepository<FarmMembership, 
 
     boolean existsByFarmIdAndKeycloakUserId(UUID farmId, String keycloakUserId);
 
+    boolean existsByFarmIdAndKeycloakUserIdAndRoleCodeAndStatus(
+            UUID farmId, String keycloakUserId, FarmMembershipRole roleCode, FarmMembershipStatus status);
+
     List<FarmMembership> findByFarmIdInAndRoleCodeAndStatusIn(
             Collection<UUID> farmIds,
             FarmMembershipRole roleCode,

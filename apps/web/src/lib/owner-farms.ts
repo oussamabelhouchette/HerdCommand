@@ -47,9 +47,13 @@ export function farmHref(farmId: string, pathname = '/farm'): string {
   return `/farm/${farmId}${suffix}`;
 }
 
-export function selectOwnerFarm(farms: OwnerFarm[], farmId?: string | null): OwnerFarm | undefined {
-  if (!farms.length) {
+export function findOwnerFarm(farms: OwnerFarm[], farmId?: string | null): OwnerFarm | undefined {
+  if (!farmId) {
     return undefined;
   }
-  return farms.find((farm) => farm.id === farmId) ?? farms[0];
+  return farms.find((farm) => farm.id === farmId);
+}
+
+export function firstOwnerFarm(farms: OwnerFarm[]): OwnerFarm | undefined {
+  return farms[0];
 }

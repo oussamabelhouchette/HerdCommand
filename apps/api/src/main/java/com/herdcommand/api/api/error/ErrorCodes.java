@@ -30,6 +30,9 @@ public final class ErrorCodes {
     public static final String INVALID_FARM_STATUS_TRANSITION = "INVALID_FARM_STATUS_TRANSITION";
     public static final String IDEMPOTENCY_KEY_REQUIRED = "IDEMPOTENCY_KEY_REQUIRED";
     public static final String IDEMPOTENCY_CONFLICT = "IDEMPOTENCY_CONFLICT";
+    public static final String GROUP_NOT_IN_FARM = "GROUP_NOT_IN_FARM";
+    public static final String ANIMAL_ID_ALREADY_EXISTS = "ANIMAL_ID_ALREADY_EXISTS";
+    public static final String ANIMAL_ARCHIVED = "ANIMAL_ARCHIVED";
 
     private ErrorCodes() {}
 }

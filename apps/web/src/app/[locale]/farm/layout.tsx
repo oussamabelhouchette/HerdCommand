@@ -1,8 +1,7 @@
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
 import { getPathname } from '@/i18n/navigation';
-import { loadOwnerFarms } from '@/lib/owner-farms';
-import { requireFarmOwner } from '@/lib/require-admin';
+import { loadFarmPortal } from '@/lib/farm-portal';
 import { AuthSessionProvider } from '@/components/AuthSessionProvider';
 import { FarmShell } from '@/components/farm/FarmShell';
 import type { ReactNode } from 'react';
@@ -15,9 +14,9 @@ type Props = {
 export default async function FarmLayout({ children, params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const gate = await requireFarmOwner(locale);
+  const portal = await loadFarmPortal(locale);
 
-  if (!gate.allowed) {
+  if (!portal.gate.allowed) {
     const t = await getTranslations('farm');
     return (
       <div className="hc-shell">
@@ -33,9 +32,6 @@ export default async function FarmLayout({ children, params }: Props) {
   }
 
   const messages = await getMessages();
-  const farms = gate.session.accessToken
-    ? (await loadOwnerFarms(gate.session.accessToken, locale)).farms
-    : [];
 
   return (
     <NextIntlClientProvider
@@ -43,12 +39,13 @@ export default async function FarmLayout({ children, params }: Props) {
       messages={{
         farm: messages.farm,
         farmSettings: messages.farmSettings,
+        animals: messages.animals,
         nav: messages.nav,
         app: messages.app,
       }}
     >
-      <AuthSessionProvider session={gate.session}>
-        <FarmShell me={gate.me} farms={farms} idToken={gate.session.idToken} locale={locale}>
+      <AuthSessionProvider session={portal.gate.session}>
+        <FarmShell me={portal.gate.me} farms={portal.farms} idToken={portal.gate.session.idToken} locale={locale}>
           {children}
         </FarmShell>
       </AuthSessionProvider>
