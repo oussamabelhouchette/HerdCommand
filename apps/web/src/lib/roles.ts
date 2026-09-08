@@ -23,3 +23,10 @@ export function isPlatformAdminRole(roles: string[] | undefined | null): boolean
 export function isAdminShellRole(roles: string[] | undefined | null): boolean {
   return isAdminRole(roles) || isPlatformAdminRole(roles);
 }
+
+export function isFarmOwnerRole(roles: string[] | undefined | null): boolean {
+  if (!roles?.length) {
+    return false;
+  }
+  return roles.some((role) => normalizePlatformRole(role) === 'farm_owner');
+}

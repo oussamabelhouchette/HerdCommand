@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { getSession } from '@/lib/session';
 import { isAuthSessionError } from '@/lib/refresh-access-token';
 import { isMeIdentity, loadMe, type MeIdentity } from '@/lib/me';
-import { isAdminRole, isAdminShellRole, isPlatformAdminRole } from '@/lib/roles';
+import { isAdminRole, isAdminShellRole, isFarmOwnerRole, isPlatformAdminRole } from '@/lib/roles';
 import { redirect } from '@/i18n/navigation';
 import { redirect as redirectToRoute } from 'next/navigation';
 import type { Session } from 'next-auth';
@@ -55,3 +55,4 @@ function createRoleGate(isAllowed: (roles: string[] | undefined | null) => boole
 export const requireAdmin = createRoleGate(isAdminRole);
 export const requireAdminShell = createRoleGate(isAdminShellRole);
 export const requirePlatformAdmin = createRoleGate(isPlatformAdminRole);
+export const requireFarmOwner = createRoleGate(isFarmOwnerRole);

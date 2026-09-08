@@ -55,11 +55,13 @@ class ApiContractTest {
                         .subject("user-1")
                         .claim("preferred_username", "farmer")
                         .claim("email", "farmer@herdcommand.local")
-                        .claim("realm_access", Map.of("roles", List.of("manager"))))))
+                        .claim("realm_access", Map.of("roles", List.of("manager")))
+                        .claim("groups", List.of("/farm_owner")))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.subject").value("user-1"))
                 .andExpect(jsonPath("$.username").value("farmer"))
-                .andExpect(jsonPath("$.roles[0]").value("manager"));
+                .andExpect(jsonPath("$.roles[0]").value("manager"))
+                .andExpect(jsonPath("$.roles[1]").value("/farm_owner"));
     }
 
     @Test

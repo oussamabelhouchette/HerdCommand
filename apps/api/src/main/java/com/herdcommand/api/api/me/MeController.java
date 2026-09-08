@@ -22,7 +22,7 @@ public class MeController {
     public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
         String username = firstNonBlank(jwt.getClaimAsString("preferred_username"), jwt.getSubject());
         String email = jwt.getClaimAsString("email");
-        return new MeResponse(jwt.getSubject(), username, email, JwtRoleExtractor.realmAndClientRoles(jwt));
+        return new MeResponse(jwt.getSubject(), username, email, JwtRoleExtractor.memberships(jwt));
     }
 
     private String firstNonBlank(String primary, String fallback) {

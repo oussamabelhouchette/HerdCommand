@@ -24,4 +24,7 @@ public interface FarmMembershipRepository extends JpaRepository<FarmMembership, 
             Collection<UUID> farmIds,
             FarmMembershipRole roleCode,
             Collection<FarmMembershipStatus> statuses);
+
+    List<FarmMembership> findByKeycloakUserIdAndRoleCodeAndStatus(
+            String keycloakUserId, FarmMembershipRole roleCode, FarmMembershipStatus status);
 }

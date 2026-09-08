@@ -8,6 +8,7 @@ export const PORTAL_BY_MEMBERSHIP: Record<string, string> = {
   administrator: '/admin/animal-settings',
   administrators: '/admin/animal-settings',
   owner: '/admin/animal-settings',
+  farm_owner: '/farm',
 };
 
 export const DEFAULT_PORTAL = '/portal';
@@ -33,6 +34,10 @@ export function portalHref(memberships: string[] | undefined | null): string {
 
 export function isAdminPortal(path: string): boolean {
   return path === '/admin' || path.startsWith('/admin/');
+}
+
+export function isFarmPortal(path: string): boolean {
+  return path === '/farm' || path.startsWith('/farm/');
 }
 
 export function collectMemberships(...lists: Array<string[] | undefined | null>): string[] {

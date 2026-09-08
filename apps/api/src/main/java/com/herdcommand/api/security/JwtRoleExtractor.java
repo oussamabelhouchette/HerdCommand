@@ -23,6 +23,16 @@ public final class JwtRoleExtractor {
         return List.copyOf(roles);
     }
 
+    public static List<String> groups(Jwt jwt) {
+        return stringList(jwt.getClaim("groups"));
+    }
+
+    public static List<String> memberships(Jwt jwt) {
+        Set<String> values = new LinkedHashSet<>(realmAndClientRoles(jwt));
+        values.addAll(groups(jwt));
+        return List.copyOf(values);
+    }
+
     public static List<String> realmRoles(Jwt jwt) {
         return stringList(claimMap(jwt.getClaim("realm_access")).get("roles"));
     }

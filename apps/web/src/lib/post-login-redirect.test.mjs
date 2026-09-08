@@ -39,6 +39,7 @@ const PORTAL_BY_MEMBERSHIP = {
   administrator: '/admin/animal-settings',
   administrators: '/admin/animal-settings',
   owner: '/admin/animal-settings',
+  farm_owner: '/farm',
 };
 const DEFAULT_PORTAL = '/portal';
 
@@ -60,8 +61,12 @@ function isAdminPortal(path) {
   return path === '/admin' || path.startsWith('/admin/');
 }
 
+function isFarmPortal(path) {
+  return path === '/farm' || path.startsWith('/farm/');
+}
+
 const LOCALES = ['ar', 'en'];
-const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin']);
+const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin', 'farm']);
 
 function extractPathname(callbackUrl) {
   if (!callbackUrl) return '';
@@ -109,7 +114,8 @@ function postLoginHref(memberships, callbackUrl) {
   const portal = portalHref(memberships);
   if (isGenericPostLoginPath(callbackUrl)) return portal;
   const intended = toAppHref(callbackUrl);
-  if (isAdminPortal(intended) && portal !== '/admin') return portal;
+  if (isAdminPortal(intended) && !isAdminPortal(portal)) return portal;
+  if (isFarmPortal(intended) && !isFarmPortal(portal)) return portal;
   if ((intended === DEFAULT_PORTAL || intended.startsWith(`${DEFAULT_PORTAL}/`)) && portal !== DEFAULT_PORTAL) {
     return portal;
   }
@@ -135,6 +141,15 @@ test('platform_admin lands on farm-settings', () => {
   assert.equal(impl.postLoginHref(['platform-admin'], '/admin'), '/admin/farm-settings');
 });
 
+test('farm_owner group lands on /farm', () => {
+  assert.equal(impl.postLoginHref(['farm_owner']), '/farm');
+  assert.equal(impl.postLoginHref(['/farm_owner']), '/farm');
+  assert.equal(impl.postLoginHref(['farm-owner'], '/'), '/farm');
+  assert.equal(impl.postLoginHref(['farm_owner'], '/portal'), '/farm');
+  assert.equal(impl.postLoginHref(['farm_owner'], '/admin'), '/farm');
+  assert.equal(impl.postLoginHref(['farm_owner'], '/farm/abc/animals'), '/farm/abc/animals');
+});
+
 test('everyone else lands on /portal', () => {
   assert.equal(impl.postLoginHref([]), '/portal');
   assert.equal(impl.postLoginHref(['manager']), '/portal');
@@ -153,4 +168,6 @@ test('users cannot be sent to the other portal via callback', () => {
   assert.equal(impl.postLoginHref(['manager'], '/admin'), '/portal');
   assert.equal(impl.postLoginHref(['manager'], '/admin/farm-settings'), '/portal');
   assert.equal(impl.postLoginHref(['administrator'], '/portal'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['administrator'], '/farm'), '/admin/animal-settings');
+  assert.equal(impl.postLoginHref(['farm_owner'], '/admin/animal-settings'), '/farm');
 });

@@ -44,6 +44,11 @@ function isAdminShellRole(list) {
   return isAdminRole(list) || isPlatformAdminRole(list);
 }
 
+function isFarmOwnerRole(list) {
+  if (!list?.length) return false;
+  return list.some((role) => normalizePlatformRole(role) === 'farm_owner');
+}
+
 test('route guard: only PLATFORM_ADMIN opens farm management', () => {
   assert.equal(isPlatformAdminRole(['PLATFORM_ADMIN']), true);
   assert.equal(isPlatformAdminRole(['platform_admin']), true);
@@ -54,4 +59,14 @@ test('route guard: only PLATFORM_ADMIN opens farm management', () => {
   assert.equal(isAdminShellRole(['PLATFORM_ADMIN']), true);
   assert.equal(isAdminShellRole(['owner']), true);
   assert.equal(isAdminShellRole(['manager']), false);
+});
+
+test('farm portal is limited to farm_owner and not the admin owner role', () => {
+  assert.match(roles, /isFarmOwnerRole/);
+  assert.match(roles, /farm_owner/);
+  assert.equal(isFarmOwnerRole(['farm_owner']), true);
+  assert.equal(isFarmOwnerRole(['/farm_owner']), true);
+  assert.equal(isFarmOwnerRole(['farm-owner']), true);
+  assert.equal(isFarmOwnerRole(['owner']), false);
+  assert.equal(isFarmOwnerRole(['administrator']), false);
 });

@@ -25,6 +25,12 @@
       { "name": "PLATFORM_ADMIN", "description": "Platform administrator — manage all farms" }
     ]
   },
+  "groups": [
+    {
+      "name": "farm_owner",
+      "path": "/farm_owner"
+    }
+  ],
   "users": [
     {
       "username": "farmer",
@@ -41,6 +47,22 @@
         }
       ],
       "realmRoles": ["manager"]
+    },
+    {
+      "username": "farmowner",
+      "enabled": true,
+      "email": "farmowner@herdcommand.local",
+      "emailVerified": true,
+      "firstName": "Omar",
+      "lastName": "Harri",
+      "groups": ["/farm_owner"],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Farm123!",
+          "temporary": false
+        }
+      ]
     }
   ],
   "clients": [
@@ -75,7 +97,22 @@
         "roles",
         "email"
       ],
-      "optionalClientScopes": ["address", "phone", "offline_access"]
+      "optionalClientScopes": ["address", "phone", "offline_access"],
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "claim.name": "groups"
+          }
+        }
+      ]
     },
     {
       "clientId": "herdcommand-mobile",
