@@ -30,6 +30,15 @@ export function AnimalIcon(props: IconProps) {
   );
 }
 
+export function FarmIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20V10l8-6 8 6v10" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M10 20v-6h4v6" stroke="currentColor" strokeWidth="1.8" />
+    </Icon>
+  );
+}
+
 export function FolderIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -137,6 +146,15 @@ export function CloseIcon(props: IconProps) {
   return (
     <Icon {...props}>
       <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </Icon>
+  );
+}
+
+export function EyeIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
     </Icon>
   );
 }

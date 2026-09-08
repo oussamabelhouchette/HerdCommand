@@ -10,5 +10,12 @@
 | [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md) | US-AC-005: Status tab, color picker, live preview, how to click-test |
 | [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md) | US-AC-006: farm + group API, isolation, how to test with mvn and curl |
 | [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md) | US-AC-007: Groups tab, create/edit/deactivate, how to click-test |
+| [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md) | PA-001: PLATFORM_ADMIN, `/api/v1/platform/**`, farm-management landing, 401/403 |
+| [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md) | PA-002: farm tenant columns, membership, subscription, generated codes, optimistic lock |
+| [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md) | PA-003: feature catalog, farm_feature, GET /platform/features, no farm Boolean flags |
+| [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md) | PA-004: owner email lookup, Keycloak service account, invitation abstraction |
+| [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md) | PA-005: atomic POST /platform/farms, idempotency, Keycloak compensation |
+| [us-pa-006-farm-list-and-details-api.md](./us-pa-006-farm-list-and-details-api.md) | PA-006: search/page all farms, details, summary counts |
+| [us-pa-007-react-all-farms-administration-page.md](./us-pa-007-react-all-farms-administration-page.md) | PA-007: all-farms table, filters, URL state, details |
 | [nextjs.md](./nextjs.md) | Next.js app: entry points and every file |
 | [authentication.md](./authentication.md) | Login/logout OIDC details, Keycloak client fields, example URLs |

@@ -72,11 +72,18 @@ Browser
 11. **US-AC-005 status administration UI** (Statuses tab on `/admin/animal-settings`, color-token picker, live badge preview, no create/delete). File-by-file notes: [us-ac-005-status-administration-ui.md](./us-ac-005-status-administration-ui.md).
 12. **US-AC-006 farm group API** (Flyway V4 `farm` + `animal_group`, seed HARRI, no animals/assignment). File-by-file notes: [us-ac-006-farm-group-api.md](./us-ac-006-farm-group-api.md).
 13. **US-AC-007 farm group administration UI** (Groups tab, create/edit/deactivate, first seeded farm). File-by-file notes: [us-ac-007-farm-group-administration-ui.md](./us-ac-007-farm-group-administration-ui.md).
-14. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
+14. **PA-001 platform-admin security foundation** (`PLATFORM_ADMIN` JWT mapping, `/api/v1/platform/**`, `/admin/farm-settings` landing, farm owners get 403). File-by-file notes: [us-pa-001-platform-admin-security-foundation.md](./us-pa-001-platform-admin-security-foundation.md).
+15. **PA-002 farm and membership database foundation** (Flyway V6 tenant columns, `farm_membership`, `farm_subscription`, generated `FARM-TN-####` codes, owner-required activation, optimistic lock). File-by-file notes: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm-and-membership-database-foundation.md).
+16. **PA-003 dynamic feature catalog** (Flyway V7 `feature_catalog` + `farm_feature`, `ANIMAL_MANAGEMENT`, `GET /api/v1/platform/features`, coming-soon not enableable). File-by-file notes: [us-pa-003-dynamic-feature-catalog.md](./us-pa-003-dynamic-feature-catalog.md).
+17. **PA-004 Keycloak owner lookup and invitation** (`POST /api/v1/platform/identity/lookup`, service-account admin client, invite abstraction, debounced owner field). File-by-file notes: [us-pa-004-keycloak-owner-lookup-and-invitation.md](./us-pa-004-keycloak-owner-lookup-and-invitation.md).
+18. **PA-005 atomic farm creation API** (`POST /api/v1/platform/farms`, idempotency key, one DB transaction, Keycloak compensation). File-by-file notes: [us-pa-005-atomic-farm-creation-api.md](./us-pa-005-atomic-farm-creation-api.md).
+19. **PA-006 farm list and details API** (`GET /api/v1/platform/farms`, `/{id}`, `/summary`, server-side search/filter/page). File-by-file notes: [us-pa-006-farm-list-and-details-api.md](./us-pa-006-farm-list-and-details-api.md).
+20. **PA-007 React all-farms administration page** (`/admin/farm-settings` table, summary cards, URL filters, details dialog). File-by-file notes: [us-pa-007-react-all-farms-administration-page.md](./us-pa-007-react-all-farms-administration-page.md).
+21. Mobile OIDC helper (client id `herdcommand-mobile`) — stub.
 
 **Not done (later product)**
 
-Animals, assignment, farm membership, health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
+Animals, assignment, farm wizard (PA-008+), health, Figma-perfect login, AWS, production HTTPS, real `AUTH_SECRET`.
 
 ---
 
@@ -336,5 +343,12 @@ Do **not** start a second Keycloak. `docker-compose.yml` Postgres is for later a
 | Status administration UI | `docs/us-ac-005-status-administration-ui.md` |
 | API farm groups | `docs/us-ac-006-farm-group-api.md` |
 | Farm group administration UI | `docs/us-ac-007-farm-group-administration-ui.md` |
+| Platform-admin security + farm landing | `docs/us-pa-001-platform-admin-security-foundation.md` |
+| Farm + membership database foundation | `docs/us-pa-002-farm-and-membership-database-foundation.md` |
+| Dynamic feature catalog | `docs/us-pa-003-dynamic-feature-catalog.md` |
+| Keycloak owner lookup + invitation | `docs/us-pa-004-keycloak-owner-lookup-and-invitation.md` |
+| Atomic farm creation API | `docs/us-pa-005-atomic-farm-creation-api.md` |
+| Farm list and details API | `docs/us-pa-006-farm-list-and-details-api.md` |
+| All-farms administration UI | `docs/us-pa-007-react-all-farms-administration-page.md` |
 | Theme | `infra/keycloak/theme/herdcommand/` |
 | Tokens | `packages/tokens/src/tokens.css` |

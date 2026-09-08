@@ -63,6 +63,8 @@ export default async function MePage({ params }: Props) {
         <p className="hc-muted">{t('me.apiError')}</p>
       )}
       <form action={logoutAction} style={{ marginTop: 24 }}>
+        {session.idToken ? <input type="hidden" name="idToken" value={session.idToken} /> : null}
+        <input type="hidden" name="locale" value={locale} />
         <Button type="submit" variant="secondary">
           {t('nav.signOut')}
         </Button>

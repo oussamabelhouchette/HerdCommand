@@ -1,5 +1,6 @@
 package com.herdcommand.api.config;
 
+import com.herdcommand.api.security.JwtRoleExtractor;
 import com.herdcommand.api.security.Permission;
 import com.herdcommand.api.security.RolePermissionMapper;
 import org.springframework.core.convert.converter.Converter;
@@ -29,25 +30,25 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
             authorities.addAll(scoped);
         }
 
-        List<String> realmRoles = stringList(claimMap(jwt.getClaim("realm_access")).get("roles"));
-        realmRoles.stream()
+        List<String> tokenRoles = JwtRoleExtractor.realmAndClientRoles(jwt);
+        tokenRoles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .forEach(authorities::add);
 
-        Set<Permission> permissions = new LinkedHashSet<>(RolePermissionMapper.permissionsForRoles(realmRoles));
-        permissions.addAll(explicitPermissions(jwt));
+        Set<Permission> permissions = new LinkedHashSet<>(RolePermissionMapper.permissionsForRoles(tokenRoles));
+        permissions.addAll(explicitPermissions(jwt, tokenRoles));
         permissions.stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.name()))
                 .forEach(authorities::add);
         return authorities;
     }
 
-    private Set<Permission> explicitPermissions(Jwt jwt) {
+    private Set<Permission> explicitPermissions(Jwt jwt, List<String> tokenRoles) {
         Set<Permission> permissions = new LinkedHashSet<>();
         for (String value : stringList(jwt.getClaim("permissions"))) {
             parsePermission(value).ifPresent(permissions::add);
         }
-        for (String value : stringList(claimMap(jwt.getClaim("realm_access")).get("roles"))) {
+        for (String value : tokenRoles) {
             parsePermission(value).ifPresent(permissions::add);
         }
         return permissions;
@@ -62,13 +63,6 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
         } catch (IllegalArgumentException ignored) {
             return java.util.Optional.empty();
         }
-    }
-
-    private static java.util.Map<?, ?> claimMap(Object claim) {
-        if (claim instanceof java.util.Map<?, ?> map) {
-            return map;
-        }
-        return java.util.Map.of();
     }
 
     private static List<String> stringList(Object value) {

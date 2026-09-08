@@ -76,7 +76,24 @@ public class GlobalExceptionHandler {
             return respond(HttpStatus.CONFLICT, ErrorCodes.GROUP_CODE_ALREADY_EXISTS, "error.group.codeExists", request, List.of(
                     new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
         }
+        if (detail.contains("ux_farm_code") || (detail.contains("farm") && detail.contains("code")
+                && !detail.contains("animal") && !detail.contains("membership"))) {
+            return respond(HttpStatus.CONFLICT, ErrorCodes.FARM_CODE_ALREADY_EXISTS, "error.farm.codeExists", request, List.of(
+                    new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
+        }
+        if (detail.contains("ux_farm_onboarding_key") || detail.contains("farm_onboarding_request")) {
+            return respond(HttpStatus.CONFLICT, ErrorCodes.IDEMPOTENCY_CONFLICT, "error.idempotency.conflict", request, List.of());
+        }
+        if (detail.contains("ux_farm_membership_user") || detail.contains("farm_membership")) {
+            return respond(HttpStatus.CONFLICT, ErrorCodes.OWNER_ALREADY_ASSIGNED, "error.farm.ownerAssigned", request, List.of());
+        }
         return respond(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, "error.conflict", request, List.of());
+    }
+
+    @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
+    public ResponseEntity<ApiError> handleOptimisticLock(
+            org.springframework.dao.OptimisticLockingFailureException ex, HttpServletRequest request) {
+        return respond(HttpStatus.CONFLICT, ErrorCodes.FARM_VERSION_CONFLICT, "error.farm.versionConflict", request, List.of());
     }
 
     @ExceptionHandler(AuthenticationException.class)

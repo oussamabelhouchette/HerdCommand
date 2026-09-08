@@ -34,8 +34,27 @@ function groupsFromAccessToken(accessToken) {
   return stringList(payload.groups);
 }
 
+function clientRolesFromAccessToken(accessToken) {
+  const payload = decodeJwtPayload(accessToken);
+  if (!payload) return [];
+  const resourceAccess = payload.resource_access;
+  if (!resourceAccess || typeof resourceAccess !== 'object' || Array.isArray(resourceAccess)) return [];
+  const roles = [];
+  for (const client of Object.values(resourceAccess)) {
+    if (!client || typeof client !== 'object' || Array.isArray(client)) continue;
+    roles.push(...stringList(client.roles));
+  }
+  return roles;
+}
+
 function membershipsFromAccessToken(accessToken) {
-  return [...new Set([...realmRolesFromAccessToken(accessToken), ...groupsFromAccessToken(accessToken)])];
+  return [
+    ...new Set([
+      ...realmRolesFromAccessToken(accessToken),
+      ...groupsFromAccessToken(accessToken),
+      ...clientRolesFromAccessToken(accessToken),
+    ]),
+  ];
 }
 
 function fakeAccessToken(payload) {
@@ -62,4 +81,12 @@ test('reads Keycloak groups claim from the access token', () => {
   });
   assert.deepEqual(groupsFromAccessToken(token), ['/administrator', 'farm-workers']);
   assert.deepEqual(membershipsFromAccessToken(token), ['offline_access', '/administrator', 'farm-workers']);
+});
+
+test('reads PLATFORM_ADMIN from a Keycloak client role', () => {
+  const token = fakeAccessToken({
+    resource_access: { herdcommand: { roles: ['PLATFORM_ADMIN'] } },
+  });
+  assert.deepEqual(clientRolesFromAccessToken(token), ['PLATFORM_ADMIN']);
+  assert.deepEqual(membershipsFromAccessToken(token), ['PLATFORM_ADMIN']);
 });

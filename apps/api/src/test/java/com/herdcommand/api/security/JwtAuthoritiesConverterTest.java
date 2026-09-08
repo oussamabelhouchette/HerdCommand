@@ -17,13 +17,7 @@ class JwtAuthoritiesConverterTest {
 
     @Test
     void managerRoleReceivesConfigurationPermissions() {
-        Jwt jwt = Jwt.withTokenValue("token")
-                .header("alg", "none")
-                .subject("user-1")
-                .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(60))
-                .claim("realm_access", Map.of("roles", List.of("manager")))
-                .build();
+        Jwt jwt = jwtWithRealmRoles("manager");
 
         List<String> authorities = converter.convert(jwt).stream()
                 .map(GrantedAuthority::getAuthority)
@@ -35,7 +29,53 @@ class JwtAuthoritiesConverterTest {
                 .contains(Permission.BREED_MANAGE.name())
                 .contains(Permission.STATUS_CONFIG_MANAGE.name())
                 .contains(Permission.GROUP_VIEW.name())
-                .contains(Permission.GROUP_MANAGE.name());
+                .contains(Permission.GROUP_MANAGE.name())
+                .doesNotContain(Permission.PLATFORM_ADMIN.name());
+    }
+
+    @Test
+    void ownerDoesNotReceivePlatformAdmin() {
+        Jwt jwt = jwtWithRealmRoles("owner");
+
+        List<String> authorities = converter.convert(jwt).stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        assertThat(authorities)
+                .contains(Permission.ANIMAL_CONFIG_VIEW.name())
+                .doesNotContain(Permission.PLATFORM_ADMIN.name());
+    }
+
+    @Test
+    void platformAdminRealmRoleReceivesPlatformAdminPermission() {
+        Jwt jwt = jwtWithRealmRoles("PLATFORM_ADMIN");
+
+        List<String> authorities = converter.convert(jwt).stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        assertThat(authorities)
+                .contains("ROLE_PLATFORM_ADMIN")
+                .contains(Permission.PLATFORM_ADMIN.name())
+                .doesNotContain(Permission.BREED_MANAGE.name());
+    }
+
+    @Test
+    void platformAdminClientRoleReceivesPlatformAdminPermission() {
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .subject("user-1")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(60))
+                .claim("resource_access", Map.of(
+                        "herdcommand", Map.of("roles", List.of("platform_admin"))))
+                .build();
+
+        List<String> authorities = converter.convert(jwt).stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        assertThat(authorities).contains(Permission.PLATFORM_ADMIN.name());
     }
 
     @Test
@@ -54,5 +94,15 @@ class JwtAuthoritiesConverterTest {
 
         assertThat(authorities).contains(Permission.GROUP_VIEW.name());
         assertThat(authorities).doesNotContain(Permission.BREED_MANAGE.name());
+    }
+
+    private static Jwt jwtWithRealmRoles(String... roles) {
+        return Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .subject("user-1")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(60))
+                .claim("realm_access", Map.of("roles", List.of(roles)))
+                .build();
     }
 }

@@ -13,7 +13,11 @@ public final class JwtAuth {
     private JwtAuth() {}
 
     public static RequestPostProcessor authenticated() {
-        return jwt().jwt(token -> token.subject("user-1"));
+        return authenticatedAs("user-1");
+    }
+
+    public static RequestPostProcessor authenticatedAs(String subject) {
+        return jwt().jwt(token -> token.subject(subject));
     }
 
     public static RequestPostProcessor withPermissions(String... permissions) {

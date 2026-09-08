@@ -14,6 +14,22 @@ public final class ErrorCodes {
     public static final String STATUS_REQUIRED = "STATUS_REQUIRED";
     public static final String STATUS_INACTIVE = "STATUS_INACTIVE";
     public static final String GROUP_CODE_ALREADY_EXISTS = "GROUP_CODE_ALREADY_EXISTS";
+    public static final String FARM_CODE_ALREADY_EXISTS = "FARM_CODE_ALREADY_EXISTS";
+    public static final String FARM_OWNER_REQUIRED = "FARM_OWNER_REQUIRED";
+    public static final String FARM_VERSION_CONFLICT = "FARM_VERSION_CONFLICT";
+    public static final String OWNER_ALREADY_ASSIGNED = "OWNER_ALREADY_ASSIGNED";
+    public static final String FEATURE_NOT_FOUND = "FEATURE_NOT_FOUND";
+    public static final String FEATURE_NOT_AVAILABLE = "FEATURE_NOT_AVAILABLE";
+    public static final String FEATURE_ASSIGNMENT_INVALID = "FEATURE_ASSIGNMENT_INVALID";
+    public static final String IDENTITY_NOT_FOUND = "IDENTITY_NOT_FOUND";
+    public static final String IDENTITY_DISABLED = "IDENTITY_DISABLED";
+    public static final String IDENTITY_AMBIGUOUS = "IDENTITY_AMBIGUOUS";
+    public static final String IDENTITY_PROVIDER_UNAVAILABLE = "IDENTITY_PROVIDER_UNAVAILABLE";
+    public static final String PLAN_NOT_FOUND = "PLAN_NOT_FOUND";
+    public static final String PLAN_LIMIT_INVALID = "PLAN_LIMIT_INVALID";
+    public static final String INVALID_FARM_STATUS_TRANSITION = "INVALID_FARM_STATUS_TRANSITION";
+    public static final String IDEMPOTENCY_KEY_REQUIRED = "IDEMPOTENCY_KEY_REQUIRED";
+    public static final String IDEMPOTENCY_CONFLICT = "IDEMPOTENCY_CONFLICT";
 
     private ErrorCodes() {}
 }

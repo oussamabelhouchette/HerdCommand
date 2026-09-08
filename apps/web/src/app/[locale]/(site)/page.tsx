@@ -28,5 +28,11 @@ export default async function HomePage({ params }: Props) {
     redirect({ href, locale });
   }
 
-  return <FarmPortalCard name={session.user.name || session.user.email || ''} />;
+  return (
+    <FarmPortalCard
+      name={session.user.name || session.user.email || ''}
+      idToken={session.idToken}
+      locale={locale}
+    />
+  );
 }

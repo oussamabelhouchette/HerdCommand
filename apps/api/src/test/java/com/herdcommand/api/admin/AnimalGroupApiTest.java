@@ -282,13 +282,19 @@ class AnimalGroupApiTest {
         UUID id = UUID.randomUUID();
         jdbcTemplate.update(
                 """
-                INSERT INTO farm (id, code, name_ar, name_en, active, created_at, created_by, updated_at, updated_by)
-                VALUES (?, ?, ?, ?, TRUE, CURRENT_TIMESTAMP, 'test', CURRENT_TIMESTAMP, 'test')
+                INSERT INTO farm (
+                    id, code, name_ar, name_en, name_fr, governorate_code, timezone,
+                    default_language, currency_code, status, version, active,
+                    created_at, created_by, updated_at, updated_by)
+                VALUES (
+                    ?, ?, ?, ?, ?, 'TN-11', 'Africa/Tunis', 'ar', 'TND', 'ACTIVE', 0, TRUE,
+                    CURRENT_TIMESTAMP, 'test', CURRENT_TIMESTAMP, 'test')
                 """,
                 id,
                 "OTHER_" + unique(),
                 "مزرعة أخرى",
-                "Other Farm");
+                "Other Farm",
+                "Autre ferme");
         return id.toString();
     }
 

@@ -1,7 +1,7 @@
-import { DEFAULT_PORTAL, isAdminPortal, portalHref } from './portals';
+import { DEFAULT_PORTAL, isAdminPortal, isFarmPortal, portalHref } from './portals';
 
 const LOCALES = ['ar', 'en'] as const;
-const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin']);
+const GENERIC_SEGMENTS = new Set(['login', 'signed-in', 'portal', 'admin', 'farm']);
 
 function extractPathname(callbackUrl?: string | null): string {
   if (!callbackUrl) {
@@ -57,6 +57,14 @@ export function isGenericPostLoginPath(callbackUrl?: string | null): boolean {
   return isGenericSegments(pathSegments(pathname));
 }
 
+export function safeSameOriginPath(callbackUrl?: string | null, fallback = '/'): string {
+  const path = toAppHref(callbackUrl);
+  if (!path.startsWith('/') || path.startsWith('//')) {
+    return fallback;
+  }
+  return path;
+}
+
 export function toAppHref(callbackUrl?: string | null): string {
   const pathname = extractPathname(callbackUrl);
   if (!pathname || pathname === '/') {
@@ -86,6 +94,9 @@ export function postLoginHref(memberships: string[] | undefined | null, callback
   }
   const intended = toAppHref(callbackUrl);
   if (isAdminPortal(intended) && !isAdminPortal(portal)) {
+    return portal;
+  }
+  if (isFarmPortal(intended) && !isFarmPortal(portal)) {
     return portal;
   }
   if ((intended === DEFAULT_PORTAL || intended.startsWith(`${DEFAULT_PORTAL}/`)) && portal !== DEFAULT_PORTAL) {

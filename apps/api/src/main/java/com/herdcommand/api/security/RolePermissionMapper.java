@@ -8,21 +8,36 @@ import java.util.Set;
 
 public final class RolePermissionMapper {
 
+    private static final Set<Permission> ANIMAL_CONFIGURATION = Set.copyOf(EnumSet.of(
+            Permission.ANIMAL_CONFIG_VIEW,
+            Permission.BREED_MANAGE,
+            Permission.STATUS_CONFIG_MANAGE,
+            Permission.GROUP_VIEW,
+            Permission.GROUP_MANAGE));
+
     private static final Map<String, Set<Permission>> MATRIX = Map.of(
-            "owner", EnumSet.allOf(Permission.class),
-            "administrator", EnumSet.allOf(Permission.class),
-            "manager", EnumSet.allOf(Permission.class),
+            "owner", ANIMAL_CONFIGURATION,
+            "administrator", ANIMAL_CONFIGURATION,
+            "manager", ANIMAL_CONFIGURATION,
             "veterinarian", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW, Permission.GROUP_VIEW),
             "worker", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW, Permission.GROUP_VIEW),
-            "accountant", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW));
+            "accountant", EnumSet.of(Permission.ANIMAL_CONFIG_VIEW),
+            "platform_admin", EnumSet.of(Permission.PLATFORM_ADMIN));
 
     private RolePermissionMapper() {}
+
+    public static String normalizeRole(String role) {
+        if (role == null || role.isBlank()) {
+            return "";
+        }
+        return role.trim().toLowerCase(Locale.ROOT).replace('-', '_');
+    }
 
     public static Set<Permission> permissionsForRole(String role) {
         if (role == null || role.isBlank()) {
             return Set.of();
         }
-        return MATRIX.getOrDefault(role.trim().toLowerCase(Locale.ROOT), Set.of());
+        return MATRIX.getOrDefault(normalizeRole(role), Set.of());
     }
 
     public static Set<Permission> permissionsForRoles(Iterable<String> roles) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { auth } from '@/auth';
 import { routing } from './i18n/routing';
@@ -12,23 +13,38 @@ const protectedMatchers = [
   /^\/admin(?:\/|$)/,
   /^\/ar\/admin(?:\/|$)/,
   /^\/en\/admin(?:\/|$)/,
+  /^\/farm(?:\/|$)/,
+  /^\/ar\/farm(?:\/|$)/,
+  /^\/en\/farm(?:\/|$)/,
   /^\/portal(?:\/|$)/,
   /^\/ar\/portal(?:\/|$)/,
   /^\/en\/portal(?:\/|$)/,
 ];
 
-export default auth((request) => {
-  const { pathname } = request.nextUrl;
-  const isProtected = protectedMatchers.some((pattern) => pattern.test(pathname));
-  if (isProtected && !request.auth) {
+function isProtectedPath(pathname: string) {
+  return protectedMatchers.some((pattern) => pattern.test(pathname));
+}
+
+function withPathname(request: NextRequest, response: NextResponse) {
+  response.headers.set('x-pathname', request.nextUrl.pathname);
+  return response;
+}
+
+const protect = auth((request) => {
+  if (!request.auth) {
     const login = new URL('/login', request.url);
-    login.searchParams.set('callbackUrl', pathname);
+    login.searchParams.set('callbackUrl', request.nextUrl.pathname);
     return NextResponse.redirect(login);
   }
-  const response = intlMiddleware(request);
-  response.headers.set('x-pathname', pathname);
-  return response;
+  return withPathname(request, intlMiddleware(request));
 });
+
+export default function middleware(request: NextRequest) {
+  if (!isProtectedPath(request.nextUrl.pathname)) {
+    return withPathname(request, intlMiddleware(request));
+  }
+  return protect(request);
+}
 
 export const config = {
   matcher: ['/((?!api|_next|_vercel|kc-login-look|.*\\..*).*)'],

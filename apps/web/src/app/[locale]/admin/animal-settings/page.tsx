@@ -28,33 +28,42 @@ export default async function AnimalSettingsPage({ params }: Props) {
   let initialGroupPage = emptyGroupPage();
   let initialGroupError: string | undefined;
 
-  try {
-    const [page, active] = await Promise.all([
-      listBreeds(token, locale, { sort: 'displayOrder,asc' }),
-      listBreeds(token, locale, { active: true, size: 1 }),
-    ]);
-    initialBreedPage = page;
-    initialActiveBreedCount = active.total;
-  } catch (error) {
-    initialBreedError = error instanceof ApiRequestError ? error.message : t('loadError');
-  }
+  const [breedsResult, activeResult, statusesResult, farmsResult] = await Promise.allSettled([
+    listBreeds(token, locale, { sort: 'displayOrder,asc' }),
+    listBreeds(token, locale, { active: true, size: 1 }),
+    listStatuses(token, locale, { sort: 'displayOrder,asc' }),
+    listFarms(token, locale),
+  ]);
 
-  try {
-    initialStatusPage = await listStatuses(token, locale, { sort: 'displayOrder,asc' });
-  } catch (error) {
-    initialStatusError = error instanceof ApiRequestError ? error.message : t('statusLoadError');
+  if (breedsResult.status === 'fulfilled') {
+    initialBreedPage = breedsResult.value;
+  } else {
+    initialBreedError =
+      breedsResult.reason instanceof ApiRequestError ? breedsResult.reason.message : t('loadError');
   }
-
-  try {
-    const farms = await listFarms(token, locale);
-    farmId = farms[0]?.id;
+  if (activeResult.status === 'fulfilled') {
+    initialActiveBreedCount = activeResult.value.total;
+  }
+  if (statusesResult.status === 'fulfilled') {
+    initialStatusPage = statusesResult.value;
+  } else {
+    initialStatusError =
+      statusesResult.reason instanceof ApiRequestError ? statusesResult.reason.message : t('statusLoadError');
+  }
+  if (farmsResult.status === 'fulfilled') {
+    farmId = farmsResult.value[0]?.id;
     if (farmId) {
-      initialGroupPage = await listGroups(token, locale, farmId);
+      try {
+        initialGroupPage = await listGroups(token, locale, farmId);
+      } catch (error) {
+        initialGroupError = error instanceof ApiRequestError ? error.message : t('groupLoadError');
+      }
     } else {
       initialGroupError = t('farmLoadError');
     }
-  } catch (error) {
-    initialGroupError = error instanceof ApiRequestError ? error.message : t('groupLoadError');
+  } else {
+    initialGroupError =
+      farmsResult.reason instanceof ApiRequestError ? farmsResult.reason.message : t('groupLoadError');
   }
 
   return (
