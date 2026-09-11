@@ -8,6 +8,7 @@ const dir = dirname(fileURLToPath(import.meta.url));
 const client = readFileSync(join(dir, 'animals.ts'), 'utf8');
 const actions = readFileSync(join(dir, 'animal-actions.ts'), 'utf8');
 const ui = readFileSync(join(dir, '../components/farm/OwnerAnimals.tsx'), 'utf8');
+const dialog = readFileSync(join(dir, '../components/ui/Dialog.tsx'), 'utf8');
 const css = readFileSync(join(dir, '../components/farm/OwnerAnimals.module.css'), 'utf8');
 const page = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/animals/page.tsx'), 'utf8');
 const layout = readFileSync(join(dir, '../app/[locale]/farm/layout.tsx'), 'utf8');
@@ -53,16 +54,20 @@ test('animal client uses farm-scoped APIs, page size 20, and debounce', () => {
   assert.doesNotMatch(client, /keycloak/i);
 });
 
-test('animals page hydrates from lookups and list APIs and keeps the lock when unsupported', () => {
+test('animals page is a server screen with no client island import', () => {
   assert.match(page, /requireCurrentFarm/);
   assert.match(page, /OwnerAnimals/);
   assert.match(page, /parseAnimalSearchParams/);
   assert.doesNotMatch(page, /redirect/);
-  assert.doesNotMatch(page, /OwnerAnimalsPanel/);
+  assert.doesNotMatch(page, /AnimalsWorkspace/);
   assert.doesNotMatch(page, /'use client'/);
   assert.doesNotMatch(ui, /'use client'/);
-  assert.doesNotMatch(ui, /OwnerAnimalsPanel/);
+  assert.doesNotMatch(ui, /AnimalsWorkspace/);
   assert.match(ui, /export async function OwnerAnimals/);
+  assert.match(ui, /PageHeader/);
+  assert.match(ui, /DataTable/);
+  assert.match(ui, /FilterBar/);
+  assert.match(ui, /<Dialog/);
   assert.match(ui, /getAnimalLookups/);
   assert.match(ui, /listFarmAnimals/);
   assert.match(ui, /unsupportedTitle/);
@@ -70,13 +75,14 @@ test('animals page hydrates from lookups and list APIs and keeps the lock when u
   assert.match(ui, /archiveAnimalAction/);
   assert.match(actions, /'use server'/);
   assert.match(layout, /animals: messages\.animals/);
+  assert.match(layout, /groups: messages\.groups/);
 });
 
 test('list UI covers empty error retry archive dialog and no confirm()', () => {
   assert.match(ui, /t\('empty'\)/);
   assert.match(ui, /t\('retry'\)/);
   assert.match(ui, /t\('apply'\)/);
-  assert.match(ui, /role="dialog"/);
+  assert.match(dialog, /role="dialog"/);
   assert.match(ui, /confirmArchive/);
   assert.match(ui, /method="get"/);
   assert.doesNotMatch(ui, /window\.confirm|confirm\(/);
@@ -84,15 +90,18 @@ test('list UI covers empty error retry archive dialog and no confirm()', () => {
 });
 
 test('reference layout, badges, and logical CSS stay in the animals list', () => {
-  assert.match(css, /\.topbar/);
-  assert.match(css, /\.filters/);
-  assert.match(css, /\.tableCard/);
+  const header = readFileSync(join(dir, '../components/ui/PageHeader.module.css'), 'utf8');
+  const filters = readFileSync(join(dir, '../components/ui/FilterBar.module.css'), 'utf8');
+  const table = readFileSync(join(dir, '../components/ui/DataTable.module.css'), 'utf8');
+  assert.match(header, /\.topbar/);
+  assert.match(filters, /\.bar/);
+  assert.match(table, /\.tableCard/);
   assert.match(css, /\.activeB/);
   assert.match(css, /\.pregnant/);
   assert.match(css, /\.sick/);
   assert.match(css, /\.isolated/);
-  assert.match(css, /padding-inline-start/);
-  assert.match(css, /inset-inline-start/);
+  assert.match(filters, /padding-inline-start/);
+  assert.match(filters, /inset-inline-start/);
   assert.match(css, /@media \(max-width: 1050px\)/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(css, /\.pageBtn/);

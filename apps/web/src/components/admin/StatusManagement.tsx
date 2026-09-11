@@ -15,7 +15,8 @@ import {
   type ColorToken,
   type StatusPage,
 } from '@/lib/statuses';
-import { BanIcon, CheckIcon, CloseIcon, InfoIcon, LockIcon, PenIcon, SearchIcon } from './AdminIcons';
+import { BanIcon, CheckIcon, CloseIcon, InfoIcon, LockIcon, PenIcon, SearchIcon } from '@/components/ui/Icons';
+import { ConfirmText, Dialog, DialogFoot, FormField, FormFields } from './AdminDialog';
 import styles from './BreedManagement.module.css';
 import statusStyles from './StatusManagement.module.css';
 
@@ -194,7 +195,6 @@ export function StatusManagement({ initialPage, initialError, onStatsChange }: P
     <>
       <div className={styles.toolbar}>
         <div className={styles.search}>
-          <SearchIcon />
           <input
             value={search}
             onChange={(event) => {
@@ -204,6 +204,7 @@ export function StatusManagement({ initialPage, initialError, onStatsChange }: P
             placeholder={t('statusSearchPlaceholder')}
             aria-label={t('statusSearchPlaceholder')}
           />
+          <SearchIcon />
         </div>
         <select
           className={styles.filter}
@@ -219,8 +220,8 @@ export function StatusManagement({ initialPage, initialError, onStatsChange }: P
           <option value="false">{t('filterInactive')}</option>
         </select>
       </div>
+      {listError ? <p className={styles.listError}>{listError}</p> : null}
       <div className={styles.tableWrap}>
-        {listError ? <p className={styles.listError}>{listError}</p> : null}
         <table className={styles.table}>
           <thead>
             <tr>
@@ -324,175 +325,160 @@ export function StatusManagement({ initialPage, initialError, onStatsChange }: P
       </div>
 
       {editing && form ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeModal();
-            }
-          }}
+        <Dialog
+          titleId="status-modal-title"
+          title={t('statusEditTitle')}
+          close={
+            <button type="button" onClick={closeModal} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
-            <div className={styles.modalHead}>
-              <h2 id="status-modal-title">{t('statusEditTitle')}</h2>
-              <button type="button" className={styles.close} onClick={closeModal} aria-label={t('cancel')}>
-                <CloseIcon />
-              </button>
-            </div>
-            <form onSubmit={onSubmit}>
-              <div className={styles.form}>
-                <div className={`${styles.field} ${styles.fieldFull}`}>
-                  <label htmlFor="status-code">{t('code')}</label>
-                  <input id="status-code" value={editing.code} readOnly disabled />
-                  <span className={styles.help}>{t('codeImmutable')}</span>
+          <form onSubmit={onSubmit}>
+            <FormFields>
+              <FormField full>
+                <label htmlFor="status-code">{t('code')}</label>
+                <input id="status-code" value={editing.code} readOnly disabled />
+                <span className={styles.help}>{t('codeImmutable')}</span>
+              </FormField>
+              <FormField>
+                <label htmlFor="status-labelAr">{t('nameAr')}</label>
+                <input
+                  id="status-labelAr"
+                  value={form.labelAr}
+                  onChange={(event) => setForm((current) => current && { ...current, labelAr: event.target.value })}
+                  required
+                  maxLength={100}
+                  aria-invalid={fieldErrors.labelAr ? true : undefined}
+                />
+                {fieldErrors.labelAr ? <span className={styles.fieldError}>{fieldErrors.labelAr}</span> : null}
+              </FormField>
+              <FormField>
+                <label htmlFor="status-labelEn">{t('nameEn')}</label>
+                <input
+                  id="status-labelEn"
+                  value={form.labelEn}
+                  onChange={(event) => setForm((current) => current && { ...current, labelEn: event.target.value })}
+                  required
+                  maxLength={100}
+                  aria-invalid={fieldErrors.labelEn ? true : undefined}
+                />
+                {fieldErrors.labelEn ? <span className={styles.fieldError}>{fieldErrors.labelEn}</span> : null}
+              </FormField>
+              <FormField full>
+                <span id="status-color-label">{t('colorLabel')}</span>
+                <div className={statusStyles.swatches} role="radiogroup" aria-labelledby="status-color-label">
+                  {COLOR_TOKENS.map((token) => (
+                    <button
+                      key={token}
+                      type="button"
+                      role="radio"
+                      aria-checked={form.colorToken === token}
+                      className={`${statusStyles.swatch} ${statusStyles[token]} ${
+                        form.colorToken === token ? statusStyles.swatchSelected : ''
+                      }`}
+                      onClick={() => setForm((current) => current && { ...current, colorToken: token })}
+                    >
+                      {t(`colorTokens.${token}`)}
+                    </button>
+                  ))}
                 </div>
-                <div className={styles.field}>
-                  <label htmlFor="status-labelAr">{t('nameAr')}</label>
+                {fieldErrors.colorToken ? <span className={styles.fieldError}>{fieldErrors.colorToken}</span> : null}
+              </FormField>
+              <FormField full>
+                <span>{t('preview')}</span>
+                <div className={statusStyles.preview} data-testid="status-preview">
+                  <span className={`${statusStyles.badge} ${statusStyles[form.colorToken]}`}>
+                    {previewLabel || t('previewEmpty')}
+                  </span>
+                  <span className={styles.help}>{t('previewHelp')}</span>
+                </div>
+              </FormField>
+              <FormField>
+                <label htmlFor="status-order">{t('displayOrder')}</label>
+                <input
+                  id="status-order"
+                  type="number"
+                  min={0}
+                  value={form.displayOrder}
+                  onChange={(event) =>
+                    setForm((current) => current && { ...current, displayOrder: event.target.value })
+                  }
+                  required
+                  aria-invalid={fieldErrors.displayOrder ? true : undefined}
+                />
+                {fieldErrors.displayOrder ? (
+                  <span className={styles.fieldError}>{fieldErrors.displayOrder}</span>
+                ) : null}
+              </FormField>
+              <FormField>
+                <label className={statusStyles.check}>
                   <input
-                    id="status-labelAr"
-                    value={form.labelAr}
-                    onChange={(event) => setForm((current) => current && { ...current, labelAr: event.target.value })}
-                    required
-                    maxLength={100}
-                    aria-invalid={fieldErrors.labelAr ? true : undefined}
-                  />
-                  {fieldErrors.labelAr ? <span className={styles.fieldError}>{fieldErrors.labelAr}</span> : null}
-                </div>
-                <div className={styles.field}>
-                  <label htmlFor="status-labelEn">{t('nameEn')}</label>
-                  <input
-                    id="status-labelEn"
-                    value={form.labelEn}
-                    onChange={(event) => setForm((current) => current && { ...current, labelEn: event.target.value })}
-                    required
-                    maxLength={100}
-                    aria-invalid={fieldErrors.labelEn ? true : undefined}
-                  />
-                  {fieldErrors.labelEn ? <span className={styles.fieldError}>{fieldErrors.labelEn}</span> : null}
-                </div>
-                <div className={`${styles.field} ${styles.fieldFull}`}>
-                  <span id="status-color-label">{t('colorLabel')}</span>
-                  <div className={statusStyles.swatches} role="radiogroup" aria-labelledby="status-color-label">
-                    {COLOR_TOKENS.map((token) => (
-                      <button
-                        key={token}
-                        type="button"
-                        role="radio"
-                        aria-checked={form.colorToken === token}
-                        className={`${statusStyles.swatch} ${statusStyles[token]} ${
-                          form.colorToken === token ? statusStyles.swatchSelected : ''
-                        }`}
-                        onClick={() => setForm((current) => current && { ...current, colorToken: token })}
-                      >
-                        {t(`colorTokens.${token}`)}
-                      </button>
-                    ))}
-                  </div>
-                  {fieldErrors.colorToken ? <span className={styles.fieldError}>{fieldErrors.colorToken}</span> : null}
-                </div>
-                <div className={`${styles.field} ${styles.fieldFull}`}>
-                  <span>{t('preview')}</span>
-                  <div className={statusStyles.preview} data-testid="status-preview">
-                    <span className={`${statusStyles.badge} ${statusStyles[form.colorToken]}`}>
-                      {previewLabel || t('previewEmpty')}
-                    </span>
-                    <span className={styles.help}>{t('previewHelp')}</span>
-                  </div>
-                </div>
-                <div className={styles.field}>
-                  <label htmlFor="status-order">{t('displayOrder')}</label>
-                  <input
-                    id="status-order"
-                    type="number"
-                    min={0}
-                    value={form.displayOrder}
+                    type="checkbox"
+                    checked={form.visibleInFilter}
                     onChange={(event) =>
-                      setForm((current) => current && { ...current, displayOrder: event.target.value })
+                      setForm((current) => current && { ...current, visibleInFilter: event.target.checked })
                     }
-                    required
-                    aria-invalid={fieldErrors.displayOrder ? true : undefined}
                   />
-                  {fieldErrors.displayOrder ? (
-                    <span className={styles.fieldError}>{fieldErrors.displayOrder}</span>
-                  ) : null}
-                </div>
-                <div className={styles.field}>
-                  <label className={statusStyles.check}>
-                    <input
-                      type="checkbox"
-                      checked={form.visibleInFilter}
-                      onChange={(event) =>
-                        setForm((current) => current && { ...current, visibleInFilter: event.target.checked })
-                      }
-                    />
-                    {t('visibleInFilter')}
-                  </label>
-                  <label className={statusStyles.check}>
-                    <input
-                      type="checkbox"
-                      checked={form.active}
-                      disabled={isRequiredStatus(editing.code)}
-                      onChange={(event) =>
-                        setForm((current) => current && { ...current, active: event.target.checked })
-                      }
-                    />
-                    {t('active')}
-                  </label>
-                  {isRequiredStatus(editing.code) ? (
-                    <span className={styles.help}>{t('cannotDeactivateActive')}</span>
-                  ) : null}
-                </div>
-                {formError ? <p className={styles.formError}>{formError}</p> : null}
-              </div>
-              <div className={styles.modalFoot}>
-                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving}>
-                  {t('save')}
-                </button>
-                <button type="button" className={styles.btn} onClick={closeModal} disabled={saving}>
-                  {t('cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+                  {t('visibleInFilter')}
+                </label>
+                <label className={statusStyles.check}>
+                  <input
+                    type="checkbox"
+                    checked={form.active}
+                    disabled={isRequiredStatus(editing.code)}
+                    onChange={(event) =>
+                      setForm((current) => current && { ...current, active: event.target.checked })
+                    }
+                  />
+                  {t('active')}
+                </label>
+                {isRequiredStatus(editing.code) ? (
+                  <span className={styles.help}>{t('cannotDeactivateActive')}</span>
+                ) : null}
+              </FormField>
+              {formError ? (
+                <FormField full>
+                  <p className={styles.formError}>{formError}</p>
+                </FormField>
+              ) : null}
+            </FormFields>
+            <DialogFoot>
+              <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving}>
+                {t('save')}
+              </button>
+              <button type="button" className={styles.btn} onClick={closeModal} disabled={saving}>
+                {t('cancel')}
+              </button>
+            </DialogFoot>
+          </form>
+        </Dialog>
       ) : null}
 
       {pendingStatus ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setPendingStatus(null);
-            }
-          }}
+        <Dialog
+          titleId="status-deactivate-title"
+          title={t('deactivateStatusTitle')}
+          close={
+            <button type="button" onClick={() => setPendingStatus(null)} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="status-deactivate-title">
-            <div className={styles.modalHead}>
-              <h2 id="status-deactivate-title">{t('deactivateStatusTitle')}</h2>
-              <button
-                type="button"
-                className={styles.close}
-                onClick={() => setPendingStatus(null)}
-                aria-label={t('cancel')}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-            <p className={styles.confirmText}>{t('confirmDeactivateStatus', { code: pendingStatus.code })}</p>
-            <div className={styles.modalFoot}>
-              <button
-                type="button"
-                className={`${styles.btn} ${styles.btnPrimary}`}
-                onClick={() => applyStatus(pendingStatus, false)}
-              >
-                {t('deactivate')}
-              </button>
-              <button type="button" className={styles.btn} onClick={() => setPendingStatus(null)}>
-                {t('cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
+          <ConfirmText>{t('confirmDeactivateStatus', { code: pendingStatus.code })}</ConfirmText>
+          <DialogFoot>
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnPrimary}`}
+              onClick={() => applyStatus(pendingStatus, false)}
+            >
+              {t('deactivate')}
+            </button>
+            <button type="button" className={styles.btn} onClick={() => setPendingStatus(null)}>
+              {t('cancel')}
+            </button>
+          </DialogFoot>
+        </Dialog>
       ) : null}
 
       {toast ? (

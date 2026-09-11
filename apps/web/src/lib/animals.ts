@@ -63,6 +63,7 @@ export type AnimalListQuery = {
   groupId?: string;
   gender?: string;
   page?: number;
+  size?: number;
 };
 
 export type AnimalSearchState = AnimalListQuery & {
@@ -98,7 +99,21 @@ export function parseAnimalSearchParams(
   };
 }
 
-export function animalsHref(farmId: string, query: AnimalListQuery & { compose?: string; edit?: string; archive?: string; error?: string } = {}) {
+export function animalListQuery(query: AnimalSearchState): AnimalListQuery {
+  return {
+    search: query.search,
+    breedId: query.breedId,
+    statusCode: query.statusCode,
+    groupId: query.groupId,
+    gender: query.gender,
+    page: query.page,
+  };
+}
+
+export function animalsHref(
+  farmId: string,
+  query: AnimalListQuery & { compose?: string; edit?: string; archive?: string; error?: string } = {},
+) {
   const params = new URLSearchParams();
   if (query.search?.trim()) {
     params.set('q', query.search.trim());
@@ -132,6 +147,10 @@ export function animalsHref(farmId: string, query: AnimalListQuery & { compose?:
   }
   const qs = params.toString();
   return qs ? `/farm/${farmId}/animals?${qs}` : `/farm/${farmId}/animals`;
+}
+
+export function localizedName(locale: string, ar?: string | null, en?: string | null) {
+  return locale === 'ar' ? ar || en || '' : en || ar || '';
 }
 
 export type AnimalInput = {
@@ -200,7 +219,7 @@ export function listFarmAnimals(accessToken: string, locale: string, farmId: str
       groupId: query.groupId || undefined,
       gender: query.gender || undefined,
       page: query.page ?? 0,
-      size: ANIMAL_PAGE_SIZE,
+      size: query.size ?? ANIMAL_PAGE_SIZE,
     },
   });
 }

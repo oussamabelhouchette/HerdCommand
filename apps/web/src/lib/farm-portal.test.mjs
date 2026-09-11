@@ -12,6 +12,7 @@ const farmIndex = readFileSync(join(dir, '../app/[locale]/farm/page.tsx'), 'utf8
 const farmIdLayout = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/layout.tsx'), 'utf8');
 const dashboard = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/page.tsx'), 'utf8');
 const animals = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/animals/page.tsx'), 'utf8');
+const groups = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/groups/page.tsx'), 'utf8');
 const missing = readFileSync(join(dir, '../app/[locale]/farm/[farmId]/not-found.tsx'), 'utf8');
 
 test('farm portal loads owner farms once and resolves the URL farm exactly', () => {
@@ -35,6 +36,11 @@ test('farm layouts own auth and farm identity so pages stay thin', () => {
   assert.doesNotMatch(dashboard, /loadOwnerFarms/);
   assert.doesNotMatch(animals, /redirect/);
   assert.doesNotMatch(animals, /loadOwnerFarms/);
+  assert.doesNotMatch(groups, /redirect/);
+  assert.doesNotMatch(groups, /loadOwnerFarms/);
+  assert.doesNotMatch(groups, /'use client'/);
+  assert.match(groups, /OwnerGroups/);
+  assert.match(groups, /requireCurrentFarm/);
 });
 
 function findOwnerFarm(list, farmId) {

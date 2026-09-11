@@ -1,4 +1,4 @@
-import styles from './FarmWorkspace.module.css';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 type Props = {
   title: string;
@@ -8,12 +8,7 @@ type Props = {
 export function FarmNotice({ title, body }: Props) {
   return (
     <section>
-      <div className={styles.header}>
-        <div className={styles.title}>
-          <h1>{title}</h1>
-          {body ? <p>{body}</p> : null}
-        </div>
-      </div>
+      <PageHeader title={title} subtitle={body} />
     </section>
   );
 }

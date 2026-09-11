@@ -16,12 +16,5 @@ export default async function FarmAnimalsPage({ params, searchParams }: Props) {
     return null;
   }
 
-  return (
-    <OwnerAnimals
-      farm={current.farm}
-      token={current.token}
-      locale={locale}
-      query={parseAnimalSearchParams(await searchParams)}
-    />
-  );
+  return <OwnerAnimals farm={current.farm} query={parseAnimalSearchParams(await searchParams)} />;
 }

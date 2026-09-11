@@ -114,6 +114,7 @@ class JwtAuthoritiesConverterTest {
                 .contains(Permission.ANIMAL_VIEW.name())
                 .contains(Permission.ANIMAL_MANAGE.name())
                 .contains(Permission.GROUP_VIEW.name())
+                .contains(Permission.GROUP_MANAGE.name())
                 .doesNotContain(Permission.PLATFORM_ADMIN.name())
                 .doesNotContain(Permission.BREED_MANAGE.name());
     }

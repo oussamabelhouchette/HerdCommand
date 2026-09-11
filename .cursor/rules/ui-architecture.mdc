@@ -1,0 +1,18 @@
+---
+description: Next.js UI architecture — server pages, client islands, never flip files
+globs: apps/web/**/*.{ts,tsx,css,json}
+alwaysApply: true
+---
+
+# UI architecture
+
+Full standard: `docs/ui-architecture.md`. Follow it for every web change.
+
+- Server Components by default. `'use client'` only on **new** files that need hooks or browser events.
+- **Never** add or remove `'use client'` on an existing file. Create a new module instead.
+- `page.tsx` imports one RSC screen. Farm `[farmId]` content screens must not import `'use client'` modules (webpack `undefined.call`). Admin pages may hydrate a client island. Layout chrome (`FarmShell`) already has client nav.
+- RSC must import icons from `components/ui/Icons.tsx`. Do not import `AdminIcons.tsx` from server files.
+- Do not pass access tokens into client props. Client uses `useSession`; server uses `getSession` / `requireCurrentFarm`.
+- Farm `[farmId]` URLs use exact id (`requireCurrentFarm`). No fallback to another farm. Only `/farm` redirects.
+- Farm `[farmId]` content uses `components/ui` (`Dialog`, `DataTable`, `PageHeader`, `FilterBar`, `StatGrid`, `ActionButton`, `Icons`). Admin client islands keep header/stats/toolbar CSS on the island and use `AdminDialog` for modals. Do not import farm kit layout CSS into admin islands.
+- If webpack throws `undefined.call`, stop `next dev`, delete `apps/web/.next`, restart, hard-refresh.

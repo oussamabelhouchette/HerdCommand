@@ -27,6 +27,7 @@ public final class RolePermissionMapper {
                     Permission.ANIMAL_VIEW,
                     Permission.ANIMAL_MANAGE,
                     Permission.GROUP_VIEW,
+                    Permission.GROUP_MANAGE,
                     Permission.ANIMAL_CONFIG_VIEW));
 
     private RolePermissionMapper() {}

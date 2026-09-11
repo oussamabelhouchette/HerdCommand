@@ -8,7 +8,7 @@ import type { StatusPage } from '@/lib/statuses';
 import { BreedManagement } from './BreedManagement';
 import { GroupManagement } from './GroupManagement';
 import { StatusManagement } from './StatusManagement';
-import { ClockIcon, DnaIcon, LayersIcon, TagsIcon } from './AdminIcons';
+import { ClockIcon, DnaIcon, LayersIcon, TagsIcon } from '@/components/ui/Icons';
 import styles from './BreedManagement.module.css';
 
 type Tab = 'breeds' | 'statuses' | 'groups';

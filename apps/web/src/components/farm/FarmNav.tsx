@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { AnimalIcon, GridIcon } from '@/components/admin/AdminIcons';
+import { AnimalIcon, FolderIcon, GridIcon } from '@/components/ui/Icons';
 import { farmIdFromPath, findOwnerFarm, type OwnerFarm } from '@/lib/owner-farms';
 import styles from '../admin/AdminShell.module.css';
 
@@ -17,6 +17,10 @@ function isDashboard(pathname: string, farmId: string) {
 
 function isAnimals(pathname: string, farmId: string) {
   return pathname === `/farm/${farmId}/animals` || pathname.startsWith(`/farm/${farmId}/animals/`);
+}
+
+function isGroups(pathname: string, farmId: string) {
+  return pathname === `/farm/${farmId}/groups` || pathname.startsWith(`/farm/${farmId}/groups/`);
 }
 
 export function FarmNav({ farms }: Props) {
@@ -56,6 +60,16 @@ export function FarmNav({ farms }: Props) {
       >
         <AnimalIcon />
         {t('animals')}
+      </Link>
+      <Link
+        href={`/farm/${farmId}/groups`}
+        prefetch
+        onClick={() => setPending(`/farm/${farmId}/groups`)}
+        className={`${styles.navLink} ${isGroups(current, farmId) ? styles.navLinkActive : ''}`}
+        aria-current={isGroups(current, farmId) ? 'page' : undefined}
+      >
+        <FolderIcon />
+        {t('groups')}
       </Link>
     </nav>
   );

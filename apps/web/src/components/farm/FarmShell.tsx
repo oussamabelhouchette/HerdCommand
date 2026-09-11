@@ -3,7 +3,7 @@ import { logoutAction } from '@/lib/logout';
 import type { MeIdentity } from '@/lib/me';
 import type { OwnerFarm } from '@/lib/owner-farms';
 import { AdminLocaleToggle } from '@/components/admin/AdminLocaleToggle';
-import { BellIcon, BrandMarkIcon } from '@/components/admin/AdminIcons';
+import { BellIcon, BrandMarkIcon } from '@/components/ui/Icons';
 import { FarmNav } from './FarmNav';
 import { FarmSwitcher } from './FarmSwitcher';
 import styles from '../admin/AdminShell.module.css';

@@ -40,6 +40,7 @@ export default async function FarmLayout({ children, params }: Props) {
         farm: messages.farm,
         farmSettings: messages.farmSettings,
         animals: messages.animals,
+        groups: messages.groups,
         nav: messages.nav,
         app: messages.app,
       }}

@@ -1,5 +1,12 @@
-import { getTranslations } from 'next-intl/server';
-import { CheckIcon, FarmIcon, LayersIcon, LockIcon } from '@/components/admin/AdminIcons';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { getPathname } from '@/i18n/navigation';
+import { AnimalIcon, FarmIcon, FolderIcon, LayersIcon, LockIcon } from '@/components/ui/Icons';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { StatCard, StatGrid } from '@/components/ui/StatGrid';
+import { Surface } from '@/components/ui/Surface';
+import { getSession } from '@/lib/session';
+import { listFarmAnimals, normalizePage } from '@/lib/animals';
+import { listGroups, normalizeGroupPage } from '@/lib/groups';
 import type { OwnerFarm } from '@/lib/owner-farms';
 import styles from './FarmWorkspace.module.css';
 
@@ -20,8 +27,14 @@ function statusClass(status: string) {
   return styles.statusArchived;
 }
 
+function formatCount(value: number, locale: string) {
+  return new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en', { useGrouping: false }).format(value);
+}
+
 export async function FarmDashboard({ farm }: Props) {
+  const locale = await getLocale();
   const t = await getTranslations();
+  const session = await getSession();
   const statusLabel = ['SETUP', 'ACTIVE', 'SUSPENDED', 'ARCHIVED'].includes(farm.status)
     ? t(`farmSettings.status.${farm.status}`)
     : farm.status;
@@ -35,46 +48,48 @@ export async function FarmDashboard({ farm }: Props) {
       : farm.governorateCode
     : '—';
 
+  let animalTotal: number | null = null;
+  let groupTotal: number | null = null;
+  if (farm.animalManagementEnabled && session?.accessToken) {
+    try {
+      const [animals, groups] = await Promise.all([
+        listFarmAnimals(session.accessToken, locale, farm.id, { page: 0, size: 1 }),
+        listGroups(session.accessToken, locale, farm.id, { page: 0, size: 1 }),
+      ]);
+      animalTotal = normalizePage(animals).total;
+      groupTotal = normalizeGroupPage(groups).total;
+    } catch {
+      animalTotal = null;
+      groupTotal = null;
+    }
+  }
+
+  const animalsHref = getPathname({ href: `/farm/${farm.id}/animals`, locale });
+  const groupsHrefPath = getPathname({ href: `/farm/${farm.id}/groups`, locale });
+  const dash = farm.animalManagementEnabled;
+
   return (
     <section>
-      <div className={styles.header}>
-        <div className={styles.title}>
-          <h1>{farm.name}</h1>
-          <p>{t('farm.dashboardHint')}</p>
-        </div>
-      </div>
-      <div className={styles.stats}>
-        <div className={styles.stat}>
-          <span className={styles.statIcon}>
-            <FarmIcon />
-          </span>
-          <div>
-            <div className={styles.statLabel}>{t('farm.statCode')}</div>
-            <div className={styles.statValue}>{farm.code}</div>
-          </div>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statIcon}>
-            <LayersIcon />
-          </span>
-          <div>
-            <div className={styles.statLabel}>{t('farm.statPlan')}</div>
-            <div className={styles.statValue}>{planLabel}</div>
-          </div>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statIcon}>
-            {farm.animalManagementEnabled ? <CheckIcon /> : <LockIcon />}
-          </span>
-          <div>
-            <div className={styles.statLabel}>{t('farm.statAnimals')}</div>
-            <div className={styles.statValue}>
-              {farm.animalManagementEnabled ? t('farm.supported') : t('farm.notSupported')}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={styles.card}>
+      <PageHeader title={farm.name} subtitle={t('farm.dashboardHint')} />
+      <StatGrid columns={4}>
+        <StatCard icon={<FarmIcon />} value={farm.code} label={t('farm.statCode')} tone={1} />
+        <StatCard icon={<LayersIcon />} value={planLabel} label={t('farm.statPlan')} tone={2} />
+        <StatCard
+          icon={dash ? <AnimalIcon /> : <LockIcon />}
+          value={dash ? (animalTotal == null ? '—' : formatCount(animalTotal, locale)) : t('farm.notSupported')}
+          label={t('farm.statAnimalCount')}
+          tone={dash ? 2 : 3}
+          href={dash ? animalsHref : undefined}
+        />
+        <StatCard
+          icon={dash ? <FolderIcon /> : <LockIcon />}
+          value={dash ? (groupTotal == null ? '—' : formatCount(groupTotal, locale)) : t('farm.notSupported')}
+          label={t('farm.statGroupCount')}
+          tone={dash ? 4 : 3}
+          href={dash ? groupsHrefPath : undefined}
+        />
+      </StatGrid>
+      <Surface>
         <dl className={styles.details}>
           <div>
             <dt>{t('farmSettings.detailsNameAr')}</dt>
@@ -117,7 +132,7 @@ export async function FarmDashboard({ farm }: Props) {
             </dd>
           </div>
         </dl>
-      </div>
+      </Surface>
     </section>
   );
 }

@@ -22,10 +22,11 @@ test('owner farm client loads /api/v1/me/farms and never the platform list', () 
   assert.doesNotMatch(client, /\/api\/v1\/platform\/farms/);
 });
 
-test('farm portal is gated to farm_owner and shows dashboard plus animals', () => {
+test('farm portal is gated to farm_owner and shows dashboard plus animals and groups', () => {
   assert.match(layout, /loadFarmPortal/);
   assert.match(nav, /\/farm\/\$\{farmId\}/);
   assert.match(nav, /\/farm\/\$\{farmId\}\/animals/);
+  assert.match(nav, /\/farm\/\$\{farmId\}\/groups/);
   assert.match(dashboard, /FarmDashboard/);
   assert.match(animals, /OwnerAnimals/);
 });
@@ -49,6 +50,7 @@ function farmHref(farmId, pathname = '/farm') {
 
 test('farm switcher keeps the current page when changing farm', () => {
   assert.equal(farmHref('b', '/farm/a/animals'), '/farm/b/animals');
+  assert.equal(farmHref('b', '/farm/a/groups'), '/farm/b/groups');
   assert.equal(farmHref('b', '/farm/a'), '/farm/b');
   assert.equal(farmIdFromPath('/farm/abc/animals'), 'abc');
 });

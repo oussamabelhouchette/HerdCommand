@@ -11,10 +11,6 @@ function blankToNull(value: FormDataEntryValue | null) {
   return text ? text : null;
 }
 
-function listPath(farmId: string) {
-  return animalsHref(farmId);
-}
-
 export async function saveAnimalAction(farmId: string, locale: string, animalId: string, formData: FormData) {
   const session = await getSession();
   if (!session?.accessToken) {
@@ -43,7 +39,7 @@ export async function saveAnimalAction(farmId: string, locale: string, animalId:
     redirect({
       href: animalsHref(farmId, {
         compose: animalId ? undefined : 'new',
-        edit: animalId ?? undefined,
+        edit: animalId || undefined,
         error: message,
       }),
       locale,
@@ -52,7 +48,7 @@ export async function saveAnimalAction(farmId: string, locale: string, animalId:
   }
 
   revalidatePath(`/${locale}/farm/${farmId}/animals`);
-  redirect({ href: listPath(farmId), locale });
+  redirect({ href: animalsHref(farmId), locale });
 }
 
 export async function archiveAnimalAction(farmId: string, locale: string, animalId: string) {
@@ -69,5 +65,5 @@ export async function archiveAnimalAction(farmId: string, locale: string, animal
     return;
   }
   revalidatePath(`/${locale}/farm/${farmId}/animals`);
-  redirect({ href: listPath(farmId), locale });
+  redirect({ href: animalsHref(farmId), locale });
 }

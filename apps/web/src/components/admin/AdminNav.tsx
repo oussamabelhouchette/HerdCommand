@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { FarmIcon, SlidersIcon } from './AdminIcons';
+import { FarmIcon, SlidersIcon } from '@/components/ui/Icons';
 import styles from './AdminShell.module.css';
 
 type Props = {
