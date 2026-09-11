@@ -41,7 +41,7 @@ Admin screens (breeds, farms) hydrate a client island from the page. **Farm `[fa
 3. **Do not add icons or helpers to `'use client'` barrels that RSC files import.** Shared SVGs live in `components/ui/Icons.tsx` (no directive). Client files may import that module. RSC files must **not** import `AdminIcons.tsx`.
 4. **Do not pass access tokens as props** into client components. Client code reads `useSession().data?.accessToken`. Server code reads `getSession()` or `requireCurrentFarm` (both cached).
 5. **Farm identity is exact.** `findOwnerFarm` / `requireCurrentFarm` match the URL id. Never fall back to `farms[0]` on a `[farmId]` route. The only farm redirect is `/farm` → `/farm/{firstId}`.
-6. **Redirects belong in one place per flow.** Farm index redirects; `[farmId]` pages do not.
+6. **Redirects belong in one place per flow.** Farm index redirects; `[farmId]` pages do not. Server actions that close a farm dialog must `redirect` to a **locale-prefixed** path (`/ar/farm/...`). Middleware does not run on the action response, so `/farm/...` never matches `[locale]` and `useLocale` in farm chrome throws. Admin save stays on the page (client fetch) and does not hit this.
 7. **Copy lives in `messages/ar.json` and `messages/en.json`.** No demo animal names, IDs, or `window.confirm()`.
 8. **If you delete `apps/web/.next`, stop `next dev` first.** Then start it again and hard-refresh. Never delete the cache while Next is running.
 

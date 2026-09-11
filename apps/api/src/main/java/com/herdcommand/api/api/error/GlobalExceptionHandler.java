@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
             return respond(HttpStatus.CONFLICT, ErrorCodes.FARM_CODE_ALREADY_EXISTS, "error.farm.codeExists", request, List.of(
                     new ApiError.FieldError("code", messageSource.getMessage("validation.codeUnique", null, LocaleContextHolder.getLocale()))));
         }
-        if (detail.contains("ux_farm_onboarding_key") || detail.contains("farm_onboarding_request")) {
+        if (detail.contains("ux_farm_onboarding_key")) {
             return respond(HttpStatus.CONFLICT, ErrorCodes.IDEMPOTENCY_CONFLICT, "error.idempotency.conflict", request, List.of());
         }
         if (detail.contains("ux_farm_membership_user") || detail.contains("farm_membership")) {

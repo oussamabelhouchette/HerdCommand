@@ -12,8 +12,11 @@ export default async function KeycloakLoginPreviewPage({ params }: Props) {
     <div className="hc-stack">
       <p className="hc-muted">{t('hint')}</p>
       <p>
+        {/* Static files in public/kc-login-look, not App Router pages. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/kc-login-look/">{t('open')}</a>
         {' · '}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/kc-login-look/preview-en.html">{t('openEn')}</a>
       </p>
       <iframe

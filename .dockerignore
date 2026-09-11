@@ -1,0 +1,11 @@
+.git
+.cursor
+.turbo
+**/.next
+**/node_modules
+apps/api
+*.md
+.env
+.env.local
+**/.env
+**/.env.local

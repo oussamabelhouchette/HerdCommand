@@ -1,0 +1,100 @@
+# Test stack — Move 4: Postgres + Keycloak + API + Web.
+#
+#   docker compose -p herdcommand-test -f docker-compose.test.yml up --build
+#
+# First --build takes several minutes (Maven + Next). Later starts reuse images.
+# Stop host Next (3000), Spring (8080), and Windows Keycloak (9090) first.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: herdcommand
+      POSTGRES_PASSWORD: herdcommand
+      POSTGRES_DB: herdcommand
+    ports:
+      - "5432:5432"
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U herdcommand -d herdcommand"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.5
+    command: ["start-dev", "--import-realm"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "9090:8080"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: herdcommand
+      KC_DB_PASSWORD: herdcommand
+      # Browser uses localhost:9090. Containers use http://keycloak:8080 (backchannel).
+      KC_HOSTNAME: http://localhost:9090
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - ./infra/keycloak/realm:/opt/keycloak/data/import:ro
+      - ./infra/keycloak/theme/herdcommand:/opt/keycloak/themes/herdcommand:ro
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    image: herdcommand-api:test
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      API_PORT: "8080"
+      DATABASE_URL: jdbc:postgresql://postgres:5432/herdcommand
+      DATABASE_USERNAME: herdcommand
+      DATABASE_PASSWORD: herdcommand
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:9090/realms/herdcommand
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/herdcommand/protocol/openid-connect/certs
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      KEYCLOAK_ADMIN_BASE_URL: http://keycloak:8080
+      KEYCLOAK_ADMIN_REALM: herdcommand
+      KEYCLOAK_ADMIN_CLIENT_ID: herdcommand-admin
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ******
+      KEYCLOAK_INVITE_REDIRECT_URI: http://localhost:3000/login
+      KEYCLOAK_INVITE_CLIENT_ID: herdcommand
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: herdcommand-web:test
+    depends_on:
+      - api
+      - keycloak
+    ports:
+      - "3000:3000"
+    environment:
+      AUTH_SECRET: docker-test-secret-change-me-32chars!!
+      AUTH_TRUST_HOST: "true"
+      AUTH_KEYCLOAK_ID: herdcommand
+      AUTH_KEYCLOAK_SECRET: web-dev-secret
+      AUTH_KEYCLOAK_ISSUER: http://localhost:9090/realms/herdcommand
+      AUTH_KEYCLOAK_INTERNAL_ISSUER: http://keycloak:8080/realms/herdcommand
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+      API_INTERNAL_URL: http://api:8080
+      NODE_OPTIONS: --dns-result-order=ipv4first
+
+volumes:
+  test_postgres_data:

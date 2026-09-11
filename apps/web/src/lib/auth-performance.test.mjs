@@ -32,7 +32,7 @@ test('login and other public pages do not run Auth.js in middleware', () => {
   const middleware = readFileSync(join(dir, '../middleware.ts'), 'utf8');
   assert.doesNotMatch(middleware, /export default auth\(/);
   assert.match(middleware, /isProtectedPath/);
-  assert.match(middleware, /return protect\(request\)/);
+  assert.match(middleware, /protect as \(req: NextRequest/);
 });
 
 test('logout clears the app cookie without reading or refreshing the session', () => {
