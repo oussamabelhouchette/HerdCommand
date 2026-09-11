@@ -148,4 +148,20 @@ class FlywayMigrationTest {
                 Integer.class);
         assertThat(displayName).isEqualTo(1);
     }
+
+    @Test
+    void animalTableMigrationIsApplied() {
+        Integer version = jdbcTemplate.queryForObject(
+                "SELECT MAX(installed_rank) FROM flyway_schema_history",
+                Integer.class);
+        assertThat(version).isGreaterThanOrEqualTo(10);
+
+        Integer animals = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE lower(table_name) = 'animal'
+                """,
+                Integer.class);
+        assertThat(animals).isEqualTo(1);
+    }
 }

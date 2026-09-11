@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 public interface AnimalGroupRepository extends JpaRepository<AnimalGroup, UUID> {
@@ -14,6 +15,8 @@ public interface AnimalGroupRepository extends JpaRepository<AnimalGroup, UUID> 
     boolean existsByFarmIdAndCodeIgnoreCase(UUID farmId, String code);
 
     Optional<AnimalGroup> findByIdAndFarmId(UUID id, UUID farmId);
+
+    List<AnimalGroup> findByFarmIdAndActiveTrueOrderByNameArAsc(UUID farmId);
 
     @Query("""
             SELECT g FROM AnimalGroup g

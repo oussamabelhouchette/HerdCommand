@@ -26,7 +26,8 @@ import {
   PlusIcon,
   SearchIcon,
   TagsIcon,
-} from './AdminIcons';
+} from '@/components/ui/Icons';
+import { ConfirmText, Dialog, DialogFoot, FormField, FormFields } from './AdminDialog';
 import styles from './BreedManagement.module.css';
 
 type Props = {
@@ -264,7 +265,6 @@ export function BreedManagement({
               </button>
             </div>
           </header>
-
           <section className={styles.stats}>
             <div className={styles.stat}>
               <div className={styles.statIcon}>
@@ -316,7 +316,6 @@ export function BreedManagement({
         )}
         <div className={styles.toolbar}>
           <div className={styles.search}>
-            <SearchIcon />
             <input
               value={search}
               onChange={(event) => {
@@ -326,6 +325,7 @@ export function BreedManagement({
               placeholder={t('searchPlaceholder')}
               aria-label={t('searchPlaceholder')}
             />
+            <SearchIcon />
           </div>
           <select
             className={styles.filter}
@@ -361,8 +361,8 @@ export function BreedManagement({
             <span>{t('addBreed')}</span>
           </button>
         </div>
+        {listError ? <p className={styles.listError}>{listError}</p> : null}
         <div className={styles.tableWrap}>
-          {listError ? <p className={styles.listError}>{listError}</p> : null}
           <table className={styles.table}>
             <thead>
               <tr>
@@ -449,24 +449,18 @@ export function BreedManagement({
       </section>
 
       {modalOpen ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeModal();
-            }
-          }}
+        <Dialog
+          titleId="breed-modal-title"
+          title={editing ? t('editTitle') : t('createTitle')}
+          close={
+            <button type="button" onClick={closeModal} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="breed-modal-title">
-            <div className={styles.modalHead}>
-              <h2 id="breed-modal-title">{editing ? t('editTitle') : t('createTitle')}</h2>
-              <button type="button" className={styles.close} onClick={closeModal} aria-label={t('cancel')}>
-                <CloseIcon />
-              </button>
-            </div>
             <form onSubmit={onSubmit}>
-              <div className={styles.form}>
-                <div className={styles.field}>
+              <FormFields>
+                <FormField>
                   <label htmlFor="breed-nameAr">{t('nameAr')}</label>
                   <input
                     id="breed-nameAr"
@@ -477,8 +471,8 @@ export function BreedManagement({
                     aria-invalid={fieldErrors.nameAr ? true : undefined}
                   />
                   {fieldErrors.nameAr ? <span className={styles.fieldError}>{fieldErrors.nameAr}</span> : null}
-                </div>
-                <div className={styles.field}>
+                </FormField>
+                <FormField>
                   <label htmlFor="breed-nameEn">{t('nameEn')}</label>
                   <input
                     id="breed-nameEn"
@@ -489,8 +483,8 @@ export function BreedManagement({
                     aria-invalid={fieldErrors.nameEn ? true : undefined}
                   />
                   {fieldErrors.nameEn ? <span className={styles.fieldError}>{fieldErrors.nameEn}</span> : null}
-                </div>
-                <div className={styles.field}>
+                </FormField>
+                <FormField>
                   <label htmlFor="breed-code">{t('code')}</label>
                   <input
                     id="breed-code"
@@ -506,8 +500,8 @@ export function BreedManagement({
                   />
                   <span className={styles.help}>{editing ? t('codeImmutable') : t('codeHelp')}</span>
                   {fieldErrors.code ? <span className={styles.fieldError}>{fieldErrors.code}</span> : null}
-                </div>
-                <div className={styles.field}>
+                </FormField>
+                <FormField>
                   <label htmlFor="breed-species">{t('speciesLabel')}</label>
                   <select
                     id="breed-species"
@@ -523,8 +517,8 @@ export function BreedManagement({
                       </option>
                     ))}
                   </select>
-                </div>
-                <div className={styles.field}>
+                </FormField>
+                <FormField>
                   <label htmlFor="breed-order">{t('displayOrder')}</label>
                   <input
                     id="breed-order"
@@ -538,40 +532,37 @@ export function BreedManagement({
                   {fieldErrors.displayOrder ? (
                     <span className={styles.fieldError}>{fieldErrors.displayOrder}</span>
                   ) : null}
-                </div>
-                {formError ? <p className={styles.formError}>{formError}</p> : null}
-              </div>
-              <div className={styles.modalFoot}>
+                </FormField>
+                {formError ? (
+                  <FormField full>
+                    <p className={styles.formError}>{formError}</p>
+                  </FormField>
+                ) : null}
+              </FormFields>
+              <DialogFoot>
                 <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving}>
                   {t('save')}
                 </button>
                 <button type="button" className={styles.btn} onClick={closeModal} disabled={saving}>
                   {t('cancel')}
                 </button>
-              </div>
+              </DialogFoot>
             </form>
-          </div>
-        </div>
+        </Dialog>
       ) : null}
 
       {pendingStatus ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setPendingStatus(null);
-            }
-          }}
+        <Dialog
+          titleId="breed-deactivate-title"
+          title={t('deactivateTitle')}
+          close={
+            <button type="button" onClick={() => setPendingStatus(null)} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="breed-deactivate-title">
-            <div className={styles.modalHead}>
-              <h2 id="breed-deactivate-title">{t('deactivateTitle')}</h2>
-              <button type="button" className={styles.close} onClick={() => setPendingStatus(null)} aria-label={t('cancel')}>
-                <CloseIcon />
-              </button>
-            </div>
-            <p className={styles.confirmText}>{t('confirmDeactivate', { code: pendingStatus.code })}</p>
-            <div className={styles.modalFoot}>
+            <ConfirmText>{t('confirmDeactivate', { code: pendingStatus.code })}</ConfirmText>
+            <DialogFoot>
               <button
                 type="button"
                 className={`${styles.btn} ${styles.btnPrimary}`}
@@ -582,9 +573,8 @@ export function BreedManagement({
               <button type="button" className={styles.btn} onClick={() => setPendingStatus(null)}>
                 {t('cancel')}
               </button>
-            </div>
-          </div>
-        </div>
+            </DialogFoot>
+        </Dialog>
       ) : null}
 
       {toast ? (

@@ -1,39 +1,31 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ApiRequestError } from '@/lib/api';
-import { loadOwnerFarms } from '@/lib/owner-farms';
-import { requireFarmOwner } from '@/lib/require-admin';
+import { firstOwnerFarm } from '@/lib/owner-farms';
+import { loadFarmPortal } from '@/lib/farm-portal';
 import { redirect } from '@/i18n/navigation';
-import styles from '@/components/farm/FarmWorkspace.module.css';
+import { FarmNotice } from '@/components/farm/FarmNotice';
 
 type Props = { params: Promise<{ locale: string }> };
 
 export default async function FarmIndexPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const gate = await requireFarmOwner(locale);
   const t = await getTranslations('farm');
+  const portal = await loadFarmPortal(locale);
 
-  if (!gate.allowed || !gate.session.accessToken) {
+  if (!portal.gate.allowed || !portal.gate.session.accessToken) {
+    return null;
+  }
+  if (portal.error) {
+    const message = portal.error instanceof ApiRequestError ? portal.error.message : t('loadError');
+    return <FarmNotice title={message} />;
+  }
+
+  const farm = firstOwnerFarm(portal.farms);
+  if (farm) {
+    redirect({ href: `/farm/${farm.id}`, locale });
     return null;
   }
 
-  const { farms, error } = await loadOwnerFarms(gate.session.accessToken, locale);
-  if (error) {
-    const message = error instanceof ApiRequestError ? error.message : t('loadError');
-    return <p className={styles.error}>{message}</p>;
-  }
-  if (farms[0]) {
-    redirect({ href: `/farm/${farms[0].id}`, locale });
-  }
-
-  return (
-    <section>
-      <div className={styles.header}>
-        <div className={styles.title}>
-          <h1>{t('emptyTitle')}</h1>
-          <p>{t('emptyHint')}</p>
-        </div>
-      </div>
-    </section>
-  );
+  return <FarmNotice title={t('emptyTitle')} body={t('emptyHint')} />;
 }

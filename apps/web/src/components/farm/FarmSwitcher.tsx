@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { farmHref, farmIdFromPath, type OwnerFarm } from '@/lib/owner-farms';
+import { farmHref, farmIdFromPath, findOwnerFarm, type OwnerFarm } from '@/lib/owner-farms';
 import styles from '../admin/AdminShell.module.css';
 
 type Props = {
@@ -13,7 +13,8 @@ export function FarmSwitcher({ farms }: Props) {
   const t = useTranslations('farm');
   const pathname = usePathname();
   const router = useRouter();
-  const selectedId = farmIdFromPath(pathname) ?? farms[0]?.id;
+  const pathId = farmIdFromPath(pathname);
+  const selectedId = findOwnerFarm(farms, pathId)?.id ?? farms[0]?.id;
 
   if (farms.length === 0) {
     return null;

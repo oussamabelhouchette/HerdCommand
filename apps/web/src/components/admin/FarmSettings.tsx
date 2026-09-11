@@ -39,7 +39,8 @@ import {
   PenIcon,
   PlusIcon,
   SearchIcon,
-} from './AdminIcons';
+} from '@/components/ui/Icons';
+import { Dialog } from './AdminDialog';
 import { OwnerLookup } from './OwnerLookup';
 import styles from './FarmSettings.module.css';
 
@@ -231,22 +232,18 @@ export function FarmSettings({
 
   return (
     <>
-      <header className={styles.header}>
+      <div className={styles.header}>
         <div className={styles.title}>
           <h1>{t('title')}</h1>
           <p>{t('subtitle')}</p>
         </div>
         <div className={styles.headerActions}>
-          <button
-            type="button"
-            className={`${styles.btn} ${styles.btnPrimary}`}
-            onClick={() => setWizardOpen(true)}
-          >
+          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => setWizardOpen(true)}>
             <PlusIcon />
             {t('addFarm')}
           </button>
         </div>
-      </header>
+      </div>
 
       <section className={styles.stats}>
         <div className={styles.stat}>
@@ -473,7 +470,7 @@ export function FarmSettings({
           </div>
         )}
 
-        {data.total > data.size ? (
+        {!listError && data.total > data.size ? (
           <div className={styles.pager}>
             <button
               type="button"
@@ -546,27 +543,25 @@ export function FarmSettings({
       </section>
 
       {detailsId ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeDetails();
-            }
-          }}
+        <Dialog
+          titleId="farm-details-title"
+          title={t('detailsTitle')}
+          close={
+            <button type="button" onClick={closeDetails} aria-label={t('close')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="farm-details-title">
-            <div className={styles.modalHead}>
-              <h2 id="farm-details-title">{t('detailsTitle')}</h2>
-              <button type="button" className={styles.close} onClick={closeDetails} aria-label={t('close')}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className={styles.detailsBody}>
+          <div className={styles.detailsBody}>
               {detailsLoading ? <p>{t('loading')}</p> : null}
               {detailsError ? (
                 <div className={styles.listError}>
                   <p>{detailsError}</p>
-                  <button type="button" className={styles.btn} onClick={() => detailsId && void loadDetails(detailsId)}>
+                  <button
+                    type="button"
+                    className={styles.btn}
+                    onClick={() => detailsId && void loadDetails(detailsId)}
+                  >
                     {t('retry')}
                   </button>
                 </div>
@@ -667,8 +662,7 @@ export function FarmSettings({
                 </dl>
               ) : null}
             </div>
-          </div>
-        </div>
+        </Dialog>
       ) : null}
 
       <FarmCreateWizard

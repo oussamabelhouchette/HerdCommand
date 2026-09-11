@@ -13,9 +13,9 @@ import {
   type AnimalGroup,
   type GroupPage,
 } from '@/lib/groups';
-import { BanIcon, CheckIcon, CloseIcon, InfoIcon, PenIcon, PlusIcon, SearchIcon } from './AdminIcons';
+import { BanIcon, CheckIcon, CloseIcon, InfoIcon, PenIcon, PlusIcon, SearchIcon } from '@/components/ui/Icons';
+import { ConfirmText, Dialog, DialogFoot, FormField, FormFields } from './AdminDialog';
 import styles from './BreedManagement.module.css';
-import groupStyles from './GroupManagement.module.css';
 
 type Props = {
   farmId?: string;
@@ -218,7 +218,6 @@ export function GroupManagement({ farmId, initialPage, initialError, onStatsChan
     <>
       <div className={styles.toolbar}>
         <div className={styles.search}>
-          <SearchIcon />
           <input
             value={search}
             onChange={(event) => {
@@ -228,6 +227,7 @@ export function GroupManagement({ farmId, initialPage, initialError, onStatsChan
             placeholder={t('groupSearchPlaceholder')}
             aria-label={t('groupSearchPlaceholder')}
           />
+          <SearchIcon />
         </div>
         <select
           className={styles.filter}
@@ -242,13 +242,18 @@ export function GroupManagement({ farmId, initialPage, initialError, onStatsChan
           <option value="true">{t('filterActive')}</option>
           <option value="false">{t('filterInactive')}</option>
         </select>
-        <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={openCreate} disabled={!farmId}>
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.btnPrimary}`}
+          onClick={openCreate}
+          disabled={!farmId}
+        >
           <PlusIcon />
           <span>{t('addGroup')}</span>
         </button>
       </div>
+      {listError ? <p className={styles.listError}>{listError}</p> : null}
       <div className={styles.tableWrap}>
-        {listError ? <p className={styles.listError}>{listError}</p> : null}
         <table className={styles.table}>
           <thead>
             <tr>
@@ -334,134 +339,123 @@ export function GroupManagement({ farmId, initialPage, initialError, onStatsChan
       </div>
 
       {modalOpen ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeModal();
-            }
-          }}
+        <Dialog
+          titleId="group-modal-title"
+          title={editing ? t('groupEditTitle') : t('groupCreateTitle')}
+          close={
+            <button type="button" onClick={closeModal} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="group-modal-title">
-            <div className={styles.modalHead}>
-              <h2 id="group-modal-title">{editing ? t('groupEditTitle') : t('groupCreateTitle')}</h2>
-              <button type="button" className={styles.close} onClick={closeModal} aria-label={t('cancel')}>
-                <CloseIcon />
+          <form onSubmit={onSubmit}>
+            <FormFields>
+              <FormField>
+                <label htmlFor="group-nameAr">{t('nameAr')}</label>
+                <input
+                  id="group-nameAr"
+                  value={form.nameAr}
+                  onChange={(event) => setForm((current) => ({ ...current, nameAr: event.target.value }))}
+                  required
+                  maxLength={100}
+                  aria-invalid={fieldErrors.nameAr ? true : undefined}
+                />
+                {fieldErrors.nameAr ? <span className={styles.fieldError}>{fieldErrors.nameAr}</span> : null}
+              </FormField>
+              <FormField>
+                <label htmlFor="group-nameEn">{t('nameEn')}</label>
+                <input
+                  id="group-nameEn"
+                  value={form.nameEn}
+                  onChange={(event) => setForm((current) => ({ ...current, nameEn: event.target.value }))}
+                  required
+                  maxLength={100}
+                  aria-invalid={fieldErrors.nameEn ? true : undefined}
+                />
+                {fieldErrors.nameEn ? <span className={styles.fieldError}>{fieldErrors.nameEn}</span> : null}
+              </FormField>
+              <FormField>
+                <label htmlFor="group-code">{t('code')}</label>
+                <input
+                  id="group-code"
+                  value={form.code}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, code: event.target.value.toUpperCase() }))
+                  }
+                  required
+                  maxLength={40}
+                  disabled={Boolean(editing)}
+                  aria-invalid={fieldErrors.code ? true : undefined}
+                  autoComplete="off"
+                />
+                <span className={styles.help}>{editing ? t('codeImmutable') : t('groupCodeHelp')}</span>
+                {fieldErrors.code ? <span className={styles.fieldError}>{fieldErrors.code}</span> : null}
+              </FormField>
+              <FormField>
+                <label htmlFor="group-capacity">{t('capacity')}</label>
+                <input
+                  id="group-capacity"
+                  type="number"
+                  min={1}
+                  value={form.capacity}
+                  onChange={(event) => setForm((current) => ({ ...current, capacity: event.target.value }))}
+                  aria-invalid={fieldErrors.capacity ? true : undefined}
+                />
+                <span className={styles.help}>{t('capacityHelp')}</span>
+                {fieldErrors.capacity ? <span className={styles.fieldError}>{fieldErrors.capacity}</span> : null}
+              </FormField>
+              <FormField full>
+                <label htmlFor="group-description">{t('description')}</label>
+                <textarea
+                  id="group-description"
+                  value={form.description}
+                  onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+                  maxLength={500}
+                  rows={3}
+                />
+              </FormField>
+              {formError ? (
+                <FormField full>
+                  <p className={styles.formError}>{formError}</p>
+                </FormField>
+              ) : null}
+            </FormFields>
+            <DialogFoot>
+              <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving || !farmId}>
+                {t('save')}
               </button>
-            </div>
-            <form onSubmit={onSubmit}>
-              <div className={styles.form}>
-                <div className={styles.field}>
-                  <label htmlFor="group-nameAr">{t('nameAr')}</label>
-                  <input
-                    id="group-nameAr"
-                    value={form.nameAr}
-                    onChange={(event) => setForm((current) => ({ ...current, nameAr: event.target.value }))}
-                    required
-                    maxLength={100}
-                    aria-invalid={fieldErrors.nameAr ? true : undefined}
-                  />
-                  {fieldErrors.nameAr ? <span className={styles.fieldError}>{fieldErrors.nameAr}</span> : null}
-                </div>
-                <div className={styles.field}>
-                  <label htmlFor="group-nameEn">{t('nameEn')}</label>
-                  <input
-                    id="group-nameEn"
-                    value={form.nameEn}
-                    onChange={(event) => setForm((current) => ({ ...current, nameEn: event.target.value }))}
-                    required
-                    maxLength={100}
-                    aria-invalid={fieldErrors.nameEn ? true : undefined}
-                  />
-                  {fieldErrors.nameEn ? <span className={styles.fieldError}>{fieldErrors.nameEn}</span> : null}
-                </div>
-                <div className={styles.field}>
-                  <label htmlFor="group-code">{t('code')}</label>
-                  <input
-                    id="group-code"
-                    value={form.code}
-                    onChange={(event) =>
-                      setForm((current) => ({ ...current, code: event.target.value.toUpperCase() }))
-                    }
-                    required
-                    maxLength={40}
-                    disabled={Boolean(editing)}
-                    aria-invalid={fieldErrors.code ? true : undefined}
-                    autoComplete="off"
-                  />
-                  <span className={styles.help}>{editing ? t('codeImmutable') : t('groupCodeHelp')}</span>
-                  {fieldErrors.code ? <span className={styles.fieldError}>{fieldErrors.code}</span> : null}
-                </div>
-                <div className={styles.field}>
-                  <label htmlFor="group-capacity">{t('capacity')}</label>
-                  <input
-                    id="group-capacity"
-                    type="number"
-                    min={1}
-                    value={form.capacity}
-                    onChange={(event) => setForm((current) => ({ ...current, capacity: event.target.value }))}
-                    aria-invalid={fieldErrors.capacity ? true : undefined}
-                  />
-                  <span className={styles.help}>{t('capacityHelp')}</span>
-                  {fieldErrors.capacity ? <span className={styles.fieldError}>{fieldErrors.capacity}</span> : null}
-                </div>
-                <div className={`${styles.field} ${styles.fieldFull}`}>
-                  <label htmlFor="group-description">{t('description')}</label>
-                  <textarea
-                    id="group-description"
-                    className={groupStyles.textarea}
-                    value={form.description}
-                    onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-                    maxLength={500}
-                    rows={3}
-                  />
-                </div>
-                {formError ? <p className={styles.formError}>{formError}</p> : null}
-              </div>
-              <div className={styles.modalFoot}>
-                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={saving || !farmId}>
-                  {t('save')}
-                </button>
-                <button type="button" className={styles.btn} onClick={closeModal} disabled={saving}>
-                  {t('cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+              <button type="button" className={styles.btn} onClick={closeModal} disabled={saving}>
+                {t('cancel')}
+              </button>
+            </DialogFoot>
+          </form>
+        </Dialog>
       ) : null}
 
       {pendingStatus ? (
-        <div
-          className={styles.modalBg}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setPendingStatus(null);
-            }
-          }}
+        <Dialog
+          titleId="group-deactivate-title"
+          title={t('deactivateGroupTitle')}
+          close={
+            <button type="button" onClick={() => setPendingStatus(null)} aria-label={t('cancel')}>
+              <CloseIcon />
+            </button>
+          }
         >
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="group-deactivate-title">
-            <div className={styles.modalHead}>
-              <h2 id="group-deactivate-title">{t('deactivateGroupTitle')}</h2>
-              <button type="button" className={styles.close} onClick={() => setPendingStatus(null)} aria-label={t('cancel')}>
-                <CloseIcon />
-              </button>
-            </div>
-            <p className={styles.confirmText}>{t('confirmDeactivateGroup', { code: pendingStatus.code })}</p>
-            <div className={styles.modalFoot}>
-              <button
-                type="button"
-                className={`${styles.btn} ${styles.btnPrimary}`}
-                onClick={() => applyStatus(pendingStatus, false)}
-              >
-                {t('deactivate')}
-              </button>
-              <button type="button" className={styles.btn} onClick={() => setPendingStatus(null)}>
-                {t('cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
+          <ConfirmText>{t('confirmDeactivateGroup', { code: pendingStatus.code })}</ConfirmText>
+          <DialogFoot>
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnPrimary}`}
+              onClick={() => applyStatus(pendingStatus, false)}
+            >
+              {t('deactivate')}
+            </button>
+            <button type="button" className={styles.btn} onClick={() => setPendingStatus(null)}>
+              {t('cancel')}
+            </button>
+          </DialogFoot>
+        </Dialog>
       ) : null}
 
       {toast ? (

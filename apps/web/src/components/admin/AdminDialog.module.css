@@ -1,0 +1,131 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--hc-color-brand-strong) 50%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 18px;
+}
+
+.dialogPanel {
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--hc-elevation-medium);
+}
+
+.wide {
+  width: min(720px, 100%);
+  max-height: min(92vh, 900px);
+  overflow: auto;
+}
+
+.head {
+  height: 60px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--hc-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.head h2 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.close :is(a, button) {
+  border: 0;
+  background: var(--hc-color-sand-100);
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--hc-color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.dialogForm {
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.dialogField {
+  display: grid;
+  gap: 6px;
+}
+
+.dialogFieldFull {
+  grid-column: 1 / -1;
+}
+
+.dialogField label {
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.dialogField input,
+.dialogField select,
+.dialogField textarea {
+  width: 100%;
+  border: 1px solid var(--hc-color-border);
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 8px 11px;
+  outline: none;
+  font: inherit;
+  background: #fff;
+  color: var(--hc-color-text);
+}
+
+.dialogField textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.dialogField input:focus,
+.dialogField select:focus,
+.dialogField textarea:focus {
+  border-color: var(--hc-color-brand);
+}
+
+.dialogField input[aria-invalid='true'],
+.dialogField select[aria-invalid='true'] {
+  border-color: var(--hc-color-danger);
+}
+
+.confirmText {
+  margin: 18px 20px;
+  color: var(--hc-color-text);
+}
+
+.dialogHelp {
+  font-size: 11px;
+  color: var(--hc-color-text-muted);
+}
+
+.dialogFieldError,
+.dialogFormError {
+  font-size: 12px;
+  color: var(--hc-color-danger);
+}
+
+.dialogFormError {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.foot {
+  padding: 13px 20px;
+  border-top: 1px solid var(--hc-color-border);
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+}

@@ -1,0 +1,75 @@
+.tableCard {
+  background: #fff;
+  border: 1px solid var(--hc-color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 17px rgba(31, 43, 37, 0.07);
+  position: relative;
+  min-height: 220px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.tableCard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableCard th {
+  height: 47px;
+  font-size: 12px;
+  color: #667072;
+  font-weight: 700;
+  background: #fff;
+  text-align: center;
+}
+
+.tableCard td {
+  height: 53px;
+  border-top: 1px solid var(--hc-color-border);
+  text-align: center;
+  font-size: 12.5px;
+  color: #30383a;
+}
+
+.tableEmpty,
+.tableError {
+  text-align: center;
+  padding: 42px;
+  color: var(--hc-color-text-muted);
+}
+
+.tableError {
+  color: var(--hc-color-danger);
+}
+
+.tableError :is(a, button) {
+  margin-top: 12px;
+}
+
+.footer {
+  height: 66px;
+  border-top: 1px solid var(--hc-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: #7a8485;
+  font-size: 12.5px;
+}
+
+.pagination {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.plainTable {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 0;
+}

@@ -90,6 +90,10 @@ After middleware + layouts, Next renders the matching `page.tsx`.
 | `/admin` | `src/app/[locale]/admin/page.tsx` → animal settings, or farm settings if `PLATFORM_ADMIN` only |
 | `/admin/animal-settings` | `src/app/[locale]/admin/animal-settings/page.tsx` |
 | `/admin/farm-settings` | `src/app/[locale]/admin/farm-settings/page.tsx` (PA-007 all-farms table) |
+| `/farm` | `src/app/[locale]/farm/page.tsx` — redirect to first owner farm |
+| `/farm/[farmId]` | `src/app/[locale]/farm/[farmId]/page.tsx` — owner dashboard RSC |
+| `/farm/[farmId]/animals` | `src/app/[locale]/farm/[farmId]/animals/page.tsx` — animals RSC |
+| `/farm/[farmId]/groups` | `src/app/[locale]/farm/[farmId]/groups/page.tsx` — groups RSC |
 | `/signed-in` | `src/app/[locale]/signed-in/page.tsx` (post-login hop) |
 | `/en`, `/en/login`, `/en/admin`, … | Same files, `locale = en` |
 
@@ -151,11 +155,26 @@ Breed admin screen (who can open it, file-by-file, click-test): [us-ac-003-breed
 | `src/components/admin/BreedManagement.tsx` | Breed table, filters, create/edit modal, activate/deactivate. |
 | `src/components/admin/StatusManagement.tsx` | Status table, color picker, live preview, edit / activate (no create or delete). |
 | `src/components/admin/GroupManagement.tsx` | Farm group table, create/edit modal, activate/deactivate. Uses the first farm. |
+| `src/components/farm/FarmShell.tsx` | Owner sidebar. Server component. |
+| `src/components/farm/OwnerAnimals.tsx` | Animals RSC: lock card, list, filters, add/edit/archive. |
+| `src/components/farm/OwnerGroups.tsx` | Groups RSC: lock card, list, filters, add/edit/activate. |
+| `src/components/ui/Dialog.tsx` | Shared modal (farm RSC + admin islands). `size="wide"` for the farm wizard. |
+| `src/components/ui/DataTable.tsx` | Shared list card, empty/error, pagination slot. |
+| `src/components/ui/PageHeader.tsx` | Shared title, subtitle, actions. |
+| `src/components/ui/ActionButton.tsx` | Shared button and button-link (`default`, `primary`, `danger`, `icon`). |
+| `src/components/ui/StatGrid.tsx` | Shared summary stat cards. Optional `href` for a clickable card. |
+| `src/components/ui/Callout.tsx` | Locked-module / notice card. |
+| `src/components/ui/Surface.tsx` | White content panel. |
+| `src/components/ui/Note.tsx` | Helper strip under a list. |
+| `src/components/ui/Icons.tsx` | Shared SVGs. **No** `'use client'`. RSC and client may import this. |
+| `src/components/admin/AdminIcons.tsx` | Client re-export of `ui/Icons` for existing admin islands only. |
 | `src/components/LanguageSwitcher.tsx` | Switches `ar` / `en` via next-intl router (keeps the same page). |
 | `src/components/Button.tsx` + `Button.module.css` | Shared button. |
 | `src/components/Input.tsx` + `Input.module.css` | Shared field (design system). |
 | `src/components/Card.tsx` + `Card.module.css` | Card wrapper. |
 | `src/components/Badge.tsx` + `Badge.module.css` | Status chip. |
+
+How to split server vs client, farm identity, and list performance: [ui-architecture.md](./ui-architecture.md).
 
 ---
 

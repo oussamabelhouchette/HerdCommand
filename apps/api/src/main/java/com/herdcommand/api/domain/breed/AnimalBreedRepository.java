@@ -6,11 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface AnimalBreedRepository extends JpaRepository<AnimalBreed, UUID> {
 
     boolean existsByCodeIgnoreCase(String code);
+
+    List<AnimalBreed> findByActiveTrueOrderByDisplayOrderAscCodeAsc();
 
     @Query("""
             SELECT b FROM AnimalBreed b

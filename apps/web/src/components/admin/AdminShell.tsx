@@ -3,7 +3,7 @@ import { logoutAction } from '@/lib/logout';
 import type { MeIdentity } from '@/lib/me';
 import { AdminLocaleToggle } from './AdminLocaleToggle';
 import { AdminNav } from './AdminNav';
-import { BellIcon, BrandMarkIcon } from './AdminIcons';
+import { BellIcon, BrandMarkIcon } from '@/components/ui/Icons';
 import styles from './AdminShell.module.css';
 import type { ReactNode } from 'react';
 

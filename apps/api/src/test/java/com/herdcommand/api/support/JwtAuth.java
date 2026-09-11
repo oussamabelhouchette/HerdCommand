@@ -21,9 +21,13 @@ public final class JwtAuth {
     }
 
     public static RequestPostProcessor withPermissions(String... permissions) {
+        return withPermissionsAs("user-1", permissions);
+    }
+
+    public static RequestPostProcessor withPermissionsAs(String subject, String... permissions) {
         GrantedAuthority[] authorities = Arrays.stream(permissions)
                 .map(SimpleGrantedAuthority::new)
                 .toArray(GrantedAuthority[]::new);
-        return jwt().authorities(authorities).jwt(token -> token.subject("user-1"));
+        return jwt().authorities(authorities).jwt(token -> token.subject(subject));
     }
 }

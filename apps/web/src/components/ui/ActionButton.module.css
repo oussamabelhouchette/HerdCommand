@@ -1,0 +1,43 @@
+.btn {
+  height: 41px;
+  padding: 0 17px;
+  border-radius: 11px;
+  border: 1px solid var(--hc-color-border);
+  background: #fff;
+  color: var(--hc-color-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--hc-color-brand);
+  color: #fff;
+  border-color: var(--hc-color-brand);
+}
+
+.danger {
+  background: #ef1647;
+  color: #fff;
+  border-color: #ef1647;
+}
+
+.iconOnly {
+  width: 43px;
+  padding: 0;
+  color: var(--hc-color-brand);
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+}

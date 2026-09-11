@@ -1,0 +1,42 @@
+.callout {
+  background: #fff;
+  border: var(--hc-border-width) solid var(--hc-color-border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--hc-elevation-low);
+}
+
+.calloutRow {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.calloutIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.calloutWarning {
+  background: #fff0d5;
+  color: var(--hc-color-warning);
+}
+
+.calloutSuccess {
+  background: #dcf2e4;
+  color: var(--hc-color-success);
+}
+
+.calloutBody {
+  margin: 0;
+  color: var(--hc-color-text-muted);
+}
+
+.callout h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}

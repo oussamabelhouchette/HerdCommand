@@ -87,6 +87,14 @@ public class GlobalExceptionHandler {
         if (detail.contains("ux_farm_membership_user") || detail.contains("farm_membership")) {
             return respond(HttpStatus.CONFLICT, ErrorCodes.OWNER_ALREADY_ASSIGNED, "error.farm.ownerAssigned", request, List.of());
         }
+        if (detail.contains("ux_animal_farm_identification")) {
+            return respond(
+                    HttpStatus.CONFLICT,
+                    ErrorCodes.ANIMAL_ID_ALREADY_EXISTS,
+                    "error.animal.idExists",
+                    request,
+                    List.of(new ApiError.FieldError("identificationNumber", "duplicate")));
+        }
         return respond(HttpStatus.CONFLICT, ErrorCodes.CONFLICT, "error.conflict", request, List.of());
     }
 

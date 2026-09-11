@@ -1,0 +1,17 @@
+.hint {
+  margin-top: 13px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: #f8f5ed;
+  border: var(--hc-border-width) solid #ece3ca;
+  color: #76683d;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.hint svg {
+  color: var(--hc-color-warning);
+  margin-top: 2px;
+  flex-shrink: 0;
+}

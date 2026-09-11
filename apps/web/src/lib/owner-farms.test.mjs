@@ -17,24 +17,25 @@ test('owner farm client loads /api/v1/me/farms and never the platform list', () 
   assert.match(client, /listOwnerFarms = cache/);
   assert.match(client, /loadOwnerFarms = cache/);
   assert.match(client, /function farmHref/);
-  assert.match(client, /function selectOwnerFarm/);
+  assert.match(client, /function findOwnerFarm/);
   assert.match(client, /ANIMAL_MANAGEMENT/);
   assert.doesNotMatch(client, /\/api\/v1\/platform\/farms/);
 });
 
-test('farm portal is gated to farm_owner and shows dashboard plus animals', () => {
-  assert.match(layout, /requireFarmOwner/);
-  assert.match(layout, /loadOwnerFarms/);
+test('farm portal is gated to farm_owner and shows dashboard plus animals and groups', () => {
+  assert.match(layout, /loadFarmPortal/);
   assert.match(nav, /\/farm\/\$\{farmId\}/);
   assert.match(nav, /\/farm\/\$\{farmId\}\/animals/);
+  assert.match(nav, /\/farm\/\$\{farmId\}\/groups/);
   assert.match(dashboard, /FarmDashboard/);
-  assert.match(animals, /FarmAnimals/);
+  assert.match(animals, /OwnerAnimals/);
 });
 
 test('owners with more than one farm get a switcher', () => {
   assert.match(switcher, /farms\.length === 1/);
   assert.match(switcher, /farmHref/);
   assert.match(switcher, /farm-switcher/);
+  assert.match(switcher, /findOwnerFarm/);
 });
 
 function farmIdFromPath(pathname) {
@@ -47,15 +48,9 @@ function farmHref(farmId, pathname = '/farm') {
   return `/farm/${farmId}${suffix}`;
 }
 
-function selectOwnerFarm(farms, farmId) {
-  if (!farms.length) return undefined;
-  return farms.find((farm) => farm.id === farmId) ?? farms[0];
-}
-
 test('farm switcher keeps the current page when changing farm', () => {
   assert.equal(farmHref('b', '/farm/a/animals'), '/farm/b/animals');
+  assert.equal(farmHref('b', '/farm/a/groups'), '/farm/b/groups');
   assert.equal(farmHref('b', '/farm/a'), '/farm/b');
   assert.equal(farmIdFromPath('/farm/abc/animals'), 'abc');
-  assert.equal(selectOwnerFarm([{ id: '1' }, { id: '2' }], '2')?.id, '2');
-  assert.equal(selectOwnerFarm([{ id: '1' }, { id: '2' }], 'missing')?.id, '1');
 });

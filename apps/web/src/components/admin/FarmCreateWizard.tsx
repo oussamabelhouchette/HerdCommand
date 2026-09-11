@@ -23,7 +23,8 @@ import {
   type PlatformFarmCreated,
 } from '@/lib/farms';
 import { isValidEmail, lookupIdentity, ownerLookupStatus, type IdentityLookup } from '@/lib/identity';
-import { CloseIcon } from './AdminIcons';
+import { CloseIcon } from '@/components/ui/Icons';
+import { Dialog, DialogFoot, FormFields } from './AdminDialog';
 import styles from './FarmSettings.module.css';
 
 type Step = 1 | 2 | 3 | 4;
@@ -310,21 +311,16 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
   ];
 
   return (
-    <div
-      className={styles.modalBg}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) {
-          close();
-        }
-      }}
+    <Dialog
+      size="wide"
+      titleId="farm-wizard-title"
+      title={t('wizard.title')}
+      close={
+        <button type="button" onClick={close} aria-label={t('close')} disabled={saving}>
+          <CloseIcon />
+        </button>
+      }
     >
-      <div className={`${styles.modal} ${styles.wizard}`} role="dialog" aria-modal="true" aria-labelledby="farm-wizard-title">
-        <div className={styles.modalHead}>
-          <h2 id="farm-wizard-title">{t('wizard.title')}</h2>
-          <button type="button" className={styles.close} onClick={close} aria-label={t('close')} disabled={saving}>
-            <CloseIcon />
-          </button>
-        </div>
         <ol className={styles.wizardSteps} data-wizard-step={step}>
           {steps.map((item) => (
             <li key={item.id} data-active={item.id === step || undefined} data-done={item.id < step || undefined}>
@@ -335,7 +331,7 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
         </ol>
 
         {step === 1 ? (
-          <div className={styles.form}>
+          <FormFields>
             <div className={styles.field}>
               <label htmlFor="wizard-nameAr">{t('wizard.nameAr')}</label>
               <input
@@ -420,11 +416,11 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
               <input id="wizard-status" value={t('status.SETUP')} readOnly />
               <span className={styles.help}>{t('wizard.statusHelp')}</span>
             </div>
-          </div>
+          </FormFields>
         ) : null}
 
         {step === 2 ? (
-          <div className={styles.form}>
+          <FormFields>
             <div className={`${styles.field} ${styles.fieldFull}`}>
               <label htmlFor="wizard-owner-email">{t('ownerEmail')}</label>
               <input
@@ -473,11 +469,11 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
               />
               <span className={styles.help}>{t('wizard.ownerPhoneHelp')}</span>
             </div>
-          </div>
+          </FormFields>
         ) : null}
 
         {step === 3 ? (
-          <div className={styles.form}>
+          <FormFields>
             <div className={`${styles.field} ${styles.fieldFull}`}>
               <label htmlFor="wizard-plan">{t('colPlan')}</label>
               <select
@@ -528,7 +524,7 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
                 })}
               </ul>
             </div>
-          </div>
+          </FormFields>
         ) : null}
 
         {step === 4 ? (
@@ -586,7 +582,7 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
           </div>
         ) : null}
 
-        <div className={styles.modalFoot}>
+        <DialogFoot>
           {step > 1 ? (
             <button type="button" className={styles.btn} onClick={goBack} disabled={saving}>
               {t('wizard.back')}
@@ -610,8 +606,7 @@ export function FarmCreateWizard({ open, features, onClose, onCreated }: Props) 
               {saving ? t('wizard.creating') : t('wizard.create')}
             </button>
           )}
-        </div>
-      </div>
-    </div>
+        </DialogFoot>
+    </Dialog>
   );
 }
