@@ -16,10 +16,12 @@ export default async function FarmPortalPage({ params }: Props) {
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
+    return null;
   }
 
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
+    return null;
   }
 
   const portal = portalHref(await membershipsFromSession(session));

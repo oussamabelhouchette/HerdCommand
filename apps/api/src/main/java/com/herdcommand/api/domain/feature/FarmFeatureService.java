@@ -5,13 +5,11 @@ import com.herdcommand.api.api.error.BadRequestException;
 import com.herdcommand.api.api.error.ErrorCodes;
 import com.herdcommand.api.api.platform.feature.AssignFarmFeatureRequest;
 import com.herdcommand.api.api.platform.feature.FarmFeatureResponse;
+import com.herdcommand.api.domain.audit.CurrentAuditor;
 import com.herdcommand.api.domain.farm.FarmService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,15 +96,6 @@ public class FarmFeatureService {
     }
 
     private static String currentAuditor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return "system";
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof Jwt jwt && jwt.getSubject() != null && !jwt.getSubject().isBlank()) {
-            return jwt.getSubject();
-        }
-        String name = authentication.getName();
-        return name == null || name.isBlank() ? "system" : name;
+        return CurrentAuditor.orSystem();
     }
 }

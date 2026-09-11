@@ -64,7 +64,7 @@ React OwnerLookup (debounce 400ms)
 
 #### Config you must do once locally
 
-Create confidential client **`herdcommand-admin`** (also listed in `infra/keycloak/realm/herdcommand-realm.json` for new imports). Enable service account. Assign **realm-management** client roles `view-users`, `query-users`, `manage-users`. Copy the client secret into `.env` as `KEYCLOAK_ADMIN_CLIENT_SECRET`. Restart the API.
+Create confidential client **`herdcommand-admin`** (also listed in `infra/keycloak/realm/herdcommand-realm.json` for new imports). Enable service account. Assign **realm-management** client roles `view-users`, `query-users`, `manage-users`. Turn **Full scope allowed** on so those roles appear in the client-credentials token. Copy the client secret into `.env` as `KEYCLOAK_ADMIN_CLIENT_SECRET`. Restart the API.
 
 Keycloak SMTP must be configured if you want invitation emails to leave the box. PA-005 will send them at create time.
 

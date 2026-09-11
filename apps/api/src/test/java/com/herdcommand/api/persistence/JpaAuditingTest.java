@@ -76,4 +76,20 @@ class JpaAuditingTest {
         assertThat(updated.getUpdatedBy()).isEqualTo("auditor-1");
         assertThat(updated.getUpdatedAt()).isAfterOrEqualTo(originalUpdatedAt);
     }
+
+    @Test
+    void persistUsesPreferredUsernameWhenJwtHasNoSubject() {
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("preferred_username", "adminfarm")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(60))
+                .build();
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt, List.of()));
+
+        JpaAuditProbe saved = repository.saveAndFlush(new JpaAuditProbe("no-sub"));
+
+        assertThat(saved.getCreatedBy()).isEqualTo("adminfarm");
+        assertThat(saved.getUpdatedBy()).isEqualTo("adminfarm");
+    }
 }

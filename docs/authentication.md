@@ -129,6 +129,8 @@ Create users in realm **herdcommand** (not `master` unless you intend that). Set
 
 Realm name (`herdcommand`) and client id (`herdcommand`) happen to be the same string. They are still two different objects: one is the realm, one is the OIDC client inside that realm.
 
+The web client must include the **`basic`** default client scope (Keycloak 26). Without it, access tokens have roles but no `sub`, so farm save cannot fill `created_by` and owner APIs cannot see who is signed in.
+
 ### 3.5 Platform administrator role (PA-001)
 
 Create a realm role named **`PLATFORM_ADMIN`** (also listed in `infra/keycloak/realm/herdcommand-realm.json`). Assign it only to people who may manage **every** farm.
@@ -145,8 +147,9 @@ The API looks up and invites farm owners through the Keycloak Admin API. React n
 
 1. Create confidential client **`herdcommand-admin`** (service account on, standard flow off).
 2. Assign its service account the **realm-management** roles `view-users`, `query-users`, and `manage-users`.
-3. Put the client secret in `.env` as `KEYCLOAK_ADMIN_CLIENT_SECRET`. Do not commit it.
-4. Configure realm SMTP if invitation emails should be delivered.
+3. On that client, turn **Full scope allowed** on. If it stays off, Keycloak issues a token with no `realm-management` roles and user search returns 403.
+4. Put the client secret in `.env` as `KEYCLOAK_ADMIN_CLIENT_SECRET`. Do not commit it.
+5. Configure realm SMTP if invitation emails should be delivered.
 
 New realm imports from `infra/keycloak/realm/herdcommand-realm.json` include the client shell. An already-running realm needs the client created once in the admin console.
 

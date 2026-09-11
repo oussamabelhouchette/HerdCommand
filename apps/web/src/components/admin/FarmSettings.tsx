@@ -517,7 +517,6 @@ export function FarmSettings({
                   data-feature-id={feature.id}
                   data-feature-code={feature.code}
                   data-enableable={String(feature.enableable)}
-                  aria-disabled={disabled}
                 >
                   <label className={styles.featureRow}>
                     <input

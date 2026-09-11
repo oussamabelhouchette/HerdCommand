@@ -5,10 +5,8 @@ import com.herdcommand.api.api.error.ApiException;
 import com.herdcommand.api.api.error.ConflictException;
 import com.herdcommand.api.api.error.ErrorCodes;
 import com.herdcommand.api.api.error.ResourceNotFoundException;
+import com.herdcommand.api.domain.audit.CurrentAuditor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -221,15 +219,6 @@ public class FarmTenantService {
     }
 
     private static String currentAuditor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return "system";
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof Jwt jwt && jwt.getSubject() != null && !jwt.getSubject().isBlank()) {
-            return jwt.getSubject();
-        }
-        String name = authentication.getName();
-        return name == null || name.isBlank() ? "system" : name;
+        return CurrentAuditor.orSystem();
     }
 }

@@ -1,9 +1,9 @@
 import NextAuth from 'next-auth';
 import Keycloak from 'next-auth/providers/keycloak';
-import type { Session } from 'next-auth';
 import { refreshKeycloakAccessToken, accessTokenExpiresAtSeconds, accessTokenNeedsRefresh } from '@/lib/refresh-access-token';
 import { membershipsFromAccessToken } from '@/lib/realm-roles';
 import { resolveAuthJsRedirect } from '@/lib/post-login-redirect';
+import { runtimeEnv } from '@/lib/runtime-env';
 
 declare module 'next-auth' {
   interface Session {
@@ -14,89 +14,95 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
-  interface JWT {
-    accessToken?: string;
-    idToken?: string;
-    refreshToken?: string;
-    expiresAt?: number;
-    error?: string;
-    roles?: string[];
-  }
+type AuthToken = {
+  accessToken?: string;
+  idToken?: string;
+  refreshToken?: string;
+  expiresAt?: number;
+  error?: string;
+  roles?: string[];
+};
+
+function keycloakAuthOptions() {
+  const publicIssuer = runtimeEnv('AUTH_KEYCLOAK_ISSUER')?.replace(/\/$/, '');
+  const internalIssuer = (runtimeEnv('AUTH_KEYCLOAK_INTERNAL_ISSUER') || publicIssuer)?.replace(/\/$/, '');
+  const keycloakSecret = runtimeEnv('AUTH_KEYCLOAK_SECRET');
+  return {
+    clientId: runtimeEnv('AUTH_KEYCLOAK_ID'),
+    clientSecret: keycloakSecret,
+    issuer: publicIssuer,
+    // Auth.js discovers from `issuer` unless these URLs are set. Issuer is the
+    // browser URL (localhost); token/userinfo must be reachable from Docker.
+    authorization: publicIssuer ? `${publicIssuer}/protocol/openid-connect/auth` : undefined,
+    token: internalIssuer ? `${internalIssuer}/protocol/openid-connect/token` : undefined,
+    userinfo: internalIssuer ? `${internalIssuer}/protocol/openid-connect/userinfo` : undefined,
+    checks: ['pkce', 'state'] as Array<'pkce' | 'state'>,
+    client: {
+      token_endpoint_auth_method: (keycloakSecret ? 'client_secret_post' : 'none') as
+        | 'client_secret_post'
+        | 'none',
+    },
+  };
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  providers: [
-    Keycloak({
-      clientId: process.env.AUTH_KEYCLOAK_ID,
-      clientSecret: process.env.AUTH_KEYCLOAK_SECRET || undefined,
-      issuer: process.env.AUTH_KEYCLOAK_ISSUER,
-      checks: ['pkce', 'state'],
-      client: {
-        token_endpoint_auth_method: 'none',
-      },
-    }),
-  ],
+  providers: [Keycloak(keycloakAuthOptions())],
   session: { strategy: 'jwt', maxAge: 30 * 60 },
   pages: {
     signIn: '/login',
   },
   callbacks: {
     async jwt({ token, account }) {
+      const authToken = token as typeof token & AuthToken;
       if (account) {
-        token.accessToken = account.access_token;
-        token.idToken = account.id_token;
-        token.refreshToken = account.refresh_token;
-        token.expiresAt = accessTokenExpiresAtSeconds(account);
-        token.roles = membershipsFromAccessToken(account.access_token);
-        token.error = undefined;
-        return token;
+        authToken.accessToken = account.access_token;
+        authToken.idToken = account.id_token;
+        authToken.refreshToken = account.refresh_token;
+        authToken.expiresAt = accessTokenExpiresAtSeconds(account);
+        authToken.roles = membershipsFromAccessToken(account.access_token);
+        authToken.error = undefined;
+        return authToken;
       }
 
-      const needsRefresh = accessTokenNeedsRefresh(token.expiresAt);
+      const needsRefresh = accessTokenNeedsRefresh(authToken.expiresAt);
 
       if (!needsRefresh) {
-        if (!token.roles?.length && token.accessToken) {
-          token.roles = membershipsFromAccessToken(token.accessToken);
+        if (!authToken.roles?.length && authToken.accessToken) {
+          authToken.roles = membershipsFromAccessToken(authToken.accessToken);
         }
-        return token;
+        return authToken;
       }
 
-      if (!token.refreshToken) {
-        token.error = 'SessionExpired';
-        token.accessToken = undefined;
-        token.roles = undefined;
-        return token;
+      if (!authToken.refreshToken) {
+        authToken.error = 'SessionExpired';
+        authToken.accessToken = undefined;
+        authToken.roles = undefined;
+        return authToken;
       }
 
-      const refreshed = await refreshKeycloakAccessToken(token.refreshToken);
+      const refreshed = await refreshKeycloakAccessToken(authToken.refreshToken);
       if ('error' in refreshed) {
-        token.error = refreshed.error;
-        token.accessToken = undefined;
-        token.roles = undefined;
-        return token;
+        authToken.error = refreshed.error;
+        authToken.accessToken = undefined;
+        authToken.roles = undefined;
+        return authToken;
       }
 
-      token.accessToken = refreshed.accessToken;
-      token.idToken = refreshed.idToken ?? token.idToken;
-      token.refreshToken = refreshed.refreshToken;
-      token.expiresAt = refreshed.expiresAt;
-      token.roles = membershipsFromAccessToken(refreshed.accessToken);
-      token.error = undefined;
-      return token;
+      authToken.accessToken = refreshed.accessToken;
+      authToken.idToken = refreshed.idToken ?? authToken.idToken;
+      authToken.refreshToken = refreshed.refreshToken;
+      authToken.expiresAt = refreshed.expiresAt;
+      authToken.roles = membershipsFromAccessToken(refreshed.accessToken);
+      authToken.error = undefined;
+      return authToken;
     },
-    async session({
-      session,
-      token,
-    }: {
-      session: Session;
-      token: { accessToken?: string; idToken?: string; error?: string; roles?: string[] };
-    }) {
-      session.accessToken = token.accessToken;
-      session.idToken = token.idToken;
-      session.error = token.error;
-      session.roles = token.roles;
+    async session({ session, token }) {
+      const authToken = token as AuthToken;
+      session.accessToken = authToken.accessToken;
+      session.idToken = authToken.idToken;
+      session.error = authToken.error;
+      session.roles = authToken.roles;
       return session;
     },
     async redirect({ url, baseUrl }) {

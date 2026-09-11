@@ -104,11 +104,13 @@ public class FarmOnboardingService {
     private static boolean isIdempotencyRace(RuntimeException ex) {
         Throwable current = ex;
         while (current != null) {
-            if (current instanceof DataIntegrityViolationException) {
-                return true;
-            }
             String message = String.valueOf(current.getMessage()).toLowerCase(Locale.ROOT);
-            if (message.contains("ux_farm_onboarding_key") || message.contains("farm_onboarding_request")) {
+            if (message.contains("null value") || message.contains("not-null") || message.contains("23502")) {
+                return false;
+            }
+            if (message.contains("ux_farm_onboarding_key")
+                    || (current instanceof DataIntegrityViolationException
+                            && (message.contains("duplicate") || message.contains("unique")))) {
                 return true;
             }
             current = current.getCause();

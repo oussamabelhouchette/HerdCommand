@@ -21,7 +21,7 @@ Related: [us-pa-002-farm-and-membership-database-foundation.md](./us-pa-002-farm
 | Features | Validated by catalog code **before** Keycloak. `HEALTH` / coming-soon → `400 FEATURE_NOT_AVAILABLE`, no farm, no user. |
 | `nameEn` | Optional. If omitted, copied from `nameFr` (same backfill as HARRI). |
 | Governorate | Existing `TN-xx` codes. The story example `TUNIS` is rejected. |
-| Creating admin | Existing JPA audit `created_by` = JWT `sub`. |
+| Creating admin | Existing JPA audit `created_by` = JWT `sub`, or `preferred_username` if Keycloak 26 omitted `sub`. |
 
 ### Error codes
 
