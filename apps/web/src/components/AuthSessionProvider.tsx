@@ -16,7 +16,6 @@ export function AuthSessionProvider({
       session={session}
       refetchInterval={120}
       refetchOnWindowFocus={false}
-      refetchOnMount={false}
     >
       {children}
     </SessionProvider>
