@@ -20,13 +20,16 @@ export default async function SignedInPage({ params, searchParams }: Props) {
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
+    return null;
   }
 
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
+    return null;
   }
 
   const href = postLoginHref(await membershipsFromSession(session), intended);
   const destLocale = localeFromCallbackUrl(intended, locale);
   redirect({ href, locale: destLocale });
+  return null;
 }

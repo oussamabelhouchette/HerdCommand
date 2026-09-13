@@ -1,3 +1,5 @@
+import { runtimeEnv } from './runtime-env';
+
 type RefreshedTokens = {
   accessToken: string;
   idToken?: string;
@@ -38,8 +40,11 @@ export async function refreshKeycloakAccessToken(refreshToken: string): Promise<
 }
 
 async function doRefreshKeycloakAccessToken(refreshToken: string): Promise<RefreshedTokens | RefreshFailure> {
-  const issuer = process.env.AUTH_KEYCLOAK_ISSUER?.replace(/\/$/, '');
-  const clientId = process.env.AUTH_KEYCLOAK_ID;
+  const issuer = (runtimeEnv('AUTH_KEYCLOAK_INTERNAL_ISSUER') || runtimeEnv('AUTH_KEYCLOAK_ISSUER'))?.replace(
+    /\/$/,
+    '',
+  );
+  const clientId = runtimeEnv('AUTH_KEYCLOAK_ID');
   if (!issuer || !clientId || !refreshToken) {
     return { error: 'RefreshAccessTokenError' };
   }
@@ -49,6 +54,10 @@ async function doRefreshKeycloakAccessToken(refreshToken: string): Promise<Refre
     client_id: clientId,
     refresh_token: refreshToken,
   });
+  const clientSecret = runtimeEnv('AUTH_KEYCLOAK_SECRET');
+  if (clientSecret) {
+    body.set('client_secret', clientSecret);
+  }
 
   const response = await fetch(`${issuer}/protocol/openid-connect/token`, {
     method: 'POST',

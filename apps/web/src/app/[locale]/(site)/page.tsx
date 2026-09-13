@@ -17,15 +17,18 @@ export default async function HomePage({ params }: Props) {
 
   if (!session?.user) {
     redirect({ href: '/login', locale });
+    return null;
   }
 
   if (isAuthSessionError(session.error)) {
     redirectToRoute('/api/auth/federated-logout');
+    return null;
   }
 
   const href = postLoginHref(await membershipsFromSession(session));
   if (href !== DEFAULT_PORTAL) {
     redirect({ href, locale });
+    return null;
   }
 
   return (

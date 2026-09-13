@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import type { NextFetchEvent, NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { auth } from '@/auth';
 import { routing } from './i18n/routing';
@@ -30,20 +30,49 @@ function withPathname(request: NextRequest, response: NextResponse) {
   return response;
 }
 
+function isRedirect(response: Response) {
+  return response.status >= 300 && response.status < 400;
+}
+
 const protect = auth((request) => {
   if (!request.auth) {
     const login = new URL('/login', request.url);
     login.searchParams.set('callbackUrl', request.nextUrl.pathname);
     return NextResponse.redirect(login);
   }
-  return withPathname(request, intlMiddleware(request));
+  return NextResponse.next();
 });
 
-export default function middleware(request: NextRequest) {
-  if (!isProtectedPath(request.nextUrl.pathname)) {
-    return withPathname(request, intlMiddleware(request));
+function copySetCookies(from: Response, to: NextResponse) {
+  const cookies = typeof from.headers.getSetCookie === 'function' ? from.headers.getSetCookie() : [];
+  for (const cookie of cookies) {
+    to.headers.append('set-cookie', cookie);
   }
-  return protect(request);
+  return to;
+}
+
+export default async function middleware(request: NextRequest, event: NextFetchEvent) {
+  const intlResponse = withPathname(request, intlMiddleware(request));
+
+  if (!isProtectedPath(request.nextUrl.pathname)) {
+    return intlResponse;
+  }
+
+  // next-auth wraps the response and drops next-intl's locale cookie, which
+  // makes /farm 307 to /farm forever. Let locale redirects finish first.
+  if (isRedirect(intlResponse)) {
+    return intlResponse;
+  }
+
+  const authResponse = await (
+    protect as (req: NextRequest, ev: NextFetchEvent) => Promise<Response> | Response
+  )(request, event);
+
+  if (isRedirect(authResponse)) {
+    return authResponse;
+  }
+
+  return copySetCookies(authResponse, intlResponse);
 }
 
 export const config = {

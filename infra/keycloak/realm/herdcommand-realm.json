@@ -7,7 +7,6 @@
   "supportedLocales": ["ar", "en"],
   "defaultLocale": "ar",
   "resetPasswordAllowed": true,
-  "forgotPasswordAllowed": true,
   "rememberMe": true,
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
@@ -63,6 +62,14 @@
           "temporary": false
         }
       ]
+    },
+    {
+      "username": "service-account-herdcommand-admin",
+      "enabled": true,
+      "serviceAccountClientId": "herdcommand-admin",
+      "clientRoles": {
+        "realm-management": ["view-users", "query-users", "manage-users"]
+      }
     }
   ],
   "clients": [
@@ -95,7 +102,8 @@
         "acr",
         "profile",
         "roles",
-        "email"
+        "email",
+        "basic"
       ],
       "optionalClientScopes": ["address", "phone", "offline_access"],
       "protocolMappers": [
@@ -147,7 +155,7 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
       "protocol": "openid-connect",
-      "fullScopeAllowed": false
+      "fullScopeAllowed": true
     }
   ]
 }

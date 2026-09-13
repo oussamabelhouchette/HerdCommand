@@ -1,3 +1,5 @@
+import { runtimeEnv } from './runtime-env';
+
 export type ApiFieldError = {
   field: string;
   message: string;
@@ -24,6 +26,9 @@ export class ApiRequestError extends Error {
 }
 
 export function apiBaseUrl() {
+  if (typeof window === 'undefined') {
+    return runtimeEnv('API_INTERNAL_URL') ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080';
+  }
   return process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080';
 }
 
